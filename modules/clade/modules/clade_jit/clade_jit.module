@@ -1,0 +1,201 @@
+<?php
+
+function clade_jit_block($op = 'list', $delta = 0, $edit = array()) {
+	if ($op == 'list') {
+		$block = array(
+			array(
+				'info' => t('Clade SpaceTree Block'),
+				),
+			);
+	} else if ($op == 'view') {
+		switch ($delta) {
+			case 0:
+				$block = array(
+					'subject' => t('Clade SpaceTree'),
+					'content' => clade_jit_spacetree_block(),
+					);
+				break;
+		}
+	}
+	return $block;
+}
+
+function clade_jit_menu() {
+	return array(
+			'clade/jit/spacetree' => array(
+				'title' => t('Clade SpaceTree Visualization'),
+				'page callback' => clade_jit_spacetree,
+				'access arguments' => array('access content')
+				),
+			'clade/jit/spacetree/node_info/%' => array(
+				'page callback' => 'clade_jit_jit_node_info',
+				'page arguments' => array(4),
+				'title' => 'Clade node info for JIT callback',
+				'type' => MENU_CALLBACK,
+				'access arguments' => array('access content'),
+				),
+		);
+}
+
+function clade_jit_theme() {
+	return array(
+			'clade_homepage_clade_spacetree' => array(
+				'arguments' => array(
+					'spacetree' => null,
+					'title' => t('Local Network'),
+					),
+				'template' => 'theme/clade-homepage-clade-spacetree',
+				),
+		);
+}
+
+function clade_jit_jit_help() {
+	$helplinks = array();
+	
+	// about
+	$helplinks[] = l(t('What is this?'), 'about/network-browser');
+	
+	// where is my clade
+	$helplinks[] = l(t('Why is my clade missing from the tree?'), 'support/clade-suggestions');
+	
+	// faq
+	$helplinks[] = l(t('My-Plant FAQ'), 'faq');
+	
+	return theme('item_list', $helplinks, '', 'ul', array('class'=>'iplant myplant'));
+}
+
+function clade_jit_jit_node_info($tid) {
+	global $user;
+	$html = '';
+	$clade = clade_get_clade($tid);
+	if ($clade->active) {
+		$items = array();
+		$items[] = l(t('Clade Homepage'), "clade/$clade->tid") . '</li>';
+// 		$items[] = l(t('Discussion Forums'), "node/$clade->tid/og/forum") . '</li>';
+		$items[] = l(t('RSS Feed'), "clade/$clade->tid/rss") . '</li>';
+		if ($user->uid != 0 && module_exists('clade_subscriptions') && !array_key_exists($clade->tid, $user->clades)) {
+			$dest = drupal_get_destination();
+			$items[] = l(t('Join this clade'), "clade/$clade->tid/members/join", array('query'=> array('destination' => "clade/$clade->tid"))) . '</li>';
+		}
+		$html .= theme('item_list', $items, null, 'ul', array('class' => 'iplant myplant'));
+	} else {
+		$html .= '<em>This clade is inactive!</em>';
+		$html .= '<div>This clade is not currently an active group.  ';
+		$html .= 'If you would like to join or manage this clade, ';
+		$query = array(
+			'name' => $clade->name
+		);
+		if ($parents = taxonomy_get_parents($clade->tid)) {
+			$parent = $parents[0];
+			$query['parent'] = $parent->name;
+		}
+		$html .= l(t('please let us know'), 'support/clade-suggestions', array('query' => $query)) . '!</div>';
+	}
+	$result = array();
+	$result['success'] = true;
+	$result['title'] = $clade->name;
+	$result['body'] = $html;
+	
+	print drupal_json($result);
+	die;
+}
+
+function clade_jit_jitnode($clade) {
+	$node = new stdClass;
+	$node->name = $clade->name;
+	$node->id = $clade->tid;
+	$node->children = array();
+	$node->data = new stdClass;
+	$node->data->active = $clade->active;
+	return $node;
+}
+
+function clade_jit_lookup_tree($id_prefix = 'clade_jit_spacetree_') {
+	$tree = taxonomy_get_tree(variable_get('clade_vocabulary', 0));
+	$term = array_shift($tree);
+	$root = clade_jit_jitnode(clade_get_clade($term->tid));
+	$root->id = $id_prefix . '_' . $root->id;
+	$root->data->depth = $term->depth;
+	$path = array($root);
+	while($term = array_shift($tree)) {
+		while ($term->depth <= $path[0]->data->depth) {
+			array_shift($path);
+		}
+		$next = clade_jit_jitnode(clade_get_clade($term->tid));
+		$next->id = $id_prefix . '_' . $next->id;
+		$next->data->depth = $term->depth;
+		$path[0]->children[] = $next;
+		array_unshift($path, $next);
+	}
+	return $root;
+}
+
+function clade_jit_theme_registry_alter(&$registry) {
+	$registry['jit_on_create_label']['template'] = 'clade_jit-spacetree-on-create-label-js';
+	$registry['jit_on_create_label']['path'] = drupal_get_path('module', 'clade_jit') . '/theme';
+}
+
+function clade_jit_spacetree($context_nid = 0, $jit_config = array()) {
+	drupal_add_css(drupal_get_path('module', 'clade_jit') . '/css/clade_jit.css');
+	
+	$params = array(
+		'id' => 'clade_jit_spacetree',
+		'duration' => 250,
+		'enable_hiding' => 1,
+		'enable_full_screen' => 1,
+		'enable_node_info' => 1,
+		'node_info_path' => 'clade/jit/spacetree/node_info',
+		'enable_help' => 1,
+		'help_function_name' => 'clade_jit_jit_help',
+		'enable_search' => 1,
+		'search_path' => 'clade/autocomplete',
+		'edge_color' => '#ffffff',
+		'selected_edge_color' => '#db671e',
+		);
+	$settings = array_merge($params, $jit_config);
+		
+	if ($context_nid > 0) {
+		$settings['node_to_select_id'] = $settings['id'] . '_' . $context_nid;
+	}
+	
+	$clades = clade_jit_lookup_tree($settings['id']);
+	
+	return theme('jit_spacetree', $clades, $settings);
+}
+
+function clade_jit_spacetree_block($context_tid = 0, $jit_config = array()) {
+	$params = array(
+		'id' => 'clade_jit_spacetree_block_0',
+		'enable_hiding' => 0,
+		'enable_full_screen' => 0,
+		'enable_node_info' => 1,
+		'node_info_path' => 'clade/jit/spacetree/node_info',
+		'enable_help' => 0,
+		'enable_search' => 0,
+		'edge_color' => '#ffffff',
+		'selected_edge_color' => '#db671e',
+		'offsetX' => -35,
+		'offsetY' => -25,
+		);
+	$settings = array_merge($params, $jit_config);
+	
+	return clade_jit_spacetree($context_tid, $settings);
+}
+
+/**
+ * Implementation of hook_ctools_plugin_directory().
+ *
+ * It simply tells panels where to find the .inc files that define various
+ * args, contexts, content_types. In this case the subdirectories of
+ * ctools_plugin_example/panels are used.
+ */
+function clade_jit_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && !empty($plugin)) {
+    return "ctools_plugins/$plugin";
+  }
+}
+
+function clade_jit_preprocess_clade_homepage(&$vars) {
+	$clade = $vars['clade'];
+	$vars['network'] = theme('clade_homepage_clade_spacetree', clade_jit_spacetree_block($clade->tid, array('height' => 200, 'levelsToShow' => 1)));
+}

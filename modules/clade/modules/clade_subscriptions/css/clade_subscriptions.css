@@ -1,0 +1,18 @@
+.clade-manager {
+}
+
+.clade-manager img,
+.clade-manager a,
+.clade-manager span {
+	vertical-align: middle;
+	margin-bottom: 3px;
+}
+
+.clade-manager img {
+	padding-right: 0.5em;
+}
+
+#block-clade-4 li h3 {
+	margin: 0.25em 0;
+	font-size: 1em;
+}

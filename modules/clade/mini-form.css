@@ -1,0 +1,56 @@
+.clade-page-mini-form-wrapper {
+	margin-bottom: 1em;
+	background: none repeat scroll 0 0 #f9f9f9;
+	border-color: #cccccc;
+	border-radius: 3px 3px 3px 3px;
+	border-style: solid;
+	border-width: 1px;
+	padding: 6px;
+	overflow: hidden;
+}
+
+h2.clade-page-mini-form-title {
+	color: #2899a8;
+	margin: 0 0 0.25em;
+}
+
+.clade-page-mini-form-wrapper img.image-button {
+	cursor: pointer;
+	float: left;
+}
+
+.clade-page-mini-form-wrapper fieldset {
+	clear: both;
+}
+
+.clade-page-mini-form-wrapper input.mini-form-submit {
+	background-color: #4FADC1;
+	background-image: -moz-linear-gradient(#75bfce, #2899a8);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#75bfce), to(#2899a8));
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	color: #ffffff;
+	text-shadow: 0px 0px 1px #000000;
+	font-weight: bold;
+	border: 1px solid #333333;
+	width: 8em;
+	margin-right: 0.5em;
+	float: right;
+	cursor: pointer;
+}
+
+.clade-page-mini-form-wrapper input.mini-form-submit:hover {
+	background-color: #68b9ca;
+	background-image: -moz-linear-gradient(#8ecad7, #2fb2c3);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#8ecad7), to(#2fb2c3));
+}
+
+.clade-page-mini-form-wrapper a.mini-form-cancel {
+	margin-right: 3em;
+	float: right;
+}
+
+.ahah-progress {
+	float: right;
+}

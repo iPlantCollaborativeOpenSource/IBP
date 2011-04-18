@@ -1,0 +1,155 @@
+<?php
+// $Id$
+/**
+ * Copyright (c) 2010, iPlant Collaborative, University of Arizona, Cold Spring Harbor Laboratories, University of Texas at Austin
+ * This software is licensed under the CC-GNU GPL version 2.0 or later.
+ * License: http://creativecommons.org/licenses/GPL/2.0/
+ */
+function clade_gallery_schema() {
+	return array(
+		'clade_image_relationships' => array (
+				'description' => 'Table to store relationships of clade_image nodes with clade_page nodes.',
+				'fields' => array(
+					'nid' => array(
+              'description' => "The clade_image nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					'related_nid' => array (
+              'description' => "The clade_page nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					),
+				'primary key' => array('nid, related_nid'),
+			),
+		);
+}
+
+function clade_gallery_install() {
+  drupal_install_schema('clade_gallery');
+  
+  // set up cck content type
+  module_load_include('inc', 'content', 'includes/content.admin');
+  module_load_include('inc', 'node', 'content_types');
+  $macro = file_get_contents(drupal_get_path('module', 'clade_gallery') . '/clade_image.content_type.inc');
+  $form_state = array();
+  $form_state['values']['type_name'] = 'clade_image';
+  $form_state['values']['macro'] = $macro;
+  drupal_execute('content_copy_import_form', $form_state);
+  content_clear_type_cache();
+  
+  // add to organic groups
+  variable_set('og_content_type_usage_clade_image','group_post_standard');
+  variable_set('og_max_groups_clade_image','');
+  
+  // allow comments
+  variable_set('comment_clade_image', '2');
+  variable_set('comment_default_mode_clade_image', '4');
+  variable_set('comment_default_order_clade_image', '2');
+  variable_set('comment_controls_clade_image', '3');
+  
+  // path auto
+  variable_set('pathauto_node_clade_image_pattern','clade/[ogname-raw]/image/[clade_gallery_image-filefield-onlyname]');
+
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	db_query("UPDATE {system} SET weight = %d WHERE name = 'clade_gallery'", $weight + 1);
+}
+
+
+function clade_gallery_uninstall() {
+  
+  // TODO: delete clade images ?
+  
+  // remove clade_gallery variables
+  variable_del('og_content_type_usage_clade_image');
+  variable_del('og_max_groups_clade_image');
+  
+  variable_del('comment_clade_image');
+  variable_del('comment_default_mode_clade_image');
+  variable_del('comment_default_order_clade_image');
+  variable_del('comment_controls_clade_image');
+}
+
+function clade_gallery_update_6001() {
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	
+	$ret = array();
+	$ret[] = update_sql(sprintf("UPDATE {system} SET weight = %d WHERE name = 'clade_gallery'", $weight + 1));
+	
+	return $ret;
+}
+
+function clade_gallery_update_6003() {
+	$ret = array();
+	$schema = array(
+		'clade_image_relationships' => array (
+				'description' => 'Table to store relationships of clade_image nodes with clade_page nodes.',
+				'fields' => array(
+					'nid' => array(
+              'description' => "The clade_image nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					'related_nid' => array (
+              'description' => "The clade_page nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					),
+				'primary key' => array('nid, related_nid'),
+			),
+		);
+	db_create_table($ret, 'clade_image_relationships', $schema['clade_image_relationships']);
+	
+	// move files
+	$clade_vid = variable_get('clade_vocabulary', 0);
+	if ($clade_vid) {
+		$results = db_query("select oga.nid, td.tid from {og_ancestry} oga join {node} p on p.nid = oga.nid and p.type='%s' join {node} n on n.nid = oga.group_nid join {term_data} td on td.name = n.title and td.vid = %d", 'clade_image', $clade_vid);
+		while ($result = db_fetch_array($results)) {
+			$node = node_load($result['nid']);
+			$terms = $node->taxonomy;
+			$terms[$clade_vid] = array($result['tid']);
+			taxonomy_node_save($node, $terms);
+		}
+	}
+	
+	// TODO create clade_page nodes and associate
+	
+	return $ret;
+}
+
+function clade_gallery_update_6004() {
+	$results = db_query("SELECT n.nid FROM {node} n LEFT OUTER JOIN {clade_image_relationships} r ON r.nid = n.nid WHERE n.type='clade_image' AND r.nid IS NULL");
+	while ($nid = db_result($results)) {
+		$cladeImage = node_load($nid);
+		$clone = clone $cladeImage;
+		$clone->type='clade_page';
+		$clone->nid = NULL;
+		$clone->vid = NULL;
+		$clone->body = $clone->teaser = $clone->field_description[0]['value'];
+		unset($clone->path);
+		unset($clone->clade_gallery_image);
+		unset($clone->field_description);
+		unset($clone->field_photographer);
+		unset($clone->field_copyright);
+		unset($clone->field_source);
+		unset($clone->field_geotag);
+		unset($clone->locations);
+		unset($clone->location);
+		node_save($clone);		
+		$relationship = array(
+			'nid' => $cladeImage->nid,
+			'related_nid' => $clone->nid,
+			);
+		drupal_write_record('clade_image_relationships', $relationship);
+	}
+	db_query("UPDATE {node} n, {clade_image_relationships} r, {node} f SET n.changed = f.changed WHERE n.nid = r.related_nid and r.nid = f.nid");
+	db_query("UPDATE {node} n, {node_comment_statistics} s SET s.last_comment_timestamp = n.changed WHERE n.nid = s.nid");
+	
+	return array();
+}

@@ -1,0 +1,11 @@
+.clade-members-faces-face {
+	float: left;
+	width: 100px;
+	height: 100px;
+	text-align: center;
+}
+
+.clade-members-faces-face .picture {
+	width: auto;
+	height: auto;
+}

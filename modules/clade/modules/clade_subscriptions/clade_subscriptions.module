@@ -1,0 +1,685 @@
+<?php
+//$Id$
+function clade_subscriptions_init() {
+  global $user;
+  if ($user->uid) {
+    // $user gets modified by reference.
+    clade_subscriptions_user('load', array(), $user);
+  } else {
+    $user->clades = array();
+  }
+
+	$clade = clade_get_context();
+	if ($clade != NULL) {
+		drupal_add_css(drupal_get_path('module', 'clade_subscriptions') . '/css/clade_subscriptions.css');
+	}
+}
+
+function clade_subscriptions_menu() {
+	$items = array();
+	
+	/*
+		Managed by Views
+		clade/%/members - implicit menu item in clade_members_faces
+		clade/%/members/faces - clade_members_faces
+		clade/%/members/list - clade_members_list
+	*/
+			
+	$items['clade/%/members/join'] = array(
+		'title' => 'Join Clade',
+		'type' => MENU_CALLBACK,
+		'page callback' => 'clade_subscriptions_join',
+		'page arguments' => array(1),
+		'access arguments' => array('access content'),
+		);
+	
+	$items['clade/%/members/unjoin/%user'] = array(
+		'title' => 'Leave Clade',
+		'type' => MENU_CALLBACK,
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('clade_subscriptions_confirm_unjoin', 1, 4),
+		'access callback' => 'clade_subscriptions_access_unjoin',
+		'access arguments' => array(1, 4),
+		);
+	
+	$items['clade/%/members/create_admin/%user'] = array(
+		'title' => 'Create clade manager',
+		'type' => MENU_CALLBACK,
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('clade_subscriptions_create_admin', 1, 4),
+		'access callback' => 'clade_subscriptions_access_create_admin',
+		'access arguments' => array(1, 4),
+		);
+	
+	$items['clade/%/members/remove_admin/%user'] = array(
+		'title' => 'Remove clade manager',
+		'type' => MENU_CALLBACK,
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('clade_subscriptions_remove_admin', 1, 4),
+		'access arguments' => array('edit any clade'),
+		);
+	
+	return $items;
+}
+
+function clade_subscriptions_theme() {
+	return array(
+		'clade_homepage_members' => array(
+			'arguments' => array(
+				'members' => NULL,
+				'title' => t('Members'),
+				),
+			'template' => 'theme/clade-homepage-members',
+			),
+		'views_view_table__clade_my_clades__block' => array(
+			'arguments' => array(
+				'view' => NULL,
+				'options' => NULL,
+				'rows' => NULL,
+				'title' => NULL,
+				),
+			'template' => 'views-view-table--clade-my-clades--block',
+			'original hook' => 'views_view_table',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
+		'views_view_unformatted__clade_members_faces' => array(
+			'arguments' => array(
+				'view' => NULL,
+				'options' => NULL,
+				'rows' => NULL,
+				'title' => NULL
+				),
+			'template' => 'views-view-unformatted--clade-members-faces',
+			'original hook' => 'views_view_unformatted',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
+		'views_view_fields__clade_members_faces' => array(
+			'arguments' => array(
+				'view' => NULL,
+				'options' => NULL,
+				'rows' => NULL,
+				'output' => NULL,
+				),
+			'template' => 'views-view-fields--clade-members-faces',
+			'original hook' => 'views_view_fields',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
+		'clade_subscriptions_subscribe_email' => array(
+			'arguments' => array(
+				'clade_name' => NULL,
+				'homepage_link' => NULL,
+				'to' => NULL,
+				'from' => NULL,
+				),
+			'template' => 'subscribe_email',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
+		'clade_subscriptions_unsubscribe_email' => array(
+			'arguments' => array(
+				'clade_name' => NULL,
+				'to' => NULL,
+				'from' => NULL,
+				),
+			'template' => 'unsubscribe_email',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
+		);
+}
+/*
+function clade_subscriptions_form_alter(&$form, &$form_state, $form_id) {
+	global $user;
+	if ($form_id == 'clade_page_node_form') {
+		$form['#after_build'][] = 'clade_subscriptions_clade_node_form_after_build';
+	}
+}
+
+function clade_subscriptions_clade_node_form_after_build($form, &$form_state) {
+	global $user;
+	// unless user has access to all clades, limit just to subscribed clades
+	if (! user_access('edit any clade')) {
+		$options = $form['taxonomy'][variable_get('clade_vocabulary', 0)]['#options'];
+		$user_clades = array_keys($user->clades);
+		foreach ($options as $key => $option) {
+			if ($key !== '') {
+				$opt_id = array_keys($option->option);
+				if (! in_array($opt_id[0], $user_clades)) {
+					unset($options[$key]);
+				}
+			}
+		}
+		$form['taxonomy'][variable_get('clade_vocabulary', 0)]['#options'] = $options;
+	}
+	return $form;
+}
+*/
+function clade_subscriptions_preprocess_views_view_fields__clade_members_faces(&$vars) {
+	drupal_add_css(drupal_get_path('module', 'clade_subscriptions') . '/css/clade_subscriptions_views.css');
+}
+
+function clade_subscriptions_clade_details_items($clade) {
+	global $user;
+	
+	$admins = array();
+	$count = 0;
+	$sql = "SELECT cu.* FROM {clade_uid} cu WHERE cu.tid = %d";
+	$members = db_query($sql, $clade->tid);
+	while ($member = db_fetch_object($members)) {
+		$count++;
+		if ($member->is_admin) {
+			$admin = user_load($member->uid);
+			if (! $admin->picture) {
+				$admin->picture = variable_get('user_picture_default', '');
+			}
+			$admins[] = array(
+				'data' => theme('imagecache', 'profile_tiny', $admin->picture) . theme('username', $admin),
+				'class' => 'clade-manager',
+				);
+		}
+	}
+			
+	$items = array(
+		'members' => array(
+			'data' => l(t('@num members', array('@num' => $count)), "clade/$clade->tid/members"),
+			'data-sort' => 10,
+			'class' => 'iplant',
+			),
+		'admins' => array(
+			'data' => theme('item_list', $admins, 'Clade Managers', 'ul', array('class' => 'nostyle')),
+			'data-sort' => 12
+			),
+		);
+	
+	if ($user->uid) {
+		if (! array_key_exists($clade->tid, $user->clades)) {
+			$items['join'] = array(
+				'data' => l(t('Join this Clade'), "clade/$clade->tid/members/join"),
+				'data-sort' => 11,
+				'class' => 'iplant',
+				);
+		}
+	} else {
+		$items['join'] = array(
+			'data' => l(t('Login to join or post'), "user/login", array('query' => array('destination' => "clade/$clade->tid"))),
+			'data-sort' => 11,
+			'class' => 'iplant',
+			);
+	}
+	
+	return $items;
+}
+
+function clade_subscriptions_clade_members($clade) {
+	$sql = "SELECT * FROM {clade_uid} WHERE tid = %d";
+	$results = db_query($sql, $clade->tid);
+	$members = array();
+	while ($row = db_fetch_object($results)) {
+		$members[] = $row->uid;
+	}
+	return $members;
+}
+
+function clade_subscriptions_clade_admins($clade) {
+	$sql = "SELECT * FROM {clade_uid} WHERE tid = %d AND is_admin";
+	$results = db_query($sql, $clade->tid);
+	$admins = array();
+	while ($row = db_fetch_object($results)) {
+		$admins[] = $row->uid;
+	}
+	return $admins;
+}
+
+function clade_subscriptions_preprocess_clade_homepage(&$vars) {
+	$clade = $vars['clade'];
+	
+ 	$members_view = views_get_view('clade_members_faces');
+ 	$output = $members_view->preview('default', array($clade->tid));
+ 	if ($members_view->result) {
+ 		$members = $output;
+ 	} else {
+ 		$members = t('No members. ') . l(t('Join this Clade!'), "/clade/subscribe/$clade->tid");
+ 	}
+	$vars['members'] = theme('clade_homepage_members', $members);
+}
+
+function clade_subscriptions_views_api() {
+  return array(
+    'api' => 2,
+  );
+}
+
+function clade_subscriptions_subscribe_user($clade_id, $account) {
+	if ($account->uid > 0) { // don't accidentialy subscribe anonymous
+		$clade = clade_get_clade($clade_id);
+		clade_subscriptions_save_subscription($clade_id, $account->uid);
+		
+		$params = array(
+			'clade_name' => $clade->name,
+			'clade_homepage_link' => l(t('Clade homepage'), "clade/{$clade->tid}", array('absolute' => TRUE)),
+			'to_name' => $account->name,
+			'from_name' => t('The !clade_name Clade Managers', array('!clade_name' => $clade->name)),
+			);
+		drupal_mail('clade_subscriptions', 'subscribe', $account->mail, $account->language, $params, "My-Plant $clade->name Clade Managers <no-reply@my-plant.org>");
+
+		return array('type' => 'subscribed',
+													'message' => t('You are now a member of %group.', array('%group' => $clade->name)));
+	}
+}
+
+function clade_subscriptions_save_subscription($clade_id, $uid, $args = array()) {
+  if ($uid > 0) {
+    $sql = "SELECT * FROM {clade_uid} WHERE tid = %d AND uid = %d";
+    $subscription = db_fetch_array(db_query($sql, $clade_id, $uid));
+    $time = time();
+    if (! empty($subscription)) {
+    	$subscription['changed'] = $time;
+    	$update = array('tid', 'uid');
+    } else {
+			$subscription = array(
+				'tid' => $clade_id,
+				'uid' => $uid,
+				'created' => isset($args['created']) ? $args['created'] : $time,
+				'changed' => $time
+			);
+    }
+    unset($args['created']);
+    $subscription += $args;
+
+    if ($update) {
+      drupal_write_record('clade_uid', $subscription, $update);
+    }
+    else {
+      drupal_write_record('clade_uid', $subscription);
+    }
+    
+		$subscription = array(
+			'uid' => $uid,
+			'send_interval' => 0,
+			'send_method' => 'phpmailer',
+			'type' => 'taxonomy',
+			'event_type' => 'node',
+			'fields' => array(
+				'tid' => $clade_id,
+				),
+			);
+		notifications_save_subscription($subscription);
+  }
+}
+
+function clade_subscriptions_unsubscribe_user($clade_id, $account) {
+	clade_subscriptions_delete_subscription($clade_id, $account->uid);
+	
+	$clade = clade_get_clade($clade_id);
+	$params = array(
+		'clade_name' => $clade->name,
+		'to_name' => $account->name,
+		'from_name' => t('The !clade_name Clade Managers', array('!clade_name' => $clade->name)),
+		);
+	drupal_mail('clade_subscriptions', 'unsubscribe', $account->mail, $account->language, $params, "My-Plant $clade->name Clade Managers <no-reply@my-plant.org>");
+}
+
+function clade_subscriptions_delete_subscription($clade_id, $uid) {
+  $sql = "DELETE FROM {clade_uid} WHERE tid = %d AND uid = %d";
+  db_query($sql, $clade_id, $uid);
+	$subs = notifications_get_subscriptions(array('type' => 'taxonomy', 'uid' => $uid), array('tid' => $clade_id), TRUE);
+	foreach ($subs as $sid => $sub) {
+		notifications_delete_subscription($sid);
+	}
+}
+
+function clade_subscriptions_mail($key, &$message, $params) {
+	$message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+	if ($key === 'subscribe') {
+		$message['subject'] = t('Welcome to the @clade Clade!', array('@clade' => $params['clade_name']));
+		$message['body'] = theme('clade_subscriptions_subscribe_email', $params['clade_name'], $params['clade_homepage_link'], $params['to_name'], $params['from_name']);
+	} else if ($key === 'unsubscribe') {
+		$message['subject'] = t('You have left the @clade Clade', array('@clade' => $params['clade_name']));
+		$message['body'] = theme('clade_subscriptions_unsubscribe_email', $params['clade_name'], $params['to_name'], $params['from_name']);
+	}
+}
+
+function clade_subscriptions_join($clade_id, $uid = NULL) {
+  global $user;
+  $clade = clade_get_clade($clade_id);
+  
+  if (is_null($uid)) {
+    if ($user->uid) {
+      $account = $user;
+    }
+  }
+  else {
+    $account = user_load(array('uid' => $uid));
+  }
+
+  // User is already a member of this group, redirect to group homepage.
+  if (isset($account->clades[$clade_id])) {
+    drupal_set_message(t('@user is already a member the clade @group.', array('@user' => $account->name, '@group' => $clade->name)));
+    drupal_goto('clade/'. $clade->tid);
+  }
+  else {
+    return drupal_get_form('clade_subscriptions_confirm_join', $clade_id, $clade, $account);
+  }
+}
+
+function clade_subscriptions_confirm_join($form_state, $clade_id, $clade, $account) {
+  $form['clade_id'] = array('#type' => 'value', '#value' => $clade_id);
+  $form['account'] = array('#type' => 'value', '#value' => $account);
+	return confirm_form($form, 
+                t('Are you sure you want to join the clade %title?', array('%title' => $clade->name)),
+                'clade/'. $clade->tid, ' ',
+                t('Join'), t('Cancel'));
+}
+
+/**
+ * Confirm clade join submit handler
+ */
+function clade_subscriptions_confirm_join_submit($form, &$form_state) {
+  $return = clade_subscriptions_subscribe_user($form_state['values']['clade_id'], $form_state['values']['account']);
+  if (!empty($return['message'])) {
+      drupal_set_message($return['message']);
+  }
+  $form_state['redirect'] = 'clade/'. $form_state['values']['clade_id'];
+}
+
+function clade_subscriptions_access_unjoin($clade_id, $account) {
+	global $user;
+	$access = FALSE;
+	
+	if (empty($account)) {
+		$account = $user;
+	}
+	
+	$clade = clade_get_clade($clade_id);
+	$admins = clade_subscriptions_clade_admins($clade);
+
+	if (! in_array($account->uid, $admins)) {
+		if ($user->uid != $account->uid) {
+			// check if admin
+			$access = in_array($user->uid, $admins);
+		} else {
+			// check if member
+			$members = clade_subscriptions_clade_members($clade);
+			if (in_array($user->uid, $members)) {
+				$access = ! in_array($user->uid, $admins);
+			}
+		}
+		
+		if (! $access) {
+			$access = user_access('edit any clade');
+		}
+	}
+	
+	return $access;
+}
+
+function clade_subscriptions_confirm_unjoin($form_state, $clade_id, $account) {
+  global $user;
+  $clade = clade_get_clade($clade_id);
+  $form['clade'] = array('#type' => 'value', '#value' => $clade);
+  $form['account'] = array('#type' => 'value', '#value' => $account);
+  if ($account->uid == $user->uid) {
+    $message = t('Are you sure you want to leave the clade %title?', array('%title' => $clade->name));
+    $confirm_text = t("Leave"); 
+  }
+  else {
+    $message = t('Are you sure you want to remove !name from the clade %title?', array('!name' => theme('username', $account), '%title' => $clade->name));
+    $confirm_text = t("Remove");
+  }
+  return confirm_form($form, $message, 'clade/'. $clade->tid .'/members', ' ', $confirm_text, t('Cancel'));
+}
+
+/**
+ * Confirm clade unjoin submit handler
+ */
+function clade_subscriptions_confirm_unjoin_submit($form, &$form_state) {
+  global $user;
+  $clade = $form_state['values']['clade'];
+  $account = $form_state['values']['account'];
+  clade_subscriptions_unsubscribe_user($clade->tid, $account);
+  // If needed, reload user object to reflect unsubscribed group.
+  if ($user->uid == $account->uid) {
+    clade_subscriptions_get_subscriptions($account->uid, 1, TRUE); // Clear cache.
+    $user = user_load(array('uid' => $user->uid));
+    $message = t('You left the clade %group.', array('%group' => $clade->name));
+  } 
+  else {
+    $message = t('%user removed from %group.', array('%user' => $account->name, '%group' => $clade->name));
+  }
+  drupal_set_message($message);
+  
+  // Determine where to go next. GHP if accessible, or else site front page.
+  $form_state['redirect'] = "clade/". $clade->tid;
+}
+
+function clade_subscriptions_user($op, $edit, &$account, $category = NULL) {
+	global $user;
+	switch ($op) {
+    case 'load':
+      $account->clades = clade_subscriptions_get_subscriptions($account->uid);
+      clade_subscriptions_grant_roles($account);
+      break;
+	}
+}
+
+function clade_subscriptions_grant_roles(&$account) {
+	$clade = clade_get_context();
+	if (! empty($clade)) {
+		if (in_array($clade->tid, array_keys($account->clades))) {
+			$role_names = array('clade member');
+			if ($account->clades[$clade->tid]['is_admin']) {
+				$role_names[] = 'clade manager';
+			}
+			$in = array_fill(0, count($role_names), '%s');
+			$results = db_query("SELECT * FROM {role} WHERE name IN ('" . implode("','", $in) . "')", $role_names);
+			while ($r = db_fetch_object($results)) {
+				$account->roles[$r->rid] = $r->name;
+			}
+			// reload user roles
+			user_access(NULL, $account, TRUE);
+		}
+	}
+}
+
+// function clade_subscriptions_predetermine_context() {
+// 	$context = NULL;
+// 	$item = clade_subscriptions_menu_get_item();
+// 	$path = $item['path'];
+// 	$context = clade_determine_context($path);
+// 	return $context;
+// }
+// 
+// 
+// /**
+//  * Get a router item.
+//  *
+//  * Due to the static $router_items, our initial query in hook_init() would
+//  * perform a real access check for the current path and we would be no longer
+//  * be able to grant privileges.
+//  *
+//  * In Drupal 7, this fork can probably be replaced with
+//  * @code
+//  *   drupal_static_reset('menu_get_item');
+//  * @endcode
+//  *
+//  * @see menu_get_item()
+//  */
+// function clade_subscriptions_menu_get_item($path = NULL, $router_item = NULL) {
+//   static $router_items;
+//   if (!isset($path)) {
+//     $path = $_GET['q'];
+//   }
+//   if (isset($router_item)) {
+//     $router_items[$path] = $router_item;
+//   }
+//   if (!isset($router_items[$path])) {
+//     $original_map = arg(NULL, $path);
+//     $parts = array_slice($original_map, 0, MENU_MAX_PARTS);
+//     list($ancestors, $placeholders) = menu_get_ancestors($parts);
+// 
+//     if ($router_item = db_fetch_array(db_query_range('SELECT * FROM {menu_router} WHERE path IN ('. implode (',', $placeholders) .') ORDER BY fit DESC', $ancestors, 0, 1))) {
+//       // Allow privilege escalation; do not invoke access callbacks.
+//       $map = clade_subscriptions_menu_translate($router_item, $original_map);
+//       if ($map === FALSE) {
+//         $router_items[$path] = FALSE;
+//         return FALSE;
+//       }
+//       // Allow privilege escalation; always load map.
+//       //if ($router_item['access']) {
+//         $router_item['map'] = $map;
+//         $router_item['page_arguments'] = array_merge(menu_unserialize($router_item['page_arguments'], $map), array_slice($map, $router_item['number_parts']));
+//       //}
+//     }
+//     $router_items[$path] = $router_item;
+//   }
+//   return $router_items[$path];
+// }
+// 
+// /**
+//  * Handles dynamic path translation and menu access control.
+//  *
+//  * Certain menu access callbacks (like _node_revision_access()) statically cache
+//  * the result of the access check for performance. We only want to retrieve and
+//  * determine the group context in og_user_roles_init(), resp.
+//  * og_user_roles_menu_get_item(), where no additional roles have been granted
+//  * yet. _menu_translate() would normally also invoke the access callback for the
+//  * current page. Therefore, certain menu access callbacks, which statically
+//  * cache their result, would return that result in subsequent invocations (i.e.
+//  * FALSE when the user does not have permissions).
+//  *
+//  * Since OG user roles only wants to retrieve context and all of the regular
+//  * menu system's behavior is and should not be modified, we simply skip the
+//  * access check in this fork.
+//  *
+//  * In Drupal 7, this wrapper can probably be replaced with (or similar):
+//  * @code
+//  *   drupal_static_reset('_node_revision_access');
+//  * @endcode
+//  *
+//  * @see _menu_translate()
+//  * @see clade_subscriptions_menu_get_item()
+//  */
+// function clade_subscriptions_menu_translate(&$router_item, $map, $to_arg = FALSE) {
+//   if ($to_arg) {
+//     // Fill in missing path elements, such as the current uid.
+//     _menu_link_map_translate($map, $router_item['to_arg_functions']);
+//   }
+//   // The $path_map saves the pieces of the path as strings, while elements in
+//   // $map may be replaced with loaded objects.
+//   $path_map = $map;
+//   if (!_menu_load_objects($router_item, $map)) {
+//     // An error occurred loading an object.
+//     $router_item['access'] = FALSE;
+//     return FALSE;
+//   }
+// 
+//   // Generate the link path for the page request or local tasks.
+//   $link_map = explode('/', $router_item['path']);
+//   for ($i = 0; $i < $router_item['number_parts']; $i++) {
+//     if ($link_map[$i] == '%') {
+//       $link_map[$i] = $path_map[$i];
+//     }
+//   }
+//   $router_item['href'] = implode('/', $link_map);
+//   $router_item['options'] = array();
+//   // Allow privilege escalation; do not invoke access callbacks.
+//   //_menu_check_access($router_item, $map);
+//   
+//   // For performance, don't localize an item the user can't access.
+//   if (!empty($router_item['access'])) {
+//     _menu_item_localize($router_item, $map);
+//   }
+// 
+//   return $map;
+// }
+
+
+function clade_subscriptions_get_subscriptions($uid, $reset = FALSE) {
+  static $subscriptions = array();
+
+  if ($reset) {
+    unset($subscriptions[$uid]);
+  }
+
+  if (!isset($subscriptions[$uid])) {
+    $sql = "SELECT t.name, cu.* FROM {clade_uid} cu INNER JOIN {term_data} t ON cu.tid = t.tid WHERE cu.uid = %d ORDER BY t.name";
+    $result = db_query($sql, $uid);
+    while ($row = db_fetch_array($result)) {
+      $subscriptions[$uid][$row['tid']] = $row;
+    }
+
+    if (!isset($subscriptions[$uid])) {
+      $subscriptions[$uid] = array();
+    }
+  }
+  return $subscriptions[$uid];
+}
+
+function clade_subscriptions_access_create_admin($clade_id, $account) {
+	global $user;
+	$clade = clade_get_clade($clade_id);
+	$members = clade_subscriptions_clade_members($clade);
+	$access = FALSE;
+	// only members can become admins through this method
+	if (in_array($account->uid, $members)) {
+		$admins = clade_subscriptions_clade_admins($clade);
+		// only non-admins can become admins
+		if (! in_array($account->uid, $admins)) {
+			// only clade admins or site admins can create admins
+			$access = in_array($user->uid, $admins) || user_access('edit any clade');
+		}
+	}
+	return $access;
+}
+
+function clade_subscriptions_create_admin($form_state, $clade_id, $account) {
+	$clade = clade_get_clade($clade_id);
+	$form = array();
+	$form['clade'] = array('#type' => 'value', '#value' => $clade);
+	$form['account'] = array('#type' => 'value', '#value' => $account);
+	$form['details'] = array(
+		'#type' => 'markup',
+		'#value' => '<p>' . t('This will grant all Clade management privileges to !user.  This includes managing members and the ability to edit the details of the Clade.  Only a site administrator can revoke Clade management privileges.', array('!user' => theme('username', $account))) . '</p>',
+		);
+	return confirm_form($form, 
+							t("Are you sure you want grant the role of %role for %title to !user?", array('!user' => theme('username', $account), '%title' => $clade->name, '%role' => t('Clade manager'))),
+							'clade/'. $clade->tid, ' ',
+							t('Grant manager'), t('Cancel'));
+}
+
+function clade_subscriptions_create_admin_submit($form, &$form_state) {
+	$account = $form_state['values']['account'];
+	$clade = $form_state['values']['clade'];
+	$clade_uid_record = db_fetch_object(db_query("SELECT * FROM {clade_uid} WHERE tid = %d AND uid = %d", $clade->tid, $account->uid));
+	$clade_uid_record->is_admin = TRUE;
+	if (drupal_write_record('clade_uid', $clade_uid_record, array('tid', 'uid'))) {
+		drupal_set_message(t('!user is now a %role for %clade.', array('%role' => t('Clade manager'), '%clade' => $clade->name, '!user' => theme('username', $account))));
+	} else {
+		drupal_set_message(t('There was an error granting %role for %clade to !user.  Please try again.', array('%role' => t('Clade manager'), '%clade' => $clade->name, '!user' => theme('username', $account))), 'error');
+	}
+}
+
+function clade_subscriptions_access_remove_admin($clade_id, $account) {
+	global $user;
+	$clade = clade_get_clade($clade_id);
+	$admins = clade_subscriptions_clade_admins($clade);
+	$access = FALSE;
+	
+}
+
+function clade_subscriptions_remove_admin($form_state, $clade_id, $account) {
+	$clade = clade_get_clade($clade_id);
+	$form = array();
+	$form['clade'] = array('#type' => 'value', '#value' => $clade);
+	$form['account'] = array('#type' => 'value', '#value' => $account);
+	$form['details'] = array(
+		'#type' => 'markup',
+		'#value' => '<p>' . t('This will remove all Clade management privileges from !user.  The user will still be a member of the Clade.  If you wish to remove membership as well, you will need to do that after removing management privileges.', array('!user' => theme('username', $account))) . '</p>',
+		);
+	return confirm_form($form, 
+							t("Are you sure you want remove the role of %role of %title from !user?", array('!user' => theme('username', $account), '%title' => $clade->name, '%role' => t('Clade manager'))),
+							'clade/'. $clade->tid, ' ',
+							t('Remove manager'), t('Cancel'));
+}
+
+function clade_subscriptions_remove_admin_submit($form, &$form_state) {
+	
+}

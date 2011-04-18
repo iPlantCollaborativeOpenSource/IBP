@@ -1,0 +1,402 @@
+<?php
+/**
+ * Copyright (c) 2010, iPlant Collaborative, University of Arizona, Cold Spring Harbor Laboratories, University of Texas at Austin
+ * This software is licensed under the CC-GNU GPL version 2.0 or later.
+ * License: http://creativecommons.org/licenses/GPL/2.0/
+ */
+
+function jit_spacetree_resources() {
+	jit_resources();
+	drupal_add_js(drupal_get_path('module', 'jit_spacetree') .'/jit_spacetree.js');
+	drupal_add_css(drupal_get_path('module', 'jit_spacetree') .'/jit_spacetree.css');
+}
+
+function jit_spacetree_menu() {
+	
+	$items = array();
+	if (variable_get('jit_enable_debug', 0)) {
+		$items['jit/spacetree/debug'] = array(
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('_jit_spacetree_debug_form'),
+			'title' => 'JIT Spacetree: DEBUG',
+			'type' => MENU_CALLBACK,
+			'access arguments' => array('access content'),
+			);
+		$items['jit/spacetree/debug/node_info/%'] = array(
+			'page callback' => '_jit_spacetree_debug_node_info',
+			'page arguments' => array(4),
+			'title' => 'JIT Spacetree: DEBUG node info',
+			'type' => MENU_CALLBACK,
+			'access arguments' => array('access content'),
+			);
+		$items['jit/spacetree/debug/search'] = array(
+			'page callback' => '_jit_spacetree_debug_node_search',
+			'title' => 'JIT Spacetree: DEBUG node search',
+			'type' => MENU_CALLBACK,
+			'access arguments' => array('access content'),
+			);
+	}
+	return $items;
+}
+
+function jit_spacetree_theme() {
+	return array(
+		/*
+		 * @param	$tree the tree to visualize;
+		 *				This object is a hierarchical collection of nodes with the following structure:
+		 *				$tree->id: string identifier, usually node id (nid) of node being visualized (used as HTML id attribute)
+		 *				$tree->name: text for label
+		 *				$tree->children: array of child nodes
+		 *				$tree->data: stdClass with additional data
+		 *
+		 * @param $params additional parameters for JIT, overrides $defaults
+		 */
+		'jit_spacetree' => array(
+			'arguments' => array(
+				'tree' => null,
+				'options' => null,
+				),
+			'template' => 'theme/jit-spacetree',
+			),
+		);
+}
+
+/**
+ * Preprocess the JIT spacetree visualization output.
+ *
+ */
+function jit_spacetree_preprocess_jit_spacetree(&$vars) {
+	jit_spacetree_resources();
+	
+	$defaults = array(
+			'id' => 'spacetree',										// id of spacetree HTML element
+			'height' => 300,												// height
+			'duration' => 400,
+			'levels_to_show' => 3,									// levels of the tree to show at once
+			'init_orient' => 'bottom',							// initial orientation of the tree
+			'selected_node' => NULL,								// initial node id in $tree to select
+			'enable_orient' => 0,										// enable controls to change tree orientation
+			'enable_full_screen' => 0,							// enable full screen expansion
+			'enable_hiding' => 0,										// enable the visualization to be "minimized"
+			'enable_help' => 0,											// enable "help" tray
+			'help_function_name' => '',							// a function that returns the content of the "help" tray
+			'enable_search' => 0,										// enable search functionality on tree
+			'search_path' => '',										// the menu path for search form
+			'enable_node_info' => 0,								// enable showing node info window
+			'node_info_path' => '',									// path to get node info by node id
+			'cache_node_info' => 1,									// cache node_info for performance
+			'edge_color' => '#ffffff',							// the hex color for the edges
+			'selected_edge_color' => '#25aef5',			// the hex color for edges on the currently selected path
+		);
+	$options = array_merge($defaults, $vars['options']);
+	$vars['options'] = $options;
+	
+	$controller = array();
+	$controller['onBeforeCompute'] = theme('jit_on_before_compute', $options['id']);
+	$controller['onAfterCompute'] = theme('jit_on_after_compute', $options['id']);
+	$controller['onCreateLabel'] = theme('jit_on_create_label', $options['id']);
+	$controller['onPlaceLabel'] = theme('jit_on_place_label', $options['id']);
+	$controller['onComplete'] = theme('jit_on_complete', $options['id']);
+	$controller['onBeforePlotLine'] = theme('jit_on_before_plot_line', $options['id']);
+	$controller['onAfterPlotLine'] = theme('jit_on_after_plot_line', $options['id']);
+	$controller['onBeforePlotNode'] = theme('jit_on_before_plot_node', $options['id']);
+	$controller['onAfterPlotNode'] = theme('jit_on_after_plot_node', $options['id']);
+	$controller['request'] = theme('jit_request', $options['id']);
+	
+	$vars['controller'] = $controller;
+}
+
+function jit_spacetree_theme_registry_alter(&$registry) {
+	$registry['jit_on_create_label']['template'] = 'jit-spacetree-on-create-label';
+	$registry['jit_on_create_label']['path'] = drupal_get_path('module', 'jit_spacetree') . '/theme';
+	
+	$registry['jit_on_before_plot_line']['template'] = 'jit-spacetree-on-before-plot-line';
+	$registry['jit_on_before_plot_line']['path'] = drupal_get_path('module', 'jit_spacetree') . '/theme';
+	
+	$registry['jit_on_before_plot_node']['template'] = 'jit-spacetree-on-before-plot-node';
+	$registry['jit_on_before_plot_node']['path'] = drupal_get_path('module', 'jit_spacetree') . '/theme';
+}
+
+function jit_spacetree_node_search_form(&$form_state, $search_path) {
+	$form = array();
+	$form['search'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Search'),
+		'#size' => 45,
+		'#autocomplete_path' => $search_path
+		);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Go'),
+	);
+	return $form;
+}
+
+function _jit_spacetree_debug_node_search($search_text = '') {
+	// return dummy options
+	return drupal_json(array(
+		'Root'=>'Root',
+		'1.4.0'=>'1.4.0',
+		'1.4.1'=>'1.4.1',
+		'1.4.2'=>'1.4.2',
+		'1.4.3'=>'1.4.3',
+		'1.4.2.3.1.2.0.1.0'=>'1.4.2.3.1.2.0.1.0',
+		));
+}
+
+function _jit_spacetree_debug_generate($parent_id = '', $number_of_children = 0) {
+	if (! $parent_id) {
+		$tree = new stdClass;
+		$tree->id = 'jitnode_1';
+		$tree->name = 'Root';
+		$tree->data = new stdClass;
+		$tree->children = _jit_spacetree_debug_generate($tree->id, 5);
+		
+		return $tree;
+	} else {
+		$children = array();
+		for ($i = 0; $i < 6-$number_of_children; $i++) {
+			$child = new stdClass;
+			$temp_id = str_replace('jitnode_', '', $parent_id) . '_' . $number_of_children . '_' . $i;
+			$child->id = 'jitnode_' . $temp_id;
+			$child->name = 'node';
+			$child->data = new stdClass;
+			if ($number_of_children > 1) {
+				$child->children = _jit_spacetree_debug_generate($child->id, $number_of_children - 1);
+			} else {
+				$child->children = array();
+			}
+			$children[] = $child;
+		}
+		return $children;
+	}
+}
+
+function _jit_spacetree_debug_form(&$form_state) {
+	$form = array();
+	$form['#multistep'] = true;
+	$form['#redirect'] = false;
+	
+	// render tree
+	$tree = _jit_spacetree_debug_generate();
+	
+	$params = array();
+	
+	if (! empty($form_state['post']['height'])) {
+		$params['height'] = intval($form_state['post']['height']);
+	}
+	if (! empty($form_state['post']['duration'])) {
+		$params['duration'] = intval($form_state['post']['duration']);
+	}
+	if (! empty($form_state['post']['init_orient'])) {
+		$params['init_orient'] = $form_state['post']['init_orient'];
+	}
+	if (! empty($form_state['post']['enable_orient'])) {
+		$params['enable_orient'] = 1;
+	}
+	if (! empty($form_state['post']['enable_search'])) {
+		$params['enable_search'] = 1;
+	}
+	if (! empty($form_state['post']['search_path'])) {
+		$params['search_path'] = $form_state['post']['search_path'];
+	}
+	if (! empty($form_state['post']['cache_node_info'])) {
+		$params['cache_node_info'] = 1;
+	}
+	if (! empty($form_state['post']['edge_color'])) {
+		$params['edge_color'] = $form_state['post']['edge_color'];
+	}
+	if (! empty($form_state['post']['selected_edge_color'])) {
+		$params['selected_edge_color'] = $form_state['post']['selected_edge_color'];
+	}
+	if (! empty($form_state['post']['enable_full_screen'])) {
+		$params['enable_full_screen'] = 1;
+	}
+	if (! empty($form_state['post']['enable_hiding'])) {
+		$params['enable_hiding'] = 1;
+	}
+	if (! empty($form_state['post']['enable_help'])) {
+		$params['enable_help'] = 1;
+	}
+	if (! empty($form_state['post']['help_function_name'])) {
+		$params['help_function_name'] = $form_state['post']['help_function_name'];
+	}
+	if (! empty($form_state['post']['enable_node_info'])) {
+		$params['enable_node_info'] = 1;
+	}
+	if (! empty($form_state['post']['node_info_path'])) {
+		$params['node_info_path'] = $form_state['post']['node_info_path'];
+	}
+	
+	$form['tree'] = array(
+		'#type' => 'markup',
+		'#value' => theme('jit_spacetree', $tree, $params),
+		);
+	
+	// height
+	$form['height'] = array(
+		'#title' => t('Height'),
+		'#type' => 'textfield',
+		'#default_value' => 300,
+		);
+	// duration
+	$form['duration'] = array(
+		'#title' => t('duration'),
+		'#type' => 'textfield',
+		'#default_value' => 400,
+		);
+	
+	$form['orient'] = array(
+		'#title' => t('Orientation'),
+		'#type' => 'fieldset'
+		);
+	// enable_orient
+	$form['orient']['enable_orient'] = array(
+		'#title' => t('Enable user orientation options'),
+		'#type' => 'checkbox',
+		'#default_value' => 0,
+		);
+	// init_orient
+	$form['orient']['init_orient'] = array(
+		'#title' => t('Initial orientation'),
+		'#type' => 'radios',
+		'#options' => array('bottom' => t('Bottom'), 'top' => t('Top'), 'left' => t('Left'), 'right' => t('Right')),
+		'#default_value' => 'bottom',
+		);
+	
+	$form['search'] = array(
+		'#title' => t('Search'),
+		'#type' => 'fieldset',
+		);
+	// enable_search
+	$form['search']['enable_search'] = array(
+		'#title' => t('Enable search'),
+		'#type' => 'checkbox',
+		'#default_value' => 0,
+		);
+	// search_path
+	$form['search']['search_path'] = array(
+		'#title' => t('Search autocomplete path'),
+		'#type' => 'textfield',
+		'#default_value' => 'jit/spacetree/debug/search',
+		'#description' => t('The Drupal menu path for the AHAH autocomplete')
+		);
+	
+	$form['edge_colors'] = array(
+		'#title' => t('Edge colors'),
+		'#type' => 'fieldset',
+		'#description' => t('Since edges are drawn by Canvas, the colors cannot be configured with CSS.'),
+		);
+	// edge_color
+	$form['edge_colors']['edge_color'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Edge color'),
+		'#default_value' => '#ffffff'
+		);
+	// selected_edge_color
+	$form['edge_colors']['selected_edge_color'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Selected edge color'),
+		'#default_value' => '#25aef5'
+		);
+	
+	// fullscreen
+	$form['enable_full_screen'] = array(
+		'#type'=> 'checkbox',
+		'#default_value' => 0,
+		'#title' => t('Enable fullscreen view'),
+		);
+		
+	// hiding
+	$form['enable_hiding'] = array(
+		'#type'=> 'checkbox',
+		'#default_value' => 0,
+		'#title' => t('Enable hiding'),
+		);
+	
+	$form['help'] = array(
+		'#title' => t('Help'),
+		'#type' => 'fieldset',
+		);
+	// enable_help
+	$form['help']['enable_help'] = array(
+		'#type'=> 'checkbox',
+		'#default_value' => 0,
+		'#title' => t('Enable help tray'),
+		);
+	// help_function_name
+	$form['help']['help_function_name'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Help function name'),
+		'#description' => t('The name of the drupal function to call to generate help HTML content.  This is not dynamic.'),
+		'#default_value' => '_jit_spacetree_debug_help',
+		);
+	
+	$form['node_info'] = array(
+		'#title' => t('Node Info'),
+		'#type' => 'fieldset',
+		);
+	// enable_node_info
+	$form['node_info']['enable_node_info'] = array(
+		'#type' => 'checkbox',
+		'#default_value' => 0,
+		'#title' => t('Enable node info'),
+		);
+	// node_info_path
+	$form['node_info']['node_info_path'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Node info path'),
+		'#description' => t('The menu path to call with the node\'s id attribute as an argument to retrieve node info.'),
+		'#default_value' => 'jit/spacetree/debug/node_info'
+		);
+	// cache_node_info
+	$form['node_info']['cache_node_info'] = array(
+		'#type' => 'checkbox',
+		'#default_value' => 1,
+		'#title' => t('Cache node info'),
+		'#description' => t('Whether to cache the node info locally, or refresh it each time the node is selected.')
+		);
+
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => 'Update configuration',
+		);
+	
+	$form['debug'] = array(
+		'#type' => 'markup',
+		'#value' => _jit_spacetree_debug_print_tree($tree),
+		);
+	
+	return $form;
+}
+
+function _jit_spacetree_debug_print_tree($tree) {
+	$html = '<div style="max-height: 400px; overflow-y: scroll;">';
+	$html .= '<h1>Visualizing the following tree:</h1>';
+	$html .= '<pre>' . print_r($tree, TRUE) . '</pre>';
+	$html .= '</div>';
+	return $html;
+}
+
+function _jit_spacetree_debug_help() {
+	$help = array();
+	$help[] = 'Topic 1';
+	$help[] = 'Topic 2';
+	$help[] = 'Topic 3';
+	return theme('item_list', $help);
+}
+
+function _jit_spacetree_debug_node_info($node_id) {
+	$info = array();
+	$info[] = 'Topic 1';
+	$info[] = 'Topic 2';
+	$info[] = 'Topic 3';
+	
+	$node_info = array(
+		'title' => '<strong>'.$node_id.'</strong>',
+		'body' => theme('item_list', $info)
+		);
+	
+	print drupal_to_js($node_info);
+	die;
+}

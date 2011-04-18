@@ -1,0 +1,12 @@
+; $Id$
+name = Clade
+description = "A phylogenetic clade representing a node in a phylogenetic tree."
+package = "Clade"
+core = 6.x
+
+dependencies[] = taxonomy
+dependencies[] = pathauto
+dependencies[] = subpath_alias
+dependencies[] = views
+dependencies[] = teaser_comments
+dependencies[] = webform

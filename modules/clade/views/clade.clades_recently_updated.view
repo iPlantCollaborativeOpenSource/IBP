@@ -1,0 +1,93 @@
+<?php
+// $Id$
+
+$view = new view;
+$view->name = 'clades_recently_updated';
+$view->description = 'Most recently updated Clades';
+$view->tag = 'clade';
+$view->view_php = '';
+$view->base_table = 'term_data';
+$view->is_cacheable = FALSE;
+$view->api_version = 2;
+$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+$handler = $view->new_display('default', 'Defaults', 'default');
+$handler->override_option('fields', array(
+  'name' => array(
+    'label' => '',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'link_to_taxonomy' => 1,
+    'exclude' => 0,
+    'id' => 'name',
+    'table' => 'term_data',
+    'field' => 'name',
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('sorts', array(
+  'last_post_date' => array(
+    'order' => 'DESC',
+    'granularity' => 'second',
+    'id' => 'last_post_date',
+    'table' => 'clade',
+    'field' => 'last_post_date',
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('filters', array(
+  'vid' => array(
+    'operator' => 'in',
+    'value' => array(
+      variable_get('clade_vocabulary', 0) => variable_get('clade_vocabulary', 0),
+    ),
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => FALSE,
+      'label' => '',
+    ),
+    'id' => 'vid',
+    'table' => 'term_data',
+    'field' => 'vid',
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('access', array(
+  'type' => 'none',
+));
+$handler->override_option('cache', array(
+  'type' => 'none',
+));
+$handler->override_option('title', 'Popular Clades');
+$handler->override_option('css_class', 'iplant');
+$handler->override_option('footer', '<div style="text-align: right; border-top: 1px solid #cccccc; margin-top: 0.1em; padding-top: 0.2em;">
+<?php print l(t(\'See all Clades &raquo;\'), \'clades\', array(\'html\'=>TRUE)); ?>
+</div>');
+$handler->override_option('footer_format', '3');
+$handler->override_option('footer_empty', 0);
+$handler->override_option('use_more', 0);
+$handler->override_option('use_more_always', 0);
+$handler->override_option('distinct', 0);
+$handler->override_option('style_plugin', 'list');
+$handler = $view->new_display('block', 'Block', 'block_1');
+$handler->override_option('block_description', '');
+$handler->override_option('block_caching', -1);

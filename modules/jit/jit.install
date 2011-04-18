@@ -1,0 +1,21 @@
+<?php
+/**
+ * Copyright (c) 2010, iPlant Collaborative, University of Arizona, Cold Spring Harbor Laboratories, University of Texas at Austin
+ * This software is licensed under the CC-GNU GPL version 2.0 or later.
+ * License: http://creativecommons.org/licenses/GPL/2.0/
+ */
+ 
+function jit_install() {
+	db_query("UPDATE {system} SET weight = -11 WHERE name = 'jit'");
+}
+
+function jit_uninstall() {
+	variable_del('jit_enable_debug');
+}
+
+function jit_update_6001() {
+	$ret = array();
+	$ret[] = update_sql("UPDATE {system} SET weight = -11 WHERE name = 'jit'");
+	
+	return $ret;
+}

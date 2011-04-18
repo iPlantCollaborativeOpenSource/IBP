@@ -1,0 +1,21 @@
+<?php
+// $Id$
+/**
+ * Copyright (c) 2010, iPlant Collaborative, University of Arizona, Cold Spring Harbor Laboratories, University of Texas at Austin
+ * This software is licensed under the CC-GNU GPL version 2.0 or later.
+ * License: http://creativecommons.org/licenses/GPL/2.0/
+ */
+
+function clade_jit_install() {
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	db_query("UPDATE {system} SET weight = %d WHERE name = 'clade_jit'", $weight + 1);
+}
+
+function clade_jit_update_6001() {
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	
+	$ret = array();
+	$ret[] = update_sql(sprintf("UPDATE {system} SET weight = %d WHERE name = 'clade_jit'", $weight + 1));
+	
+	return $ret;
+}

@@ -1,0 +1,13 @@
+; $Id$
+name = Clade Gallery
+description = "A gallery for clade nodes."
+dependencies[] = clade
+dependencies[] = filefield
+dependencies[] = filefield_meta
+dependencies[] = imagefield
+dependencies[] = imageapi
+dependencies[] = imagecache
+dependencies[] = getid3
+dependencies[] = transliteration
+package = "Clade"
+core = 6.x

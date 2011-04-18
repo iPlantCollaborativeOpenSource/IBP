@@ -1,0 +1,325 @@
+<?php
+// $Id$
+
+function clade_schema() {
+  $schema = array();
+  $schema['clade'] = array(
+      'description' => 'Table to store peripheral data for Clades.',
+      'fields' => array(
+          'tid' => array(
+              'description' => "The clade's taxonomy tid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+            ),
+          'active' => array(
+              'description' => 'The active status for the clade.',
+              'type' => 'int',
+              'size' => 'tiny',
+              'not null' => TRUE,
+              'default' => 0,
+            ),
+          'welcome' => array(
+          		'description' => 'Optional welcome message about the clade.',
+          		'type' => 'text',
+          	),
+          'tolwebid' => array(
+              'description' => 'Tree of Life ID',
+              'type' => 'int',
+              'size' => 'normal',
+            ),
+          'ncbiid' => array(
+              'description' => 'NCBI Taxa Numerical ID',
+              'type' => 'int',
+              'size' => 'normal',
+            ),
+          'eolweburl' => array(
+              'description' => 'Encyclopedia of Life Web URL', //http://www.eol.org/api/search/Ursus
+              'type' => 'text',
+              'not null' => TRUE,
+            ),  
+          'plantlisturl' => array(
+              'description' => 'The Plant List.org URL', //http://www.theplantlist.org
+              'type' => 'text',
+              'not null' => TRUE,
+            ),             
+            
+        ),
+      'primary key' => array('tid'),
+    );
+    
+   $schema['clade_submission'] = array(
+			'description' => '',
+			'fields' => array(
+					'id' => array(
+              'description' => "Unique id",
+              'type' => 'serial',
+              'not null' => TRUE,
+						),
+					'sid' => array(
+							'description' => 'The id of the webform submission',
+							'type' => 'int',
+							'not null' => true,
+						),
+					'pid' => array(
+							'description' => 'The id of the poll for the submission',
+							'type' => 'int',
+							'not null' => true,
+						),
+					'clade_name' => array(
+							'description' => 'The name of the suggested clade',
+							'type' => 'varchar',
+							'length' => '255',
+							'not null' => true,
+						),
+					'parent_clade_name' => array(
+							'description' => 'The name of the parent clade for the suggested clade',	
+							'type' => 'varchar',
+							'length' => '255',
+							'not null' => true,
+						),
+					'daughter_clade_name' => array(
+							'description' => 'The name of the daughter clades of the suggested clade',
+							'type' => 'text',
+						),
+					'description' => array(
+							'descrition' => 'A description of or reasoning for including the clade.',
+							'type' => 'text',
+						),
+					'uid' => array(
+							'description' => 'The uid of the submitting user',
+							'type' => 'int',
+							'size' => 'normal',
+							'not null' => true,
+						),
+					'will_manage' => array(
+							'description' => 'If the submitting user will manage the clade',
+							'type' => 'int',
+							'size' => 'tiny',
+							'not null' => true,
+						),
+					'created' => array(
+							'description' => 'Timestamp for creation',
+							'type' => 'int',
+							'not null' => true,
+						),
+					'changed' => array(
+							'description' => 'Timestamp for last edit',
+							'type' => 'int',
+							'not null' => true,
+						),
+					'approval_state' => array(
+							'description' => 'The state of the approval: 0 (not handled), 1 (approved), 2 (not approved)',
+							'type' => 'int',
+							'size' => 'tiny',
+							'not null' => true,
+							'default' => 0
+						),
+					'addition_state' => array(
+							'description' => 'The state of the addition of the clade: 0 (not added), 1 (added)',
+							'type' => 'int',
+							'size' => 'tiny',
+							'not null' => true,
+							'default' => 0
+						),
+					'final_approval_uid' => array(
+							'description' => 'The UID of the user who gave final approval',
+							'type' => 'int',
+						),
+				),
+			'primary key' => array('id'),
+			'unique keys' => array(
+					'sid_unique' => array('sid'),
+					'pid_unique' => array('pid'),
+				),
+		);
+				
+  return $schema;
+}
+
+function clade_install() {
+  drupal_install_schema('clade');
+  
+  // any nodes of type clade already?
+  db_query("INSERT into {clade} SELECT nid, 1, '', '', '' from {node} WHERE type = 'clade'");
+
+  /**
+   * Setup Organic Groups
+   * The default organic groups settings expected are:
+   * og_content_type_usage_:
+   *    clade: group,
+   *    clade_page: group_post_standard,
+   *    clade_wiki: group_post_wiki,
+   * og_max_groups_:
+   *    clade: ,
+   *    clade_page: ,
+   *    clade_wiki: ,
+   * 
+   */
+  variable_set('og_content_type_usage_clade','group');
+  variable_set('og_content_type_usage_clade_page','group_post_standard');
+  variable_set('og_content_type_usage_clade_wiki','group_post_wiki');
+  
+  variable_set('og_max_groups_clade','');
+  variable_set('og_max_groups_clade_page','');
+  variable_set('og_max_groups_clade_wiki','');
+  
+  /**
+   * Setup Node Hierarchy
+   * Clade are both parent and child in the node hierarchy.
+   */
+  variable_set('nh_parent_clade', 1);
+  variable_set('nh_child_clade', 1);
+  
+  // no menus; treegroups does this for us
+  variable_set('nh_createmenu_clade', 'never');
+  
+  // TODO? create 'plantae' node and set as default parent?
+  
+  /**
+   * Comments
+   * Clade: no
+   * Clade_page: yes
+   * Clade_wiki: yes
+   */
+  variable_set('comment_clade', '0');
+  variable_set('comment_clade_page', '2');
+  variable_set('comment_default_mode_clade_page', '4');
+  variable_set('comment_default_order_clade_page', '2');
+  variable_set('comment_controls_clade_page', '3');
+  variable_set('comment_clade_wiki', '2');
+  variable_set('comment_default_mode_clade_wiki', '4');
+  variable_set('comment_default_order_clade_wiki', '2');
+  variable_set('comment_controls_clade_wiki', '3');
+  
+  db_query("UPDATE {system} SET weight = 11 WHERE name = 'clade'");
+}
+
+function clade_uninstall() {
+  drupal_uninstall_schema('clade');
+	variable_del('clade_vocabulary');
+}
+
+/**
+ * Update
+ */
+function clade_update_6001() {
+	$schema = clade_schema();
+	$ret = array();
+	db_create_table($ret, 'clade_submission', $schema['clade_submission']);
+	
+	return $ret;
+}
+
+function clade_update_6002() {
+	$schema = clade_schema();
+	$ret = array();
+	$ret[] = update_sql("ALTER TABLE {clade} ADD COLUMN `plantlisturl` TEXT NOT NULL AFTER `eolweburl`");
+	
+	return $ret;
+}
+
+function clade_update_6003() {
+	// move clades to taxonomy
+	$ret = array();
+
+	// create clades vocabulary
+	$clades = array(
+			'name' => t('Clades'),
+			'description' => t('The Clade hierarchy'),
+			'multiple' => 0,
+			'required' => 1,
+			'hierarchy' => 1,
+			'relations' => 1,
+			'module' => 'clade',
+			'weight' => -20,
+			'nodes' => array('clade_page' => 1),
+		);
+	taxonomy_save_vocabulary($clades);
+	variable_set('clade_vocabulary', $clades['vid']);
+
+	if (module_exists('pathauto')) {
+		variable_set('pathauto_taxonomy_' . $clades['vid'] . '_pattern', 'clade/[cat-raw]');
+	}
+	
+	// move clades
+	$results = db_query("select node.title as name, og_description as description, order_by as weight, p.title as parent_name from {node} join {og} on og.nid = node.nid join {nodehierarchy} nh on nh.nid = node.nid left outer join {node} p on p.nid = nh.parent where node.type ='clade' order by nh.order_by");
+	while ($term = db_fetch_array($results)) {
+		$term['vid'] = $clades['vid'];
+		if ($term['parent_name']) {
+			$parent = taxonomy_get_term_by_name($term['parent_name']);
+			if (count($parent) > 0) {
+				if (count($parent) > 1) {
+					foreach ($parent as $p) {
+						if ($p->vid === $clades['vid']) {
+							$term['parent'] = $p->tid;
+						}
+					}
+				} else {
+					$p = $parent[0];
+					$term['parent'] = $p->tid;
+				}
+			}
+		}
+		unset($term['parent_name']);
+		taxonomy_save_term($term);
+	}
+	
+	// move posts
+	$results = db_query("select oga.nid, td.tid from {og_ancestry} oga join {node} p on p.nid = oga.nid and p.type='%s' join {node} n on n.nid = oga.group_nid join {term_data} td on td.name = n.title and td.vid = %d", 'clade_page', $clades['vid']);
+	while ($result = db_fetch_array($results)) {
+		$node = node_load($result['nid']);
+		$terms = $node->taxonomy;
+		$terms[$clades['vid']] = array($result['tid']);
+		taxonomy_node_save($node, $terms);
+	}
+	
+	// update clade table
+	// drop primary key
+	$sql = "alter table {clade} drop primary key";
+	$ret[] = update_sql($sql);
+
+	// some messy inserts before?
+	$sql = "delete {clade} c from {clade} c left outer join {node} n on c.nid = n.nid where n.nid is null";
+	$ret[] = update_sql($sql);
+
+	// change from old nid's to new tid's
+	$sql = sprintf("update {clade} c, {node} n, {term_data} t set c.nid = t.tid where c.nid = n.nid and n.title = t.name and t.vid = %d", $clades['vid']);
+	$ret[] = update_sql($sql);
+	
+	// change column def, add primary key back
+	$sql = "alter table {clade} change column nid tid int not null primary key";
+	$ret[] = update_sql($sql);
+	
+	$sql = "alter table {clade} add column welcome text after active";
+	$ret[] = update_sql($sql);
+	
+	cache_clear_all();
+	
+	$sql = "select c.tid, t.name, r.body from clade c join term_data t on t.tid = c.tid join node n on n.title = t.name and n.type='clade' join node_revisions r on r.nid = n.nid";
+	$results = db_query($sql);
+	while ($r = db_fetch_array($results)) {
+		$clade = array(
+			'tid' => $r['tid'],
+			'welcome' => $r['body']
+			);
+		drupal_write_record('clade', $clade, array('tid'));
+	}
+	
+	// move forum topics
+	$sql = "select n.nid, tn.tid, td.name from {node} n, {term_node} tn, {term_data} td where n.type = 'forum' and n.nid = tn.nid and tn.tid = td.tid";
+	$results = db_query($sql);
+	while ($r = db_fetch_array($results)) {
+		$forum_name = $r['name'];
+		if ($parents = taxonomy_get_parents($r['tid'])) {
+			$forum_name = array_pop($parents)->name;
+		}
+		
+		$clade_tid = db_result(db_query("select t.tid from {term_data} t where t.name = '%s' and t.vid = %d", $forum_name, variable_get('clade_vocabulary', 0)));
+		$ret[] = update_sql(sprintf("update {term_node} tn set tid = %d where nid = %d", $clade_tid, $r['nid']));
+	}
+	
+	$ret[] = update_sql("update {node} set type='clade_page' where type='forum'");
+	
+	return $ret;
+}

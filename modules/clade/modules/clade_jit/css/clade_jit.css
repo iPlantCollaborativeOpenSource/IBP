@@ -1,0 +1,44 @@
+.spacetree .node {
+	word-wrap: normal;
+	color: #333333 !important;
+}
+
+.spacetree .node.selected {
+	color: #ffffff !important;
+}
+
+.spacetree .node.inactive {
+	color: #dadada !important;
+	cursor: help;
+}
+
+.spacetree {
+	background-color: #1E96AA !important;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#23afc7), to(#197d8d)) !important;
+	background: -moz-linear-gradient(top center, #23afc7, #197d8d) !important;
+	border: 1px solid #454545;
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	cursor: move;
+}
+
+.jit-node-info .header {
+	background-color: #dcdcdc !important;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ececec), to(#bcbcbc)) !important;
+	background: -moz-linear-gradient(top center, #ececec, #bcbcbc) !important;
+}
+
+.jit-help .content {
+	background: #ffffff !important;
+}
+
+.jit-modal {
+	font-size: 0.875em;
+	border: none !important;
+	overflow: visible !important;
+}
+
+#jit__spacetree__scratch__ {
+	font-size: 0.875em;
+}

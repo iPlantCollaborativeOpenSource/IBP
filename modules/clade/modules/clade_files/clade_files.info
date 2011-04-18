@@ -1,0 +1,10 @@
+; $Id$
+name = Clade Files
+description = "A file repository for clade nodes."
+dependencies[] = clade
+dependencies[] = filefield
+dependencies[] = filefield_meta
+dependencies[] = getid3
+dependencies[] = transliteration
+package = "Clade"
+core = 6.x

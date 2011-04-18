@@ -1,0 +1,1994 @@
+<?php
+// $Id$
+
+function clade_init() {
+	clade_set_context(clade_determine_context());
+}
+
+/**
+ * Implementation of hook_perm()
+ */
+function clade_perm() {
+  return array(
+			'create clade',
+			'edit own clade',
+			'edit any clade',
+			'delete clade',
+			'create clade page',
+			'edit own clade page',
+			'edit any clade page',
+			'delete clade page',
+			'review clade',
+			'review clade auth',
+			'review clade add',
+		);
+}
+
+/**
+ * Implementation of hook_access()
+ */
+function clade_access($op, $node, $account) {
+  global $user;
+  if ($op == 'view') {
+  	// short circuit
+  	return true;
+  } else {
+		$permission = '';
+		$type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
+		switch ($type) {
+			case 'clade':
+				switch ($op) {
+					case 'create':
+						$permission = 'create clade';
+						break;
+					case 'update':
+						$permission = $node->uid == $user->uid ? 'edit own clade' : 'edit any clade';
+						break;
+					case 'delete':
+						$permission = 'delete clade';
+						break;
+				}
+				break;
+			case 'clade_page':
+				switch ($op) {
+					case 'create':
+						$permission = 'create clade page';
+						break;
+					case 'update':
+						$permission = $node->uid == $user->uid ? 'edit own clade page' : 'edit any clade page';
+						break;
+					case 'delete':
+						$permission = 'delete clade page';
+						break;
+				}
+				break;
+		}
+		if (module_exists('clade_subscriptions')) {
+			clade_subscriptions_grant_roles($account);
+		}
+		return user_access($permission, $account);
+	}
+}
+
+function clade_hook_info() {
+	return array(
+		'clade' => array(
+			'clade' => array(
+				'clade load' => array(
+					'runs when' => t('Loading clade context.'),
+					),
+				'clade insert' => array(
+					'runs when' => t('Creating a new clade.'),
+					),
+				'clade update' => array(
+					'runs when' => t('Updating a clade.'),
+					),
+				'clade delete' => array(
+					'runs when' => t('Deleting a clade.'),
+					),
+				),
+			),
+		);
+}
+
+function clade_determine_context() {
+	$context = NULL;
+	
+	$path = $_GET['q'];
+	$original_map = arg(NULL, $path);
+	$parts = array_slice($original_map, 0, MENU_MAX_PARTS);
+	list($ancestors, $placeholders) = menu_get_ancestors($parts);
+	if ($router_item = db_fetch_array(db_query_range('SELECT * FROM {menu_router} WHERE path IN (' . implode(',', $placeholders) . ') ORDER BY fit DESC', $ancestors, 0, 1))) {
+		$path = $router_item['path'];
+		if (strpos($path, 'clade/%') === 0) {
+			$context = clade_get_clade(arg(1));
+		} else if (strpos($path, 'node/add') === 0 || strpos($path, 'node/edit') === 0) {
+			if ($clade_id = $_REQUEST['clades']) {
+				$context = clade_get_clade($_REQUEST['clades']);
+			}
+		} else if (strpos($path, 'node') === 0) {
+			$node = node_load($original_map[1]);
+			$context = clade_determine_context_for_node($node);
+		} else if (strpos($path, 'taxonomy/term/%') === 0) {
+			$term = taxonomy_get_term(arg(2));
+			if ($term->vid === variable_get('clade_vocabulary', 0)) {
+				$context = clade_get_clade(arg(2));
+			}
+		}
+	}
+	return $context;
+}
+
+function clade_determine_context_for_node($node) {
+	$context = NULL;
+	if ($node->taxonomy) {
+		$clade_vid = variable_get('clade_vocabulary', 0);
+		foreach ($node->taxonomy as $term) {
+			if ($term->vid == $clade_vid) {
+				$context = clade_get_clade($term->tid);
+				break;
+			}
+		}
+	}
+	return $context;
+}
+
+
+function clade_get_context($reset = FALSE) {
+	return clade_set_context();
+}
+
+function clade_set_context($clade = NULL, $reset = FALSE) {
+	static $context;
+	
+	if ($reset) {
+		$context == NULL;
+	}
+	
+	if (! empty($clade) && $clade->vid == variable_get('clade_vocabulary', 0)) {
+		$context = $clade;
+	}
+  
+	return $context;
+}
+
+function clade_menu() {
+	$items = array();
+	
+	$items['clade/%'] = array(
+			'title callback' => 'clade_homepage_title',
+			'title arguments' => array(1),
+			'page callback' => 'clade_homepage',
+			'page arguments' => array(1),
+			'access arguments' => array('access content'),
+			'type' => MENU_CALLBACK,
+		);
+	
+	$items['clade/%/view'] = array(
+			'title' => 'Clade Homepage',
+			'page callback' => 'clade_homepage',
+			'page arguments' => array(1),
+			'access arguments' => array('access content'),
+			'type' => MENU_DEFAULT_LOCAL_TASK
+		);
+	
+	$items['clade/%/edit'] = array(
+			'title' => 'Edit',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('clade_edit_form', 1),
+			'access arguments' => array('edit own clade'),
+			'type' => MENU_LOCAL_TASK
+		);
+
+	$items['clade/%/help'] = array(
+			'title' => 'Help',
+			'type' => MENU_LOCAL_TASK,
+			'page callback' => 'clade_manager_help',
+			'access arguments' => array('edit own clade'),
+			'weight' => 100,
+		);
+	
+	$items['clade/%/post/add'] = array(
+			'title' => 'Create new posting',
+			'page callback' => 'clade_add_clade_page',
+			'page arguments' => array(1),
+			'access arguments' => array('create clade page'),
+			'type' => MENU_CALLBACK,
+		);
+	
+	$items['clade/%/post/edit/%node'] = array(
+			'title' => 'Edit Clade posting',
+			'page callback' => 'clade_edit_clade_page',
+			'page arguments' => array(1, 4),
+			'access callback' => 'clade_edit_clade_page_access',
+			'access arguments' => array(1, 4),
+			'type' => MENU_CALLBACK,
+		);
+
+	$items['clade/vote'] = array(
+			'title' => 'Vote on new clades',
+			'description' => 'Currently open polls for possible new clades',
+			'page callback' => 'clade_reviewer_polls',
+			'access arguments' => array('review clade'),
+			'type' => MENU_CALLBACK,
+		);
+	
+	$items['clade/vote/%clade_submission'] = array(
+			'title callback' => 'clade_vote_title',
+			'title arguments' => array(2),
+			'description' => 'Vote on new clade',
+			'page callback' => 'clade_reviewer_poll',
+			'page arguments' => array(2),
+			'access arguments' => array('review clade'),
+			'type' => MENU_CALLBACK
+		);
+		
+	$items['clade/vote/%clade_submission/vote'] = array(
+			'title' => 'Vote',
+			'access arguments' => array('review clade'),
+			'type' => MENU_DEFAULT_LOCAL_TASK,
+			'weight' => 0,
+		);
+		
+	$items['clade/vote/%clade_submission/actions'] = array(
+			'title' => 'Actions',
+			'page callback' => 'clade_reviewer_poll_action',
+			'page arguments' => array(2),
+			'access arguments' => array('review clade auth'),
+			'type' => MENU_LOCAL_TASK,
+			'weight' => 1,
+		);
+	
+	$items['clade/additions'] = array(
+			'title' => 'Clades ready to be added to the network',
+			'description' => 'Page listing clades to be added to the network',
+			'page callback' => 'clade_reviewer_additions',
+			'access arguments' => array('review clade add'),
+			'type' => MENU_CALLBACK,
+		);
+	
+	$items['clade/additions/%clade_submission'] = array(
+			'title callback' => 'clade_addition_title',
+			'title arguments' => array(2),
+			'description' => 'Add new clade',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('clade_reviewer_addition_form', 2),
+			'access callback' => 'clade_reviewer_addition_form_access',
+			'access arguments' => array(2, 'review clade add'),
+			'type' => MENU_CALLBACK,
+		);
+	
+	$items['clade/manage/reorder'] = array(
+			'title' => 'Reorder clades',
+			'description' => 'Form for reordering clades',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('clade_reorder_form'),
+			'access arguments' => array('review clade add'),
+			'type' => MENU_CALLBACK,
+		);
+			
+	$items['clade/autocomplete'] = array(
+			'title' => 'Clade autocomplete',
+			'page callback' => 'clade_autocomplete',
+			'access arguments' => array('access content'),
+			'type' => MENU_CALLBACK,
+		);
+
+	$items['clade/feed'] = array(
+			'title' => 'Clade feed javascript call',
+			'page callback' => 'clade_feed_ajax',
+			'access arguments' => array('access content'),
+			'type' => MENU_CALLBACK,
+		);
+  
+  $items['clade/%/feed'] = array(
+  		'page callback' => 'clade_rss',
+  		'page arguments' => array(1),
+  		'file' => 'clade.rss.inc',
+  		'access arguments' => array('access content'),
+			'type' => MENU_CALLBACK,
+  	);
+	return $items;
+}
+
+/**
+ * Implementation of hook_node_info()
+ */
+function clade_node_info() {
+  return array(
+//       'clade' => array(
+//         'name' => t('Clade'),
+//         'module' => 'clade',
+//         'description' => 'A phylogenetic clade representing a node in a phylogenetic tree.',
+//         'body_label' => t('Clade Welcome Message'),
+//       ),
+      'clade_page' => array(
+        'name' => t('Post'),
+        'module' => 'clade',
+        'description' => 'A posting within a Clade.',
+      ),
+      /*
+      'clade_wiki' => array(
+        'name' => t('Clade Wiki'),
+        'module' => 'clade',
+        'description' => 'A wiki page within a Clade.',
+      ),
+      */
+    );
+}
+
+function clade_form(&$node, $form_state) {
+	$form = array();
+	
+	$form['title'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Post title'),
+		'#default_value' => $node->title,
+		'#required' => TRUE,
+		);
+	
+	$form['body'] = array(
+		'#type' => 'textarea',
+		'#title' => t('Post body'),
+		'#default_value' => $node->body,
+		'#required' => TRUE,
+		'#weight' => -4,
+		);
+	
+	return $form;
+}
+
+// function clade_clade_page_mini_form_submit($form = NULL, &$form_state = array()) {
+// 	$form_state = array('storage' => NULL, 'submitted' => FALSE);
+//   $form_build_id = $_POST['form_build_id'];
+//   $form = form_get_cache($form_build_id, $form_state);
+//   $args = $form['#parameters'];
+//   error_log(print_r($args, TRUE));
+//   $form_id = array_shift($args);
+//   $form_state['post'] = $form['#post'] = $_POST;
+//   $form['#programmed'] = $form['#redirect'] = FALSE;
+//   drupal_process_form($form_id, $form, $form_state);
+// 	if ($error = form_get_errors()){
+// 		$output = drupal_render($form);
+// 	}
+// 	else {
+// 		$post = node_submit($form_state['values']);
+// 	 	node_save($post);
+// 		
+// 		// TODO image/file attachments
+// // 		if ($form_state['values']['ajax']) {
+// // 			$resp = new stdClass;
+// // 			$resp->body = node_view($post, TRUE, FALSE);
+// // 			print drupal_json($resp);
+// // 			exit();
+// // 		}
+// 
+// 		module_load_include('inc', 'node', 'node.pages');
+// 		$output = drupal_render(drupal_rebuild_form($form_id, $form_state, $args, $form_build_id));
+// 	}
+// 	$javascript = drupal_add_js(NULL, NULL);
+// 	$settings = call_user_func_array('array_merge_recursive', $javascript['setting']);
+// 	drupal_json(array('status' => TRUE, 'data' => theme('status_messages') . $output, 'settings' => $settings));
+// }
+
+function clade_form_alter(&$form, &$form_state, $form_id) {
+	global $user;
+	
+	// add additional submit hook for webform submissions
+	// TODOL: handle suggestions internally not with webform module 
+	if ($form_id == "webform_client_form_170") {
+		$form['#submit'][] = 'clade_clade_suggestions_form_submit';
+	} else if ($form_id == "clade_node_form") {
+		foreach ($_GET as $key => $value) {
+			if ($key !== 'q') {
+				$form[$key]['#default_value'] = $value;
+			}
+		}
+	} else if ($form_id == 'search_form' && arg(1) == 'clade') {
+		$form['see_all'] = array('#type'=>'markup','#value'=>l(t('&raquo;See All Users'), 'users/all', array('html'=>TRUE)));
+	} else if ($form_id == 'clade_page_node_form') {
+		
+		$form['path']['#access'] = $user->uid == 1;
+		$form['menu']['#access'] = $user->uid == 1;
+		$form['author']['#access'] = $user->uid == 1;
+		$form['options']['#access'] = $user->uid == 1;
+		$form['comment_settings']['#access'] = $user->uid == 1;
+		$form['revision_information']['#access'] = $user->uid == 1;
+		
+		$form['taxonomy']['#type'] = '';
+		$clades_vid = variable_get('clade_vocabulary', 0);
+		$form['taxonomy'][$clades_vid]['#required'] = TRUE;
+		$form['taxonomy'][$clades_vid]['#description'] = t('This is the Clade this post will appear in.');
+		if ($clade = clade_get_context()) {
+			$form['taxonomy'][$clades_vid]['#default_value'] = $clade->tid;
+			$form['taxonomy'][$clades_vid]['#disabled'] = TRUE;			
+		} else if (! empty($_GET['clades'])) {
+			$form['taxonomy'][$clades_vid]['#default_value'] = $_GET['clades'];
+			$form['taxonomy'][$clades_vid]['#disabled'] = TRUE;
+		}
+		if ($user->clades) {
+			$options = array();
+			//error_log(print_r($user->clades, TRUE));
+			foreach($user->clades as $clade) {
+				$opt = new stdClass;
+				$opt->option = array($clade['tid'] => $clade['name']);
+				$options[] = $opt;
+			}
+			$form['taxonomy'][$clades_vid]['#options'] = $options;
+			//error_log(print_r($form['taxonomy'][$clades_vid]['#options'], TRUE));
+		}
+	
+		if (! empty($form['#node']->theme)) {
+			if ($form['#node']->theme == 'clade_page_mini_form') {
+				$form['path']['#access'] = 0;
+				$form['menu']['#access'] = 0;
+				$form['author']['#access'] = 0;
+				$form['options']['#access'] = 0;
+				$form['comment_settings']['#access'] = 0;
+				$form['revision_information']['#access'] = 0;
+				$form['notifications']['#access'] = 0;
+
+				$form['mini_form'] = array(
+					'#type' => 'hidden',
+					'#value' => TRUE,
+					);
+				$form['ajax'] = array(
+					'#type' => 'hidden',
+					'#default_value' => FALSE,
+					);
+				$form['#attributes']['class'] = 'clade-page-mini-form';
+				$clade = clade_get_context();
+				$form['body']['#rows'] = 1;
+			
+				if (! empty($form['taxonomy'][$clades_vid]['#default_value'])) {
+					$value = $form['taxonomy'][$clades_vid]['#default_value'];
+					unset($form['taxonomy'][$clades_vid]);
+					$form['taxonomy'][$clades_vid]['#type'] = 'value';
+					$form['taxonomy'][$clades_vid]['#value'] = array($value => $value);
+				}
+				
+				unset($form['buttons']['preview']);
+				
+				$form['buttons']['submit']['#value'] = 'Post';
+				$form['buttons']['submit']['#attributes'] = array(
+						'class' => 'mini-form-submit',
+					);
+				
+				$form['buttons']['cancel'] = array(
+					'#value' => l(t('Cancel'), "clade/$clade->tid", array('attributes' => array('class' => 'mini-form-cancel'))),
+					);
+				
+				$form['#after_build'][] = 'clade_mini_form_after_build';
+			}
+		}
+//		drupal_set_message('<pre>' . print_r($form, TRUE) . '</pre>');
+	}
+}
+
+function clade_mini_form_after_build($form, &$form_state) {
+	array_unshift($form['#validate'], 'clade_mini_form_validate');
+	return $form;
+}
+
+function clade_mini_form_validate($form, &$form_state) {
+	array_shift($form['#validate']);
+	form_execute_handlers('validate', $form, $form_state);
+  if ($errors = form_get_errors()) {
+  	print drupal_json(
+  		array(
+  				'valid' => FALSE,
+  				'messages' => theme('status_messages'),
+  				'form' => drupal_render($form),
+  			)
+  		);
+		exit();
+  } else {
+		$form_state['submit_handlers'][] = 'clade_mini_form_submit';
+  }
+}
+
+function clade_mini_form_submit($form, &$form_state) {
+	unset($_POST);
+	$empty_clade_page_node = array(
+		'uid' => $user->uid,
+		'name' => (isset($user->name) ? $user->name : ''),
+		'type' => 'clade_page',
+		'language' => '',
+		'theme' => 'clade_page_mini_form',
+		);
+
+	print drupal_json(
+		array(
+				'valid' => TRUE,
+				'messages' => theme('status_messages'),
+				'form' => drupal_get_form('clade_page_node_form', $empty_clade_page_node),
+				'new_content' => node_view(node_load($form_state['nid']), TRUE, FALSE),
+			)
+		);
+	exit();
+}
+
+function clade_theme() {
+	return array(
+			'clade_edit_form' => array(
+					'arguments' => array('form' => NULL),
+				),
+			'clade_reorder_form' => array(
+					'arguments' => array('form' => NULL)
+				),
+			'clade_submission' => array(
+					'arguments' => array(
+						'submission' => NULL,
+						'link_to_submission' => TRUE,
+						'link_to_voting' => FALSE,
+					),
+					'template' => 'theme/clade-submission',
+				),
+			'clade_homepage' => array(
+					'arguments' => array(
+						'clade' => NULL,
+					),
+					'template' => 'theme/clade-homepage',
+				),
+			'clade_feed' => array(
+					'arguments' => array(
+						'clade' => NULL,
+					),
+					'template' => 'theme/clade-feed',
+				),
+			'clade_page_mini_form_block' => array(
+					'arguments' => array(
+						'title' => NULL,
+						'form' => NULL,
+					),
+					'template' => 'theme/clade-page-mini-form-block',
+				),
+		);
+}
+
+function clade_term_path($term) {
+	return 'clade/' . $term->tid;
+}
+
+function clade_homepage_title($term_id) {
+	if (is_numeric($term_id)) {
+		$clade = clade_get_clade($term_id);
+		return $clade->name;
+	}
+}
+
+function clade_title($node, $default) {
+	if ($node->type == 'clade') {
+		return t('Clade Homepage');
+	} else {
+		return t($default);
+	}
+}
+
+function clade_category_title($node, $term) {
+	if (is_numeric($term)) {
+		$term = taxonomy_get_term($term);
+	} else {
+		$term = taxonomy_get_term_by_name($term);
+		$term = $term[0];
+	}
+	return t('Posts in @clade : @category', array('@clade'=>$node->title, '@category'=>$term->name));
+}
+
+/**
+ * clade subscribe_title
+ */
+function clade_subscribe_title($node) {
+	return t("Join @clade Social Network", array('@clade' => $node->title));
+}
+
+/**
+ * clade unsubscribe_title
+ */
+function clade_unsubscribe_title($node) {
+	return t("Leave @clade Social Network", array('@clade' => $node->title));
+}
+
+/*** Views integration ***/
+function clade_views_api() {
+  return array('api' => 2.0);
+}
+
+function clade_block($op='list', $delta=0) {
+
+	$block = array();
+	switch ($op) {
+	
+		case "list":
+			// Generate listing of blocks from this module, for the admin/block page
+			$block = array();
+			//$block[0]["info"] = t('Clade Links');
+			//$block[1]["info"] = t('Clade Local Network (TreeBrowser)');
+			$block[2]["info"] = t('Clade pending submissions (Clade)');
+			$block[3]["info"] = t('Clade pending approved additions (Clade)');
+			$block[4]["info"] = t('Clade details (Clade)');
+			break;
+	
+		case "view":
+			switch($delta) {
+				case 0:
+					/**
+					 * Moved this block to submodule clade_links
+					 * do not reuse this block id
+					 */
+					break;
+				case 1:
+					/**
+					 * Deprecated. Don't reuse this block id.
+					 */
+					break;
+				case 2:
+					$block = clade_pending_submissions_block();
+					break;
+				case 3:
+					$block = clade_pending_approved_additions_block();
+					break;
+				case 4:
+					$block = clade_details_block();
+					break;
+			}			
+			break;
+	}
+	return $block;
+} //end clade_block
+
+function clade_get_clade($clade_id, $reset = FALSE) {
+	static $clades = array();
+	if ($reset) {
+		$clades = array();
+	}
+	
+	if (!isset($clades[$clade_id])) {	
+		$clade = taxonomy_get_term($clade_id);
+		$clade->parent = taxonomy_get_parents($clade->tid);
+		$clade->relations = taxonomy_get_related($clade->tid);
+		$data = db_fetch_object(db_query("select * from {clade} where tid = %d", $clade->tid));
+		$clade->active = $data->active;
+		$clade->welcome = $data->welcome;
+		$clade->tolwebid = $data->tolwebid;
+		$clade->ncbiid = $data->ncbiid;
+		$clade->eolweburl = $data->eolweburl;
+		$clade->plantlisturl = $data->plantlisturl;
+		// allow other modules to add to clade object
+		module_invoke_all('clade', 'clade load', $clade);
+
+		$clades[$clade_id] = $clade;
+	}
+	return $clades[$clade_id];
+}
+
+function clade_submission_load($params = array()) {
+	$sql = 'SELECT * FROM {clade_submission} WHERE ';
+
+	if (is_numeric($params)) {
+		$params = array(
+				'id' => $params,
+			);
+	}
+	
+	$cond = array();	
+	$args = array();
+	foreach ($params as $k => $v) {
+		$cond[] = $k . ' = "%s"';
+		$args[] = $v;
+	}
+	$cond = implode(' AND ', $cond);
+	
+	return db_fetch_object(db_query($sql . $cond, $args)); 
+}
+
+function clade_submission_save($submission) {
+	$submission->is_new = empty($submission->id);
+	
+	$time = time();
+	if (empty($submission->created)) {
+		$submission->created = $time;
+	}
+	$submission->changed = $time;
+	
+	if ($submission->is_new) {
+		drupal_write_record('clade_submission', $submission);
+	} else {
+		drupal_write_record('clade_submission', $submission, 'id');
+	}
+}
+
+/**
+ * Clade submissions that are pending review
+ *
+ */
+function clade_pending_submissions() {
+	$sql = 'SELECT * FROM {clade_submission} WHERE approval_state = 0';
+	$results = db_query($sql);
+	
+	$submissions = array();
+	while ($sub = db_fetch_object($results)) {
+		$submissions[] = $sub;
+	}
+	
+	return $submissions;
+}
+
+function clade_pending_submissions_block() {
+	$submissions = clade_pending_submissions();
+	if ($submissions) {
+		$block = array(
+				'title' => t('Clades pending approval')
+			);
+		$header = array();
+		$rows = array();
+		foreach ($submissions as $sub) {
+			$row = array();
+			$row[] = $sub->clade_name;
+			$row[] = l(t('Vote'), "clade/vote/$sub->id");
+			$rows[] = $row;
+		}
+		$block['content'] = theme('table', $header, $rows);
+	}
+	return $block;
+}
+
+/**
+ * Clade submissions that have been approved but not yet added
+ *
+ */
+function clade_pending_approved_additions() {
+	$sql = 'SELECT * FROM {clade_submission} WHERE approval_state = 1 AND addition_state = 0';
+	$results = db_query($sql);
+	
+	$additions = array();
+	while ($add = db_fetch_object($results)) {
+		$additions[] = $add;
+	}
+	
+	return $additions;
+}
+
+function clade_pending_approved_additions_block() {
+	$additions = clade_pending_approved_additions();
+	if ($additions) {
+		$block = array(
+				'title' => t('Clades to be created')
+			);
+		$header = array();
+		$rows = array();
+		foreach ($additions as $add) {
+			$row = array();
+			$row[] = $add->clade_name;
+			$row[] = l(t('Create'), "clade/additions/$add->id");
+			$rows[] = $row;
+		}
+		$block['content'] = theme('table', $header, $rows);
+	}
+	return $block;
+}
+
+function clade_details_block() {
+	$clade = clade_get_context();
+	if ($clade) {
+		$block = array();
+		$block['subject'] = l($clade->name, sprintf('clade/%d', $clade->tid));
+		
+		$items = module_invoke_all('clade_details_items', $clade);
+		array_walk($items, '_clade_clade_details_items_dedupe');
+		usort($items, '_clade_clade_details_items_sort');
+		$block['content'] = theme('item_list', $items, NULL, 'ul', array('class' => 'nostyle'));
+		
+		return $block;
+	}
+}
+
+function _clade_clade_details_items_dedupe(&$item, $key) {
+	if (isset($item['data'])) {
+		if (count($item['data']) > 1) {
+			// multiple modules returned item with same key;
+			// use the last item provided;
+			// this can be controlled according to module weight;
+			foreach (array_keys($item) as $k) {
+				$item[$key] = array_pop($item[$key]);
+			}
+		}
+	}
+}
+
+function _clade_clade_details_items_sort($item0, $item1) {
+	if (isset($item0['data-sort']) && isset($item1['data-sort'])) {
+		return $item0['data-sort'] - $item1['data-sort'];
+	}
+	return 0;
+}
+
+function clade_clade_details_items($clade) {
+	$items = array(
+		'homepage' => array(
+			'data' => l(t('Homepage'), sprintf('clade/%d', $clade->tid)),
+			'data-sort' => 0,
+			'class' => 'iplant',
+			),
+		);
+	if (user_access('create clade page')) {
+		$items['post'] = array(
+			'data' => l(t('Write a post'), sprintf('clade/%d/post/add', $clade->tid)),
+			'data-sort' => 9,
+			'class' => 'iplant',
+			);
+	}
+	return $items;
+}
+
+function clade_form_comment_form_alter(&$form, &$form_state) {
+	$nid = $form[nid]['#value'];
+	$node = node_load($nid);
+	if ($node->type == 'poll') {
+		$csub = clade_submission_load(array('pid' => $nid));
+		$form['#redirect'] = "clade/vote/$csub->id";
+	}
+}
+
+function clade_homepage($term_id) {
+	$clade = clade_get_clade($term_id);
+	return theme('clade_homepage', $clade);
+}
+
+function clade_edit_form(&$form_state, $clade_id) {
+	$clade = clade_get_clade($clade_id);
+	$form = array(
+		'#clade' => $clade,
+		'tid' => array(
+			'#type' => 'value',
+			'#value' => $clade_id,
+			),
+		'vid' => array(
+			'#type' => 'value',
+			'#value' => variable_get('clade_vocabulary', 0),
+			),
+		'parent' => array(
+			'#type' => 'value',
+			'#value' => $clade->parent,
+			),
+		'relations' => array(
+			'#type' => 'value',
+			'#value' => $clade->relations,
+			),
+		'name' => array(
+			'#type' => 'textfield',
+			'#title' => t('Clade name'),
+			'#default_value' => $clade->name,
+			'#required' => TRUE,
+			),
+		'description' => array(
+			'#type' => 'textfield',
+			'#title' => t('Description'),
+			'#default_value' => $clade->description,
+			'#required' => TRUE,
+			),
+		'weight' => array(
+			'#type' => 'value',
+			'#value' => $clade->weight,
+			),
+		'welcome' => array(
+			'#type' => 'textarea',
+			'#title' => t('Clade welcome message'),
+			'#description' => t('Provide a welcome message to all visitors of the Clade Homepage.'),
+			'#default_value' => $clade->welcome,
+			),
+		'active' => array(
+			'#type' => 'checkbox',
+			'#title' => t('Clade is active.'),
+			'#description' => t('Clades can be active or inactive.  Inactive clades appear in the network tree (to provide structure) but are not open to membership or posting.  Once support for the clade is realized it can be activated for membership and posting.'),
+			'#default_value' => $clade->tid ? $clade->active : 1,
+			),
+		'tolwebid' => array(
+			'#type' => 'textfield',
+			'#title' => t('Tree of Life ID.'),
+			'#description' => t("Tree of Life Web (http://tolweb.org) ID."),
+			'#default_value' => $clade->tolwebid,
+			),
+		'ncbiid' => array(
+			'#type' => 'textfield',
+			'#title' => t('NCBI Taxonomy ID'),
+			'#description' => t("Integer Taxonomy ID value for this clade at the NCBI Genbank site."),
+			'#default_value' => $clade->ncbiid ? $clade->ncbiid : NULL,
+			),
+		'eolweburl' => array(
+			'#type' => 'textfield',
+			'#title' => t('Encyclopedia of Life Web URL.'),
+			'#description' => t("Link to this clade's Tree of Life Web (http://www.eol.org/api/search/*)  RSS page. Should be something like http://www.eol.org/api/search/Lycopodiopsida ."),
+			'#default_value' => $clade->eolweburl,
+			),
+		'plantlisturl' => array(
+			'#type' => 'textfield',
+			'#title' => t('The Plant List URL.'),
+			'#description' => t("Link to this clade on http://www.theplantlist.org/ . Should be something like http://www.theplantlist.org/browse/G/Ginkgoaceae/ ."),
+			'#default_value' => $clade->plantlisturl,
+			),
+		'submit' => array(
+			'#type' => 'submit',
+			'#value' => t('Save'),
+			'#weight' => 100,
+			),
+	);
+	return $form;
+}
+
+function clade_edit_form_submit($form, &$form_state) {
+	$clade_id = $form_state['values']['tid'];
+	if ($clade_id) {
+		$clade = clade_get_clade($clade_id);
+		$values = $form_state['values'];
+		if (taxonomy_save_term($values) == SAVED_UPDATED) {
+			// update clade record
+			if (drupal_write_record('clade', $values, array('tid')) == SAVED_UPDATED) {
+				drupal_set_message(t(sprintf('The changes to <em>%s</em> have been saved.', $clade->name)));
+			} else {
+				drupal_set_message(t(sprintf('There was an error saving changes to <em>%s</em>.  Please try again.', $clade->name)));
+			}
+		} else {
+			drupal_set_message(t(sprintf('There was an error saving changes to <em>%s</em>.  Please try again.', $clade->name)));
+		}
+	} else {
+		// creating new clade
+		// TODO
+	}
+}
+
+function clade_add_clade_page($clade_id) {
+	global $user;
+	module_load_include('inc', 'node', 'node.pages');
+	$clade_page_node = array('uid' => $user->uid, 'name' => (isset($user->name) ? $user->name : ''), 'type' => 'clade_page', 'language' => '');
+	return drupal_get_form('clade_page_node_form', $clade_page_node);
+}
+
+function clade_edit_clade_page_access($clade_id, $clade_page_node) {
+	global $user;
+	
+	if ($user->uid != $clade_page_node->uid) {
+		return user_access('edit any clade page');
+	}
+	return user_access('edit own clade page');
+}
+
+function clade_edit_clade_page($clade_id, $clade_page_node) {
+	module_load_include('inc', 'node', 'node.pages');
+	return drupal_get_form('clade_page_node_form', $clade_page_node);
+}
+
+function clade_reviewer_polls() {
+	$submissions = clade_pending_submissions();
+	$rows = array();
+	foreach ($submissions as $s) {
+		$rows[] = array(
+			'clade' => $s->clade_name,
+			'description' => $s->description,
+			'submitted_by' => theme('username', user_load($s->uid), 0, 1),
+			'vote' => l(t('Vote now'), "clade/vote/$s->id"),
+		);
+	}
+	
+	return theme('table', array(t('Clade'), t('Description'), t('Submitted by'), t('Vote')), $rows);
+
+}
+
+function clade_reviewer_poll($submission) {
+	
+	$output = '<div style="max-width: 800px;">';
+	$output .= '<p>' . t('The following clade has been submitted.  Please vote on whether or not this clade should be included in the network.') . '</p>';
+	$output .= theme('clade_submission', $submission) . '<br/>';
+	// include the poll
+	$poll = node_load($submission->pid);
+	if ($poll->allowvotes) {
+		$output .= '<h2>'.t('Submit your vote').'</h2>';
+		$output .= node_view($poll);
+	}
+	$output .= '<h2>'.t('Current results').'</h2>';
+	$output .= poll_view_results($poll, false, false, false);
+	$output .= comment_render($poll);
+	$output .= '</div>';
+	
+	node_tag_new($poll->nid); // mark poll node as `viewed`
+	
+	return $output;
+	
+}
+
+function clade_reviewer_poll_action($submission) {
+	
+	$output = '<div style="max-width: 800px;"><h4>';
+	$output .= t('If the proposed clade has been appropriated vetted by the community, ' .
+							 'then please indicate below the final approval status of the clade "@clade."',
+							 array('@clade'=>$submission->clade_name)
+						);
+	$output .= '</h4>';
+	$output .= theme('clade_submission', $submission) . '<br/>';
+	
+	$output .= drupal_get_form('clade_submission_action_form', $submission);
+	$output .= '</div>';
+	return $output;
+}
+
+function clade_submission_action_form(&$form_state, $submission) {
+	$form = array();
+	
+	$disabled = $submission->approval_state != 0;
+	
+	$poll = poll_load(node_load($submission->pid));
+	$yes = $poll->choice[0]['chvotes'];
+	$no = $poll->choice[1]['chvotes'];
+	$votes = $yes + $no;
+	$perc_y = $votes > 0 ? number_format(($yes/$votes) * 100, 0) : 0;
+	$perc_n = $votes > 0 ? number_format(($no/$votes) * 100, 0) : 0;
+	
+	$form['submission'] = array(
+			'#type' => 'hidden',
+			'#value' => $submission->id
+		);
+
+	$form['approval'] = array(
+			'#type' => 'radios',
+			'#title' => t('Final approval status'),
+			'#description' => t('If the clade is approved it can be added into the network.'),
+			'#options' => array(
+					'yes' => t('Approved (@perc%)', array('@perc'=>$perc_y)),
+					'no' => t('Not approved (@perc%)', array('@perc'=>$perc_n))
+				),
+			'#default_value' => $disabled ? ($submission->approval_state == 1 ? 'yes' : 'no') : ($yes > $no ? 'yes' : 'no'),
+			'#required' => true,
+			'#disabled' => $disabled,
+		);
+	
+	if ($disabled) {
+		$message = '<p>';
+		$message .= t('Final approval for this proposed clade was provided by: ');
+		
+		$approver = user_load($submission->final_approval_uid);
+		$message .= theme('username', $approver, 0, 1);
+		
+		$message .= '</p>';
+		
+		$form['message'] = array(
+				'#type' => 'markup',
+				'#value' => $message,
+			);
+		
+	} else {
+	
+		/*
+		$clades = _clade_get_sorted_clades();
+		$options = array();
+		$options[''] = t('Choose one');
+		foreach ($clades as $c) {
+			$name = $c->title;
+			$depth = '';
+			for ($i = 0; $i < $c->depth; $i++) {
+				$depth .= '-';
+			}
+			$options[$c->nid] = $depth . $name;
+		}
+		*/
+		
+		$form['changes'] = array(
+				'#type' => 'markup',
+				'#value' => '<p>' . t('If any changes need to be made from the initial submission, please indicated below.') . '</p>',
+			);
+		
+		$form['clade_name'] = array(
+				'#type' => 'textfield',
+				'#title' => t('Clade name'),
+				'#default_value' => $submission->clade_name,
+			);
+		
+		$form['parent_clade'] = array(
+				'#type' => 'textfield',
+				'#title' => t('Parent clade'),
+				'#default_value' => $submission->parent_clade_name,
+				'#description' => t('This must be a clade already in the network.'),
+			);
+		
+		$form['daughter_clade'] = array(
+				'#type' => 'textfield',
+				'#title' => t('Daughter clade(s)'),
+				'#default_value' => $submission->daughter_clade_name,
+			);
+		
+		$form['submit'] = array(
+				'#type' => 'submit',
+				'#value' => t('Submit'),
+			);
+		$form['note'] = array(
+				'#type' => 'markup',
+				'#value' => '<strong>' . t('Note'). ':</strong> ' . t('Submitting this form will close voting and finalize the clade\'s status.')
+			);
+	}	
+	
+	$form['#submit'][] = 'clade_submission_action_form_submit';
+	
+	return $form;
+}
+
+function clade_submission_action_form_validate($form, &$form_state) {
+	if ($form_state['values']['approval'] === 'yes') {
+		if ($form_state['values']['clade_name'] === '') {
+			form_set_error('clade_name', t('The name for this clade is required.'));
+		} else {
+			$existing = node_load(array(
+						'type' => 'clade',
+						'title' => $form_state['values']['clade_name'],
+					));
+			if ($existing) {
+				form_set_error('clade_name', t('Oops!  It appears this clade already exists in the network!  Please check that the clade does not already exist.'));
+			}
+		}
+
+		if ($form_state['values']['parent_clade'] === '') {
+			form_set_error('parent_clade', t('Please indicate the parent clade for placement of this new clade in the network.'));
+		} else {
+			$existing = node_load(array(
+						'type' => 'clade',
+						'title' => $form_state['values']['parent_clade'],
+					));
+			if (! $existing) {
+				form_set_error('parent_clade', t('The parent clade indicated could not be found in the network.  The parent clade must already exist in the network.'));
+			}
+		}
+	}
+}
+
+function clade_submission_action_form_submit($form, &$form_state) {
+	global $user;
+	
+	$submission = clade_submission_load($form_state['values']['submission']);
+	
+	$submission->final_approval_uid = $user->uid; // who provided final approval
+	
+	if ($form_state['values']['approval'] === 'yes') {
+		$submission->approval_state = 1;
+		// make sure that any changes to submission get recorded
+		$submission->clade_name = $form_state['values']['clade_name'];
+		$submission->parent_clade_name = $form_state['values']['parent_clade'];
+		$submission->daughter_clade_name = $form_state['values']['daughter_clade'];
+		drupal_set_message('The clade "' . $submission->clade_name . '" has been approved.  It will be added to the network shortly.');
+	} else {
+		$submission->approval_state = 2;
+		drupal_set_message('The clade "' . $submission->clade_name . '" has been denied approval and will not be added to the network.');
+	}
+	clade_submission_save($submission);
+	
+	// close the poll
+	db_query("UPDATE {poll} SET active = 0 WHERE nid = %d", $submission->pid);
+	drupal_set_message('Voting is now closed.');
+}
+
+function clade_vote_title($submission) {
+	$poll = node_load($submission->pid);
+	return $poll->title;
+}
+
+function clade_addition_title($submission) {
+	return t('Create new clade: @clade', array('@clade' => $submission->clade_name));
+}
+
+function clade_reviewer_additions() {
+	$additions = clade_pending_additions();
+	$rows = array();
+	foreach ($additions as $a) {
+		$rows[] = array(
+			'clade' => $a->clade_name,
+			'submitted_by' => theme('username', user_load($a->uid), 0, 1),
+			'final_approval' => theme('username', user_load($a->final_approval_uid), 0, 1),
+			'vote' => l(t('Create now'), "clade/addition/$a->id"),
+		);
+	}
+	
+	return theme('table', array(t('Clade'), t('Submitted by'), t('Approved by'), t('Create')), $rows);
+}
+
+function clade_reviewer_addition_form_access($submission, $role) {
+	if (user_access($role)) {
+		if ($submission->approval_state == 0) {
+			$message = 'This clade has not yet been approved.  You can vote for it\'s approval here: ';
+			$message .= 
+			drupal_set_message($message);
+			return false;
+		}
+		else if ($submission->approval_state == 2) {
+			drupal_set_message('This clade was denied approval and cannot be added to the network.');
+			return false;
+		}
+		else if ($submission->addition_state == 1) {
+			drupal_set_message('This clade has already been added.');
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	return false;
+}
+
+function clade_reviewer_addition_form(&$form_state, $submission) {
+	$form = array();
+	
+	$instructions = '<h4>You are creating a new clade according to the following approved clade submission:</h4>';
+	$instructions .= theme('clade_submission', $submission, 1, 1);
+	
+	$form['submission'] = array(
+			'#type' => 'hidden',
+			'#value' => $submission->id
+		);
+	
+	$form['instructions'] = array(
+			'#type' => 'markup',
+			'#value' => $instructions,
+		);
+	
+	$form['clade'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Clade name'),
+			'#description' => 'Make any necessary changes to the name of the clade.',
+			'#default_value' => $submission->clade_name,
+			'#required' => true,
+		);
+	
+	$clades = _clade_get_sorted_clades();
+	$selected = -1;
+	$options = array();
+	foreach ($clades as $c) {
+		$name = $c->title;
+		if (strcasecmp($name, $submission->parent_clade_name) == 0) {
+			$selected = $c->nid;
+		}
+		$depth = '';
+		for ($i = 0; $i < $c->depth; $i++) {
+			$depth .= '-';
+		}
+		$options[$c->nid] = $depth . $name;
+	}
+	
+	$form['parent'] = array(
+			'#type' => 'select',
+			'#title' => t('Parent clade'),
+			'#description' => t('Select the parent clade.'),
+			'#options' => $options,
+			'#default_value' => $selected,
+			'#required' => true,
+		);
+	
+	
+	if (strlen($submission->daughter_clade_name) > 0) {
+		$form['daughter'] = array(
+				'#type' => markup,
+				'#value' => '<div class="form-item"><label>Daughter clade&#40;s&#41;:</label><span>The following daughter clades were indicated for this clade.  You will be able to configure the daughter clades and reorder the tree as necessary in the next step.</span>' . theme('item_list', explode(',', $submission->daughter_clade_name), null, 'ul', array('class'=>'iplant')) . '</div>',
+			);
+	}
+	
+	$form['manager'] = array(
+			'#type' => 'textfield',
+			'#title' => t('Clade manager'),
+			'#autocomplete_path' => 'myplant_blocks/user/autocomplete',
+			'#required' => true,
+		);
+	
+	$user = user_load($submission->uid);
+	if ($submission->will_manage) {
+		$form['manager']['#default_value'] = $user->name;
+		$form['manager']['#description'] = t('The submitting user has indicated that they would like to manage this clade.<br/>Enter a different user if you would like to override this.');
+	} else {
+		$form['manager']['#description'] = t('The submitting user, <strong>@user</strong> (@username), has indicated that they do not wish to manage this clade.<br/>Please select the manager for this clade.', array('@user' => theme('username', $user, 0, 0), '@username' => $user->name));
+	}
+	
+	$form['submit'] = array(
+			'#type' => 'submit',
+			'#value' => t('Create clade'),
+		);
+	
+	return $form;
+}
+
+function clade_reviewer_addition_form_validate($form, &$form_state) {
+	$manager_name = $form_state['values']['manager'];
+	$user = user_load(array('name'=>$manager_name));
+	if (empty($user)) {
+		form_set_error('manager', t('Invalid user!  Please provide a valid username for the clade manager.'));
+	}
+}
+
+function clade_reviewer_addition_form_submit($form, &$form_state) {
+	$submission = clade_submission_load($form_state['values']['submission']);
+	
+	// create clade node
+	$clade = new stdClass();
+	$clade->type = 'clade';
+	$clade->title = $form_state['values']['clade'];
+	$clade->og_description = $clade->title . ' clade';
+	$clade->og_directory = 1;
+	$clade->og_selective = 0;
+	$clade->active = 1;
+	$clade->parent = $form_state['values']['parent'];
+	$clade->comment = 0;
+	$manager = user_load(array('name' => $form_state['values']['manager']));
+	$clade->uid = $manager->uid;
+	node_save($clade);
+	
+	// any final changes to submission
+	$submission->clade_name = $clade->title;
+	$parent = node_load($form_state['values']['parent']);
+	$submission->parent_clade_name = $parent->title;
+	$submission->addition_state = 1;
+	clade_submission_save($submission);
+	
+	if (empty($submission->daughter_clade_name)) {
+		$form_state['redirect'] = "node/$clade->nid";
+	} else {
+		$form_state['redirect'] = 'clade/additions/reorder';
+	}
+	
+	drupal_set_message(t('The clade "@clade" has been created.', array('@clade'=>$clade->title)));
+}
+
+function clade_search($op = 'search', $keys = NULL, $skip_access_check = FALSE) {
+  switch ($op) {
+    case 'name':
+      if ($skip_access_check || user_access('access user profiles')) {
+        return t('Users');
+      }
+    case 'search':
+      if (user_access('access user profiles')) {
+        $find = array();
+        // Replace wildcards with MySQL/PostgreSQL wildcards.
+        $keys = preg_replace('!\*+!', '%', $keys);
+        $sql =
+          	"SELECT users.name, profile.field_name_value AS first_name, profile.field_last_name_value AS last_name, users.uid, users.mail " .
+          	"FROM {users} " .
+          	"LEFT OUTER JOIN {node} ON node.uid = users.uid AND node.type = 'uprofile' " .
+          	"LEFT OUTER JOIN {content_type_uprofile} profile ON profile.nid = node.nid ";
+        $where0 =
+          	"WHERE LOWER(users.name) LIKE LOWER('%s%%') " .
+          	"OR LOWER(profile.field_name_value) LIKE LOWER('%s%%') " .
+          	"OR LOWER(profile.field_last_name_value) LIKE LOWER('%s%%')";
+        $where1 =
+          	"WHERE LOWER(users.name) LIKE LOWER('%s%%') " .
+          	"OR LOWER(profile.field_name_value) LIKE LOWER('%s%%') " .
+          	"OR LOWER(profile.field_last_name_value) LIKE LOWER('%s%%')";
+        if (user_access('administer users')) {
+        	$where0 .= " OR LOWER(users.mail) LIKE LOWER('%s%%')";
+        	$where1 .= " OR LOWER(users.mail) LIKE LOWER('%%%s%%')";
+          // Administrators can also search in the otherwise private email field.
+          $result = pager_query($sql.$where0, 15, 0, NULL, $keys, $keys, $keys, $keys);
+          while ($account = db_fetch_object($result)) {
+          	if ($account->first_name || $account->last_name) {
+          		$title = $account->first_name . ' ' . $account->last_name . ' (' . $account->name . ', ' . $account->mail . ')';
+          	} else {
+          		$title = $account->name . ' (' . $account->mail . ')';
+          	}
+            $find[$account->uid] = array('title' => $title, 'uid' => $account->uid, 'link' => url('user/'. $account->uid, array('absolute' => TRUE)));
+          }
+          $result = pager_query($sql.$where1, 15, 0, NULL, $keys, $keys, $keys, $keys);
+          while ($account = db_fetch_object($result)) {
+          	if ($account->first_name || $account->last_name) {
+          		$title = $account->first_name . ' ' . $account->last_name . ' (' . $account->name . ', ' . $account->mail . ')';
+          	} else {
+          		$title = $account->name . ' (' . $account->mail . ')';
+          	}
+            $find[$account->uid] = array('title' => $title, 'uid' => $account->uid, 'link' => url('user/'. $account->uid, array('absolute' => TRUE)));
+          }
+        }
+        else {
+          $result = pager_query($sql.$where0, 15, 0, NULL, $keys, $keys, $keys, $keys);
+          while ($account = db_fetch_object($result)) {
+          	if ($account->first_name || $account->last_name) {
+          		$title = $account->first_name . ' ' . $account->last_name . ' (' . $account->name . ', ' . $account->mail . ')';
+          	} else {
+          		$title = $account->name . ' (' . $account->mail . ')';
+          	}
+            $find[$account->uid] = array('title' => $title, 'uid' => $account->uid, 'link' => url('user/'. $account->uid, array('absolute' => TRUE)));
+          }
+          $result = pager_query($sql.$where1, 15, 0, NULL, $keys, $keys, $keys, $keys);
+          while ($account = db_fetch_object($result)) {
+          	if ($account->first_name || $account->last_name) {
+          		$title = $account->first_name . ' ' . $account->last_name . ' (' . $account->name . ', ' . $account->mail . ')';
+          	} else {
+          		$title = $account->name . ' (' . $account->mail . ')';
+          	}
+            $find[$account->uid] = array('title' => $title, 'uid' => $account->uid, 'link' => url('user/'. $account->uid, array('absolute' => TRUE)));
+          }
+        }
+        return $find;
+      }
+  }
+}
+
+function clade_autocomplete($string = '') {
+	$items = array();
+	if ($string) {
+		$sql = "SELECT title FROM {node} WHERE type = 'clade' AND LOWER(title) like LOWER('%s%%')";
+		$result = db_query_range($sql, $string, 0, 10);
+		while ($res = db_fetch_object($result)) {
+			$items[$res->title] = check_plain($res->title);
+		}
+	}
+	drupal_json($items);
+}
+
+function clade_clade_suggestions_form_submit($form, &$form_state) {
+
+	$values = $form_state['values']['submitted'];
+	$sid = $form_state['values']['details']['sid'];
+	$csub = db_fetch_object(db_query('SELECT * FROM {clade_submission} WHERE sid = %d', $sid));
+	$user = user_load(array('name' => $values[4]));
+	if ($csub) {
+		// update existing submission
+		$poll = node_load($csub->pid);
+		$poll->title = 'Vote on the creation of the new clade: ' . $values[1];
+		node_save($poll);
+
+		$csub->clade_name = $values[1];
+		$csub->parent_clade_name = $values[2];
+		$csub->daughter_clade_name = $values[7];
+		$csub->description = $values[3];
+		$csub->uid = $user->uid;
+		$csub->will_manage = empty($values[6]['Yes!']) ? 0 : 1;
+		clade_submission_save($csub);
+		
+	} else {
+		// create poll for clade submission
+		$poll = new stdClass();
+		$poll->type = 'poll';
+		$poll->uid = 1;
+		$poll->status = 1;
+		$poll->active = 1;
+		$poll->comment = 2;
+		$poll->title = 'Vote on the creation of the new clade: ' . $values[1];
+		$poll->choice[0]['chtext'] = 'Approve this clade';
+		$poll->choice[1]['chtext'] = 'Don\'t approve this clade (please explain with comment)';
+		node_save($poll);
+		
+		// create clade submission
+		$csub = new stdClass();
+		$csub->sid = $sid;
+		$csub->pid = $poll->nid;
+		$csub->clade_name = $values[1];
+		$csub->parent_clade_name = $values[2];
+		$csub->daughter_clade_name = $values[7];
+		$csub->description = $values[3];
+		$csub->uid = $user->uid;
+		$csub->will_manage = empty($values[6]['Yes!']) ? 0 : 1;
+		clade_submission_save($csub);
+	}
+}
+
+//TODO
+function clade_reorder_form(&$form_state) {
+	
+	$clades = taxonomy_get_tree(variable_get('clade_vocabulary', 0));
+	
+	$form = array();
+	$form['clades'] = array();
+	$form['clades']['#tree'] = true;
+	
+	foreach ($clades as $i => $clade) {
+		$form['clades'][$clade->tid] = array(
+				'title' => array(
+						'#type' => 'markup',
+						'#value' => $clade->name,
+					),
+				'tid' => array(
+						'#type' => 'hidden',
+						'#value' => $clade->tid
+					),
+				'weight' => array(
+						'#type' => 'weight',
+						'#default_value' => $clade->weight,
+					),
+				'active' => array(
+						'#type' => 'hidden',
+						'#value' => $clade->active,
+					),
+				'#depth' => $clade->depth,
+			);
+	}
+	
+	$form['silent-message'] = array(
+			'#type' => 'markup',
+			'#value' => '<div class="silent-node-message"><strong>Add a silent node to the tree.</strong> Sometimes inactive or &quot;silent&quot; nodes need to be added to the tree in order to add order or provide structure to the tree.  You can add a silent node to the tree by providing a name for the silent node in the row below and then dragging it into place in the tree.</div>',
+		);
+	
+	$form['silent'] = array(
+		'title' => array(
+				'#type' => 'textfield',
+			),
+		'tid' => array(
+				'#type' => 'hidden',
+				'#default_value' => '',
+			),
+		'weight' => array(
+				'#type' => 'weight',
+				'#default_value' => count($clades),
+			),
+		'active' => array(
+				'#type' => 'hidden',
+				'#value' => 0,
+			),
+		
+		'#depth' => 0,
+		'#tree' => true,
+	);
+	
+	$form['submit'] = array(
+			'#type' => 'submit',
+			'#value' => t('Save changes'),
+		);
+		
+	return $form;
+}
+
+//TODO
+function clade_reorder_form_submit($form, &$form_state) {
+	$silent_name = $form_state['values']['silent']['title'];
+	if (strlen(trim($silent_name)) > 0) {
+		// insert silent node
+		$silentNode = new stdClass;
+		$silentNode->type = 'clade';
+		$silentNode->title = $silent_name;
+		$silentNode->og_description = $silent_name . ' clade';
+		$silentNode->uid = 0;
+		$silentNode->active = 0;
+		$silentNode->parent = $form_state['values']['silent']['parent'];
+		$silentNode->og_selective = 3;
+		
+		node_save($silentNode);
+		drupal_set_message(t('Silent node <strong>@name</strong> added.', array('@name' => $silentNode->title)));
+	}
+	foreach ($form_state['values']['clades'] as $clade) {
+		db_query('UPDATE {nodehierarchy} SET parent = %d, order_by = %d WHERE nid = %d', $clade['parent'] === "" ? $silentNode->nid : $clade['parent'], $clade['weight'], $clade['nid']);
+	}
+	drupal_set_message('Changes to the tree structure have been saved.');
+}
+
+/*
+function theme_clade_submission($submission, $link_to_submission = 1, $link_to_voting = 0) {
+	$output = '<table class="iplant"><tbody><tr class="odd"><td>';
+	$output .= '<strong>' . t('Clade name:') . '</strong>';
+	$output .= '</td><td>';
+	$output .= $submission->clade_name;
+	$output .= '</td></tr>';
+	$output .= '<tr class="even"><td>';
+	$output .= '<strong>' . t('Parent clade name:') . '</strong>';
+	$output .= '</td><td>';
+	$output .= $submission->parent_clade_name;
+	$output .= '</td></tr>';
+	if ($submission->daughter_clade_name) {
+		$output .= '<tr class="odd"><td>';
+		$output .= '<strong>' . t('Daughter clade name(s):') . '</strong>';
+		$output .= '</td><td>';
+		$daughters = explode(',',$submission->daughter_clade_name);
+		foreach ($daughters as $d) {
+			$output .= trim($d);
+			$output .= '<br/>';
+		}
+		$output .= '</td></tr>';
+	}
+	$output .= '<tr class="even"><td>';
+	$output .= '<strong>' . t('Description:') . '</strong>';
+	$output .= '</td><td>';
+	$output .= $submission->description;
+	$output .= '</td></tr>';
+	
+	$output .= '<tr class="odd"><td>';
+	$output .= '<strong>' . t('Submitted by:') . '</strong>';
+	$output .= '</td><td>';
+	$submitter = user_load($submission->uid);
+	$output .= theme('username', $submitter, 0, 1);
+	$output .= '</td></tr>';
+	
+	if ($link_to_submission || $link_to_voting) {
+		$output .= '<tr class="even"><td><strong>' . t('More:') . '</strong></td><td>';
+		$links = array();
+		if ($link_to_submission) {
+			$links[] = l(t('View the full submission'), "node/170/submission/$submission->sid"); // Ack!  kludge here again with the webform id
+		}
+		if ($link_to_voting) {
+			$links[] = l(t('View the voting results'), "clade/vote/$submission->id");
+		}
+		$output .= theme('item_list', $links, null, 'ul', array('class'=>'no-decoration'));
+		$output .= '</td></tr>';
+	}
+	
+	$output .= '</tbody></table>';
+	
+	return $output;
+}
+*/
+
+
+function clade_manager_help() {
+drupal_set_message(t('You can download this help document ') . l(t('here'), 'sites/default/files/Welcome packet v1.3.pdf') . '.');
+	$help = <<<HELP
+<h5>Thank you for your interest in seeing our community grow!</h5>
+<div>As a new clade manager this document is meant to introduce some of the features and tools that are available to managers. &nbsp;The most noticeable changes are three additional tabs that are present on the home page of the clade you are managing: Edit, Children, and Broadcast.</div>
+<div>&nbsp;</div>
+<div class="rtecenter"><img alt="" src="/sites/default/files/u3/untitled.png" style="width: 432px; height: 56px; " /></div>
+<div>&nbsp;</div>
+<h5>Edit</h5>
+<div>The Edit tab contains tools that allow you to add content to the clade homepage such as a clade welcome message or links to pertinent websites. &nbsp;</div>
+<div>&nbsp;</div>
+<div>Upon opening the Edit tab you will see a field containing the title of your clade as well as a description, it is important to note that any changes that are made to the title field will change the name of your clade everywhere it appears in the site including the main tree on the My-Plant.org homepage. &nbsp;</div>
+<div>&nbsp;</div>
+<div>Next you will see a field for a Clade Welcome Message, you can use this to provide a description of your clade, which will appear on your Clade Homepage under the title.</div>
+<div>&nbsp;</div>
+<div class="rtecenter"><img alt="" src="/sites/default/files/u3/untitled_2.png" style="width: 432px; height: 193px; " /></div>
+<div>&nbsp;</div>
+<div>The next section containing three fields with check boxes. &nbsp;The first allows you to add your clade to a list of clades that appear on the registration form for new users. &nbsp;This is intended to help new users quickly sign up for clades they know they are interested in from the start.&nbsp;</div>
+<div>&nbsp;</div>
+<div>The Membership Requests field controls how new members are added to the clade. &nbsp;The default setting is Open allowing anyone who is interested in the clade to become a member with no approval by an administrator. &nbsp;My-Plant encourages you to keep this selection as Open since we feel it best facilitates the building of a community. &nbsp;</div>
+<div>&nbsp;</div>
+<div>The final field controls whether or not the clade is active, it is important to note that unchecking this box will result in the clade being inactive and thus inaccessible to users.</div>
+<div>&nbsp;</div>
+<div class="rtecenter"><img alt="" src="/sites/default/files/u3/untitled_3.png" style="width: 432px; height: 201px; " /></div>
+<div>&nbsp;</div>
+<div>The last tool under the Edit tab allows for the addition of links to external websites. &nbsp;There are three that My-Plant has chosen to include as line items (Encyclopedia of Life Web URL, Tree of Life ID, NCBI Taxonomy ID). &nbsp;Since there is no automated way to create links to specific parts of these three websites we encourage you to visit them and copy and paste their URL into the corresponding field. &nbsp;Note for the NCBI Taxonomy ID link it is only necessary to provide the final four or five digit numerical value of the URL not the entire URL; for example the full URL for Lamiaceae is <a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=info&amp;id=4136" target="_blank">http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=info&amp;id=4136</a> however all that needs to be entered into the field is 4136. &nbsp;</div>
+<div>&nbsp;</div>
+<div class="rtecenter"><img alt="" src="/sites/default/files/u3/untitled_4.png" style="width: 432px; height: 181px; " /></div>
+<div>&nbsp;</div>
+<div>Additional links that you see pertinent for your clade can be added using the Clade Links. &nbsp;These links are displayed on the Clade Homepage and can only be created or removed by the clade manager. &nbsp;&nbsp;</div>
+<div>&nbsp;</div>
+<div>Important Reminder: &nbsp;In order for any changes made from within the Edit tab to become active you must click the save button at the bottom of the screen. &nbsp;</div>
+<div>&nbsp;</div>
+<h5>Children</h5>
+<div>The second tab available to mangers is the Children tab. &nbsp;This tab simply shows the clades that are nested under yours. &nbsp;</div>
+<div>&nbsp;</div>
+<h5>Broadcast</h5>
+<div>The third tab available to managers is the Broadcast tab. &nbsp;This feature allows managers to send a message to all the members of their particular clade. &nbsp;</div>
+<div>&nbsp;</div>
+<h5>Creating Forums</h5>
+<div>Currently only clade managers are able to create new forums. &nbsp;Forums are intended to be broader categories, such as &lsquo;conservation&rsquo;, which could contain many threads with a variety of subjects. &nbsp;There is currently only one default forum for new clades, General Discussion, and when users post new topics this is their only forum choice. &nbsp;Clade managers can create new forums to help organize or compartmentalize discussions by clicking on the &lsquo;Manage clade forums&rsquo; link located in the first box on the right-hand side of their screen (see below). &nbsp;And then choosing &lsquo;add forum&rsquo; located directly under Operations. &nbsp;Similarly after a forum is created it can be removed by selecting &lsquo;edit forum&rsquo; from within the &lsquo;Manage clade forums&rsquo; page.</div>
+<div>&nbsp;</div>
+<div class="rtecenter"><img alt="" src="/sites/default/files/u3/untitled_5.png" style="width: 190px; height: 208px; " /></div>
+<div>&nbsp;</div>
+<h5>Additional</h5>
+<div>In the unlikely event that inappropriate material is posted the clade manager has the ability to edit/remove any content that is posted within their clade. &nbsp;This is done by opening the material and clicking on the Edit tab at the top of a post/forum topic/photo then either editing or deleting the material in question. &nbsp;The process is identical to editing a post that you created, only as clade manager you have access to all the material within the clade regardless of who posted it. &nbsp;</div>
+<div>&nbsp;</div>
+<div>For additional frequently asked questions or to provide feedback please visit <a href="https://my-plant.org/support">My-Plant help and support</a>.</div>
+HELP;
+	return $help;
+}
+
+// TODO
+function clade_posts_by_category($node, $term = NULL) {
+	if ($term) {
+		if (is_numeric($term)) {
+			$term = taxonomy_get_term($term);
+		} else {
+			$term = taxonomy_get_term_by_name($term);
+			$term = $term[0];
+		}
+		$sql = "SELECT n.nid FROM {node} n JOIN {og_ancestry} c ON c.nid = n.nid " .
+					 "JOIN {term_node} tn on tn.vid = n.vid " .
+					 "JOIN {term_data} td ON td.tid = tn.tid " .
+					 "WHERE c.group_nid = %d AND td.vid = 3 AND td.tid = %d " .
+					 "GROUP BY n.nid";
+		$results = db_query($sql, $node->nid, $term->tid);
+		$output = '<p>' . l(t('&raquo;View posts in category <strong>@cat</strong> across all of My-Plant', array('@cat'=>$term->name)), taxonomy_term_path($term), array('html'=>TRUE)) . '</p>';
+		while ($result = db_fetch_object($results)) {
+			$post = node_load($result->nid);
+			$output .= node_view($post, TRUE, FALSE);
+		}
+	} else {
+		$sql = "SELECT td.tid, td.name, count(DISTINCT n.nid) as count " .
+					 "FROM {node} n " .
+					 "JOIN {og_ancestry} oga ON oga.nid = n.nid " .
+					 "JOIN {term_node} tn ON tn.vid = n.vid " .
+					 "JOIN {term_data} td ON td.tid = tn.tid " .
+					 "WHERE oga.group_nid = %d AND td.vid = 3 " .
+					 "GROUP BY td.name ORDER BY td.name ASC";
+		$results = db_query($sql, $node->nid);
+		$cats = array();
+		while ($result = db_fetch_object($results)) {
+			$cats[] = l($result->name, "node/$node->nid/category/$result->tid") . " &#40;$result->count&#41;";
+		}
+		$output = theme('item_list', $cats, NULL, 'ul', array('class'=>'no-decoration'));
+	}
+	return $output;
+}
+
+function clade_feed_ajax($clade_id, $bubble = 1, $offset = 0, $limit = 10) {
+	$clade = clade_get_clade($clade_id);
+	$resp = new stdClass;
+	$resp->body = clade_feed($clade, $bubble, $offset, $limit);
+	print drupal_to_js($resp);
+	die;
+}
+
+function clade_feed($clade, $bubble = 1, $offset = 0, $limit = 10) {
+	$in = array();
+	$args = array();
+	if ($bubble) {
+		$in[] = '%d';
+		$args[] = $clade->tid;
+		$tree_list = taxonomy_get_tree(variable_get('clade_vocabulary', 0), $clade->tid);
+		foreach ($tree_list as $desc) {
+			$in[] = '%d';
+			$args[] = $desc->tid;
+		}
+	} else {
+		$in[] = '%d';
+		$args[] = $clade->tid;
+	}
+	$sql = "SELECT distinct n.nid, greatest(n.created, ncs.last_comment_timestamp) as modified " .
+				 "FROM {node} n " .
+				 "JOIN {node_comment_statistics} ncs ON n.nid = ncs.nid " .
+				 "JOIN {term_node} tn ON tn.nid = n.nid " .
+				 "JOIN {term_data} td ON td.tid = tn.tid " .
+				 "WHERE " .
+				 "td.tid in (" . implode(', ', $in) . ") " .
+				 "AND td.vid = %d " .
+				 "AND n.type = 'clade_page' " .
+				 "ORDER BY " .
+				 "modified desc " .
+				 "LIMIT %d OFFSET %d";
+	$args[] = variable_get('clade_vocabulary', 0);
+	$args[] = $limit;
+	$args[] = $offset;
+
+	$results = db_query($sql, $args);
+	$output = '';
+	while ($r = db_fetch_object($results)) {
+		$node = node_load($r->nid);
+		$output .= node_view($node, TRUE, FALSE);
+	}
+	return $output;
+}
+
+// TODO
+function clade_new_members($node) {
+	//get the current user (clade_manager) last login time from history //"%Y-%m-%d %H:%i:%s" 
+	$query = 'SELECT DATE_FORMAT(FROM_UNIXTIME(h.timestamp), GET_FORMAT(DATETIME,\'ISO\')) '.
+					 'FROM {history} h ' .
+					 'WHERE h.uid = %d AND h.nid = %d ';
+					
+	$args = array();
+	$args[] = $user->uid;
+	$args[] = $node->nid;
+	$result = db_result(db_query($query, $args));
+	//print var_export($result.' - this is result out from query', true);
+	if ($result == FALSE) {
+		$currentuser_lastaccess =  '0000-00-00 00:00:00';
+	}else {
+		$currentuser_lastaccess = $result;
+	}
+	//print var_export($currentuser_lastaccess.' - this is lastaccess sent to filter', true);					
+	
+	$view2 = views_get_view( 'clade_recent_newmembers' ); //name of view in ui
+	$view2->set_display('default');
+	$view2->get_total_rows = true;
+	
+	//options for filter to get all values which satisfy table.field <operator> $options(array(value)); 
+	//in this case og_uid.created <= $currentuser_lastlogin
+	$options =  array( 'value' => array('type' => 'date', 'value' => $currentuser_lastaccess), 'operator' => '>=');
+	// calling add_item($display_id, $type, $table, $field, $options = array(), $id = NULL) 
+	$id = $view2->add_item('default', 'filter', 'og_uid', 'created', $options);
+
+	// donot cache query
+	$view2->is_cacheable = 0;
+
+	$item = $view2->get_item('default', 'filter', $id);
+	$view2->set_item('default', 'filter', $id, $item);
+	$view2->set_arguments(array($node->nid));
+
+	//execute
+	$view2->pre_execute();
+	$view2->execute();
+	
+	//print var_export($view2->build_info['query'], true);	//debuggin - prints the variable
+	//print $view2->preview('default', array($node->nid));	// show view -
+	return $view2->preview('default', array($node->nid));	//hide view if not new members
+}
+
+// function clade_new_activity($node, $user) {
+// 	$query = 'SELECT n.type, count(n.nid) AS count ' .
+// 					 'FROM {node} n ' .
+// 					 'JOIN {og_ancestry} oga ON oga.nid = n.nid ' .
+// 					 'LEFT OUTER JOIN {history} h ON h.nid = n.nid and h.uid = %d ' .
+// 					 'INNER JOIN {node_comment_statistics} ncs ON n.nid = ncs.nid ' .
+// 					 'WHERE oga.group_nid = %d ' .
+// 					 /* where either never viewed AND posted in the last month, OR changed or commented since last view */
+// 					 'AND ((h.timestamp is null AND (n.changed > %d OR ncs.last_comment_timestamp > %d)) OR h.timestamp < n.changed OR h.timestamp < ncs.last_comment_timestamp) ' .
+// 					 'AND (n.status <> 0) ' .
+// 					 'GROUP BY n.type';
+// 	$args = array();
+// 	if ($user->uid) {
+// 		$args[] = $user->uid;
+// 	}
+// 	$args[] = $node->nid;
+// 	$one_mo_ago = time() - 2592000;
+// 	$args[] = $one_mo_ago;
+// 	$args[] = $one_mo_ago; // twice on purpose!
+// 	$result = db_query($query, $args);
+// 	$activity = array();
+// 	while ($obj = db_fetch_object($result)) {
+// 		$activity[] = theme('clade_activity', $node, $obj->type, $obj->count);
+// 	}
+// 	if (count($activity) > 0) {
+// 		return theme('item_list', $activity, t('New Activity'), 'ul', array('style' => 'margin-top:0.909em'));
+// 	}
+// }
+
+// THEME FUNCTIONS 
+function theme_clade_edit_form($form) {
+	drupal_add_css(drupal_get_path('module', 'clade') .'/clade.css');
+	return drupal_render($form);
+}
+
+// TODO
+function theme_clade_reorder_form($form) {
+
+	// Call add_tabledrag to add and setup the JS for us
+	// The key thing here is the first param - the table ID
+	// and the 4th param, the class of the form item which holds the weight
+	drupal_add_tabledrag('clade-reorder-table', 'match', 'parent', 'parent-group', 'parent-group', 'nid-group'); 
+	drupal_add_tabledrag('clade-reorder-table', 'order', 'sibling', 'weight-group');      
+
+	drupal_add_js(drupal_get_path('module', 'clade') .'/clade.js');
+	drupal_add_js(drupal_get_path('module', 'clade') .'/clade-treepreview.js');
+	drupal_add_css(drupal_get_path('module', 'clade') .'/clade.css');
+	
+	$header = array('Clade name', 'Weight');
+	$rows = array();
+	
+	foreach (element_children($form['clades']) as $key) {
+		$elem = &$form['clades'][$key];
+		
+		$elem['weight']['#attributes']['class'] = 'weight-group';
+		$elem['nid']['#attributes']['class'] = 'nid-group';
+		$elem['parent']['#attributes']['class'] = 'parent-group';
+
+		$row = array();
+		$row[] = theme('indentation', $elem['#depth']) .
+						 drupal_render($elem['title']);
+		$row[] = drupal_render($elem['weight']) .
+						 drupal_render($elem['tid']) .
+						 drupal_render($elem['parent']) .
+						 drupal_render($elem['active']);
+
+		$rows[] = array('data' => $row, 'class' => 'draggable');
+	}
+	
+	$rows[] = array(array('data'=> drupal_render($form['silent-message'])), 'colspan' => 4);
+	
+	$form['silent']['title']['#value'] = t('Enter name of silent node');
+	$form['silent']['title']['#attributes']['class'] = 'silent-node-form';
+	$form['silent']['weight']['#attributes']['class'] = 'weight-group';
+	$form['silent']['tid']['#attributes']['class'] = 'nid-group';
+	$form['silent']['parent']['#attributes']['class'] = 'parent-group';
+	
+	$row = array();
+	$row[] = drupal_render($form['silent']['title']);
+	$row[] = drupal_render($form['silent']['weight']) .
+						drupal_render($form['silent']['nid']) .
+						drupal_render($form['silent']['parent']) .
+						drupal_render($form['silent']['active']);
+	$rows[] = array('data' => $row, 'class' => 'draggable');
+	
+	$output = theme('table', $header, $rows, array('id'=>'clade-reorder-table'));
+	
+	if (module_exists('clade_jit')) {	
+		$treeid = 'preview';
+		$form['preview'] = array(
+				'#type' => 'markup',
+				'#value' => "<input type='button' onclick='Drupal.clade.refreshPreview(\"$treeid\");' value='Preview changes' />"
+			);
+		$output .= drupal_render($form);
+		
+		drupal_add_css(drupal_get_path('module', 'clade_jit') . '/css/clade_jit.css');
+		$output .= theme('jit_spacetree', null, array(
+			'id' => $treeid,
+			'duration' => 250,
+			'height' => 490,
+			'enable_help' => 0,
+			'enable_hiding' => 0,
+			'enable_full_screen' => 0,
+			'levelsToShow' => 6,
+			'edge_color' => '#ffffff',
+			'selected_edge_color' => '#db671e',
+			));
+		drupal_add_js("Drupal.behaviors.clade_preview = function(context) { Drupal.clade.refreshPreview('$treeid'); };", 'inline', 'footer');
+	} else {
+		$output .= drupal_render($form);
+	}
+	
+	return $output;
+}
+
+function clade_preprocess_clade_page_mini_form_block(&$vars) {
+	global $user;
+	module_load_include('inc', 'node', 'node.pages');
+	
+	drupal_add_css(drupal_get_path('module', 'clade') . '/mini-form.css');
+	drupal_add_js(drupal_get_path('module', 'clade') . '/mini-form.js');
+	drupal_add_js(drupal_get_path('module', 'clade') . '/clade-ahah.js');
+	drupal_add_js(libraries_get_path('jquery_autocomplete') . '/jquery.autocomplete.min.js');
+	drupal_add_css(libraries_get_path('jquery_autocomplete') . '/jquery.autocomplete.css');
+	
+	drupal_add_css(drupal_get_path('theme', 'myplant') . '/css/jquery-ui-myplant/jquery-ui-myplant.css');
+	jquery_ui_add(array('ui.core', 'ui.dialog', 'ui.draggable'));
+	
+	$clade_page_node = array(
+		'uid' => $user->uid,
+		'name' => (isset($user->name) ? $user->name : ''),
+		'type' => 'clade_page',
+		'language' => '',
+		'theme' => 'clade_page_mini_form',
+		);
+	$vars['form'] = drupal_get_form('clade_page_node_form', $clade_page_node);
+}
+
+function clade_preprocess_clade_homepage(&$vars) {
+	$clade = $vars['clade'];
+	
+	$vars['active'] = $clade->active;
+	$vars['name'] = check_plain($clade->name);
+	$vars['welcome'] = check_markup($clade->welcome);
+	
+	$parent = taxonomy_get_parents($clade->tid);
+	if ($parent) {
+		$vars['parent'] = $parent[0];
+		$vars['parent_name'] = check_plain($parent[0]->name);
+	}
+	
+// 	if ($user->uid) {
+// 		if (in_array('clade manager', array_values($user->roles))) {
+// 			$vars['new_members'] = clade_new_members($clade);
+// 		}
+// 		//$vars['new_activity'] = clade_new_activity($node, $user);
+// 	}
+	
+	$vars['feed'] = theme('clade_feed', $clade);
+	$vars['posts_by_category'] = views_embed_view('clade_posts_by_category', 'default', $clade->tid);
+}
+
+function clade_preprocess_clade_feed(&$vars) {
+	global $user;
+
+	drupal_add_js(drupal_get_path('module','clade') . '/clade.js');
+	drupal_add_js(drupal_get_path('module','clade') . '/clade-feed.js');
+	drupal_add_js('sites/all/libraries/iphone_check/jquery/iphone-style-checkboxes.js');
+	drupal_add_css('sites/all/libraries/iphone_check/style.css');
+
+	$clade = $vars['clade'];
+	$vars['title'] = t('The latest in the feed');
+	$vars['feed'] = clade_feed($clade, false);
+	$vars['feed_link'] = drupal_add_feed(url("clade/$clade->tid/feed"), "RSS - $clade->name");
+	
+	if ($user->uid) {
+		if (in_array('clade member', array_values($user->roles))) {
+			$vars['mini_form'] = theme('clade_page_mini_form_block', t("Post something!"));
+		}
+	}
+}
+
+function clade_preprocess_node(&$vars) {
+	$node = $vars['node'];
+	if ($node->type == 'clade_page') {
+		$terms = $node->taxonomy;
+		$clades = array();
+		$tags = array();
+		$clade_vid = variable_get('clade_vocabulary', 0);
+		foreach ($terms as $term) {
+			if ($term->vid == $clade_vid) {
+				$clades[] = l($term->name, taxonomy_term_path($term));
+			} else {
+				$tags[] = l($term->name, taxonomy_term_path($term));
+			}
+		}
+		$items = array();
+		$items[] = sprintf('%s: %s', format_plural(count($clades), 'Clade', 'Clades'), implode(', ', $clades));
+		if ($tags) {
+			$items[] = sprintf('%s: %s', format_plural(count($tags), 'Category', 'Categories'), implode(', ', $tags));
+		}
+		$vars['terms'] = theme('item_list', $items, NULL, 'ul', array('class' => 'nostyle'));
+	}
+}

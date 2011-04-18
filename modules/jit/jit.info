@@ -1,0 +1,8 @@
+; $Id$
+name = JIT
+description = Implements Javascript InfoVis Toolkit
+core = 6.x
+package = "Visualzation"
+
+dependencies[] = libraries
+dependencies[] = jquery_update

@@ -1,0 +1,339 @@
+<?php
+// $Id$
+
+$view = new view;
+$view->name = 'clade_my_clades';
+$view->description = 'My Clades';
+$view->tag = 'clade';
+$view->view_php = '';
+$view->base_table = 'term_data';
+$view->is_cacheable = FALSE;
+$view->api_version = 2;
+$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+$handler = $view->new_display('default', 'Defaults', 'default');
+$handler->override_option('fields', array(
+  'name' => array(
+    'label' => 'Clade',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'link_to_taxonomy' => 1,
+    'exclude' => 0,
+    'id' => 'name',
+    'table' => 'term_data',
+    'field' => 'name',
+    'relationship' => 'none',
+  ),
+  'is_admin' => array(
+    'label' => '',
+    'alter' => array(
+      'alter_text' => 1,
+      'text' => '<span class="marker star" title="Clade manager"></span>',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 1,
+    'empty_zero' => 0,
+    'exclude' => 0,
+    'id' => 'is_admin',
+    'table' => 'clade_uid',
+    'field' => 'is_admin',
+    'relationship' => 'none',
+    'override' => array(
+      'button' => 'Override',
+    ),
+  ),
+  'admins' => array(
+    'label' => 'Manager(s)',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'exclude' => 0,
+    'id' => 'admins',
+    'table' => 'clade_uid',
+    'field' => 'admins',
+    'relationship' => 'none',
+  ),
+  'post_count_new' => array(
+    'label' => 'New content',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'set_precision' => FALSE,
+    'precision' => 0,
+    'decimal' => '.',
+    'separator' => ',',
+    'prefix' => '',
+    'suffix' => '',
+    'exclude' => 0,
+    'id' => 'post_count_new',
+    'table' => 'clade',
+    'field' => 'post_count_new',
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('sorts', array(
+  'is_admin' => array(
+    'order' => 'DESC',
+    'id' => 'is_admin',
+    'table' => 'clade_uid',
+    'field' => 'is_admin',
+    'relationship' => 'none',
+  ),
+  'name' => array(
+    'order' => 'ASC',
+    'id' => 'name',
+    'table' => 'term_data',
+    'field' => 'name',
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('filters', array(
+  'vid' => array(
+    'operator' => 'in',
+    'value' => array(
+      variable_get('clade_vocabulary', 0) => variable_get('clade_vocabulary', 0),
+    ),
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => FALSE,
+      'label' => '',
+    ),
+    'id' => 'vid',
+    'table' => 'term_data',
+    'field' => 'vid',
+    'relationship' => 'none',
+  ),
+  'uid' => array(
+    'operator' => '=',
+    'value' => '1',
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => FALSE,
+      'label' => '',
+    ),
+    'id' => 'uid',
+    'table' => 'clade_uid',
+    'field' => 'uid',
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('access', array(
+  'type' => 'none',
+));
+$handler->override_option('cache', array(
+  'type' => 'none',
+));
+$handler->override_option('title', 'My Clades');
+$handler->override_option('empty', '<?php
+global $user;
+if ($user->uid) {
+?>
+<p>You haven\'t joined any Clades yet!  Once you join a Clade or two, it will show up here.</p>
+<?php
+} else {
+?>
+<p>You must log in to view your Clades.</p>
+<?php
+}
+?>');
+$handler->override_option('empty_format', '3');
+$handler->override_option('use_more', 1);
+$handler->override_option('use_more_always', 0);
+$handler->override_option('use_more_text', 'View all of My Clades');
+$handler->override_option('style_plugin', 'table');
+$handler = $view->new_display('page', 'Page', 'page_1');
+$handler->override_option('items_per_page', 50);
+$handler->override_option('use_pager', '1');
+$handler->override_option('path', 'clades/my');
+$handler->override_option('menu', array(
+  'type' => 'tab',
+  'title' => 'My Clades',
+  'description' => '',
+  'weight' => '0',
+  'name' => 'navigation',
+));
+$handler->override_option('tab_options', array(
+  'type' => 'none',
+  'title' => '',
+  'description' => '',
+  'weight' => 0,
+  'name' => 'navigation',
+));
+$handler = $view->new_display('block', 'Block', 'block_1');
+$handler->override_option('fields', array(
+  'name' => array(
+    'label' => '',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'link_to_taxonomy' => 1,
+    'exclude' => 0,
+    'id' => 'name',
+    'table' => 'term_data',
+    'field' => 'name',
+    'relationship' => 'none',
+    'override' => array(
+      'button' => 'Use default',
+    ),
+  ),
+  'is_admin' => array(
+    'label' => '',
+    'alter' => array(
+      'alter_text' => 1,
+      'text' => '<span class="marker star" title="Clade manager"></span>',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 1,
+    'empty_zero' => 0,
+    'exclude' => 0,
+    'id' => 'is_admin',
+    'table' => 'clade_uid',
+    'field' => 'is_admin',
+    'relationship' => 'none',
+    'override' => array(
+      'button' => 'Override',
+    ),
+  ),
+  'post_count_new' => array(
+    'label' => '',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'set_precision' => FALSE,
+    'precision' => 0,
+    'decimal' => '.',
+    'separator' => ',',
+    'prefix' => '',
+    'suffix' => '',
+    'exclude' => 0,
+    'id' => 'post_count_new',
+    'table' => 'clade',
+    'field' => 'post_count_new',
+    'override' => array(
+      'button' => 'Use default',
+    ),
+    'relationship' => 'none',
+  ),
+));
+$handler->override_option('block_description', '');
+$handler->override_option('block_caching', -1);

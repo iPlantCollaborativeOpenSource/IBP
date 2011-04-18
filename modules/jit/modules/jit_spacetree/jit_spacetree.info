@@ -1,0 +1,7 @@
+; $Id$
+name = JIT Spacetree Visualization
+description = "The JIT Spacetree Visualization."
+core = 6.x
+package = "Visualzation"
+
+dependencies[] = jit

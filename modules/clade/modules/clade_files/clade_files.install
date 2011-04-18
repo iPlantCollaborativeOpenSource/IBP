@@ -1,0 +1,274 @@
+<?php
+// $Id$
+/**
+ * Copyright (c) 2010, iPlant Collaborative, University of Arizona, Cold Spring Harbor Laboratories, University of Texas at Austin
+ * This software is licensed under the CC-GNU GPL version 2.0 or later.
+ * License: http://creativecommons.org/licenses/GPL/2.0/
+ */
+function clade_files_schema() {
+	return array(
+		'clade_file_relationships' => array (
+				'description' => 'Table to store relationships of clade_file nodes with clade_page nodes.',
+				'fields' => array(
+					'nid' => array(
+              'description' => "The clade_file nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					'related_nid' => array (
+              'description' => "The clade_page nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					),
+				'primary key' => array('nid, related_nid'),
+			),
+		);
+}
+ 
+function clade_files_install() {
+  drupal_install_schema('clade_files');
+
+  // create clade_files vocabulary
+  $vocabulary = array(
+      'name' => t('Clade File System'),
+      'multiple' => 1,
+      'required' => 1,
+      'hierarchy' => 1,
+      'relations' => 1,
+      'module' => 'clade_files',
+      'weight' => -10,
+      'nodes' => array('clade_file' => 1),
+    );
+  taxonomy_save_vocabulary($vocabulary);
+
+  // set clade_files vocabulary variable
+  variable_set('clade_files_fs', $vocabulary['vid']);
+    
+  // TODO create "directories" for any existing clades
+  $results = db_query("SELECT * from {term_data} where vid = %d");
+  $clade_vid = variable_get('clade_vocabulary', 0);
+  while ($term = db_fetch_object($results, $clade_vid)) {
+    $fs_root = array(
+        'name' => $term->name,
+        'vid' => $vocabulary['vid'],
+        'parent' => 0,
+        'relations' => array($term->tid),
+      );
+    taxonomy_save_term($fs_root);
+    $term->relations = array($fs_root['tid']);
+    taxonomy_save_term($term);
+  }
+  
+  // create cck file field
+  $field = array (
+      'label' => 'File',
+      'field_name' => 'clade_file_file',
+      'type' => 'filefield',
+      'widget_type' => 'filefield_widget',
+      'change' => 'Change basic information',
+      'weight' => '-4',
+      'file_extensions' => '', // accept all files; security?
+      'progress_indicator' => 'bar',
+      'file_path' => '',
+      'max_filesize_per_file' => '',
+      'max_filesize_per_node' => '',
+      'description' => '',
+      'group' => false,
+      'required' => 1,
+      'multiple' => '0',
+      'list_field' => '0',
+      'list_default' => 1,
+      'description_field' => '1',
+      'op' => 'Save field settings',
+      'module' => 'filefield',
+      'widget_module' => 'filefield',
+      'columns' => 
+      array (
+        'fid' => 
+        array (
+          'type' => 'int',
+          'not null' => false,
+          'views' => true,
+        ),
+        'list' => 
+        array (
+          'type' => 'int',
+          'size' => 'tiny',
+          'not null' => false,
+          'views' => true,
+        ),
+        'data' => 
+        array (
+          'type' => 'text',
+          'serialize' => true,
+          'views' => true,
+        ),
+      ),
+      'display_settings' => 
+      array (
+        'label' => 
+        array (
+          'format' => 'inline',
+          'exclude' => 0,
+        ),
+        'teaser' => 
+        array (
+          'format' => 'default',
+          'exclude' => 0,
+        ),
+        'full' => 
+        array (
+          'format' => 'default',
+          'exclude' => 0,
+        ),
+        4 => 
+        array (
+          'format' => 'default',
+          'exclude' => 0,
+        ),
+        2 => 
+        array (
+          'format' => 'default',
+          'exclude' => 0,
+        ),
+        3 => 
+        array (
+          'format' => 'default',
+          'exclude' => 0,
+        ),
+        'token' => 
+        array (
+          'format' => 'default',
+          'exclude' => 0,
+        ),
+      ),
+    );
+  module_load_include('inc', 'content', 'includes/content.crud');
+  $field['type_name'] = 'clade_file';
+  content_field_instance_create($field);
+  
+  // allow comments
+  variable_set('comment_clade_file', '2');
+  variable_set('comment_default_mode_clade_file', '2');
+  variable_set('comment_default_order_clade_file', '2');
+  variable_set('comment_controls_clade_file', '3');
+  
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	db_query("UPDATE {system} SET weight = %d WHERE name = 'clade_files'", $weight + 1);
+}
+
+
+function clade_files_uninstall() {
+  // delete clade_files vocabulary
+  $vid = variable_get('clade_files_fs', '');
+  taxonomy_del_vocabulary($vid);
+  
+  // TODO: delete clade files ?
+  
+  // remove clade_files variables
+  variable_del('clade_files_fs');
+  
+  variable_del('comment_clade_file');
+  variable_del('comment_default_mode_clade_file');
+  variable_del('comment_default_order_clade_file');
+  variable_del('comment_controls_clade_file');
+}
+
+function clade_files_update_6001() {
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	
+	$ret = array();
+	$ret[] = update_sql(sprintf("UPDATE {system} SET weight = %d WHERE name = 'clade_files'", $weight + 1));
+	
+	return $ret;
+}
+
+function clade_files_update_6003() {
+	$ret = array();
+	$schema = array(
+		'clade_file_relationships' => array (
+				'description' => 'Table to store relationships of clade_file nodes with clade_page nodes.',
+				'fields' => array(
+					'nid' => array(
+              'description' => "The clade_file nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					'related_nid' => array (
+              'description' => "The clade_page nid.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+						),
+					),
+				'primary key' => array('nid, related_nid'),
+			),
+		);
+	db_create_table($ret, 'clade_file_relationships', $schema['clade_file_relationships']);
+
+	// move files
+	$clade_vid = variable_get('clade_vocabulary', 0);
+	if ($clade_vid) {
+		$results = db_query("select oga.nid, td.tid from {og_ancestry} oga join {node} p on p.nid = oga.nid and p.type='%s' join {node} n on n.nid = oga.group_nid join {term_data} td on td.name = n.title and td.vid = %d", 'clade_file', $clade_vid);
+		while ($result = db_fetch_array($results)) {
+			$node = node_load($result['nid']);
+			$terms = $node->taxonomy;
+			$terms[$clade_vid] = array($result['tid']);
+			taxonomy_node_save($node, $terms);
+		}
+	}
+		
+	// update clade_files vocabulary and relate to appropriate clade vocabulary terms
+	$clade_vid = variable_get('clade_vocabulary', 0);
+	
+	$sql = "SELECT cf.tid as cfs_root, c.tid as clade_id FROM {clade_files} cf JOIN {node} n ON n.nid = cf.nid JOIN {term_data} c ON c.name = n.title AND c.vid = %d";
+	$results = db_query($sql, $clade_vid);
+	while ($row = db_fetch_array($results)) {
+		$term = (array) taxonomy_get_term($row['cfs_root']);
+		$term['relations'] = array($row['clade_id']);
+		taxonomy_save_term($term);
+	}
+	
+	// drop the old clade_files table
+	db_drop_table($ret, 'clade_files');
+	
+	// TODO create clade_page nodes and associate
+	
+	return $ret;
+}
+
+function clade_files_update_6004() {
+	$results = db_query("SELECT n.nid FROM {node} n LEFT OUTER JOIN {clade_file_relationships} r ON r.nid = n.nid WHERE n.type='clade_file' AND r.nid IS NULL");
+	while ($nid = db_result($results)) {
+		$cladeFile = node_load($nid);
+		$clone = clone $cladeFile;
+		$clone->nid = NULL;
+		$clone->vid = NULL;
+		$clone->body = $clone->teaser = $clone->clade_file_file[0]['data']['description'];
+		unset($clone->clade_file_file);
+		foreach ($clone->taxonomy as $tid => $term) {
+			if ($term->vid == variable_get('clade_files_fs', '')) {
+				unset($clone->taxonomy[$tid]);
+			}
+		}
+		unset($clone->locations);
+		unset($clone->location);
+		
+		$clone->type='clade_page';
+		node_save($clone);
+		
+		$relationship = array(
+			'nid' => $cladeFile->nid,
+			'related_nid' => $clone->nid,
+			);
+		drupal_write_record('clade_file_relationships', $relationship);
+	}
+	db_query("UPDATE {node} n, {clade_file_relationships} r, {node} f SET n.changed = f.changed WHERE n.nid = r.related_nid and r.nid = f.nid");
+	db_query("UPDATE {node} n, {node_comment_statistics} s SET s.last_comment_timestamp = n.changed WHERE n.nid = s.nid");
+	
+	return array();
+}

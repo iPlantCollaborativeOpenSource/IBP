@@ -1,0 +1,14 @@
+input[type=text].silent-node-form {
+	color: #606060;
+}
+
+div.silent-node-message {
+	padding: 3px;
+	font-size: .9em;
+	max-width: 800px;
+}
+
+#clade-edit-form .form-text {
+	display: block;
+	width: 95%;
+}

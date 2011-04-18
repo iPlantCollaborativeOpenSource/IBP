@@ -1,0 +1,6 @@
+; $Id$
+name = Clade Links
+description = "A link repository for clade nodes."
+dependencies[] = clade
+package = "Clade"
+core = 6.x

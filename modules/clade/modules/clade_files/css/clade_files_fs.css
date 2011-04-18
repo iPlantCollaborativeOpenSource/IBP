@@ -1,0 +1,80 @@
+#clade-files-view-fs {
+	margin: 12px 0px;
+	padding-bottom: 6px;
+	border-bottom: 1px solid #cacaca;
+}
+
+#clade-files-view-fs .item {
+}
+
+#clade-files-view-fs .directory,
+#clade-files-view-fs .closeddir,
+#clade-files-view-fs .opendir,
+#clade-files-view-fs .document,
+#clade-files-view-fs .empty {
+	padding: 3px;
+}
+
+#clade-files-view-fs .directory a.dirlink {
+	padding-left: 26px;
+}
+
+#clade-files-view-fs .directory span.attribute,
+#clade-files-view-fs .document span.attribute {
+	float: right;
+	padding-left: 1em;
+	color: #999999;
+}
+
+#clade-files-view-fs .closeddir a.dirlink {
+	background-image: url('../images/folder-sprite.png');
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+}
+
+#clade-files-view-fs .opendir a.dirlink {
+	background-image: url('../images/folder-sprite.png');
+	background-repeat: no-repeat;
+	background-position: 0px -24px;
+}
+
+#clade-files-view-fs a.parent-dirlink {
+	padding-left: 26px;
+	background-image: url('../images/folder-sprite.png');
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+}
+
+#clade-files-view-fs .document {
+}
+
+#clade-files-view-fs .empty {
+	font-weight: bold;
+}
+
+#clade-files-view-fs .item-level {
+	margin-left: 24px;
+	display: none;
+}
+
+#clade-files-view-fs .even {
+	background-color: #ffffff;
+}
+
+#clade-files-view-fs .odd {
+	background-color: #ecf3fe;
+}
+
+#clade-files-view-fs ul {
+	list-style: none;
+	float: right;
+	margin: 0;
+	display: none;
+	cursor: pointer;
+}
+
+#clade-files-view-fs li {
+	list-style: none;
+	float: left;
+	padding-left: 6px;
+}

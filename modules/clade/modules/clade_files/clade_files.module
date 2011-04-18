@@ -1,0 +1,714 @@
+<?php
+
+// $Id$
+function clade_files_init() {
+	drupal_add_css(drupal_get_path('module', 'clade_files') . '/css/clade_files_attachment.css');
+}
+
+function clade_files_node_info() {
+  return array(
+      'clade_file' => array(
+        'name' => t('File'),
+        'module' => 'clade_files',
+        'description' => 'A file upload associated with a Clade.',
+      ),
+    );
+}
+
+function clade_files_perm() {
+  return array(
+			'create clade file',
+			'edit own clade file',
+			'edit any clade file',
+			'delete clade file',
+	  );
+}
+
+function clade_files_clade_details_items($clade) {
+	return array(
+		'files_page' => array(
+			'data' => l(t('Files'), sprintf('clade/%d/files', $clade->tid)),
+			'data-sort' => 2,
+			'class' => 'iplant',
+			),
+		);
+}
+
+function clade_files_access($op, $node, $account) {
+  global $user;
+  $allowed = false;
+  if ($op == 'view') {
+  	// short circuit
+  	$allowed = true;
+  } else {
+		if (module_exists('clade_subscriptions')) {
+			clade_subscriptions_grant_roles($account);
+		}
+    $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
+		if ($type == 'clade_file') {
+			switch ($op) {
+				case 'create':
+					$allowed = user_access('create clade file', $account);
+					break;
+				case 'update':
+					if ($node->uid == $user->uid) {
+						$allowed = user_access('edit own clade file', $account);
+					} else {
+						$allowed = user_access('edit any clade file', $account);
+					}
+					break;
+				case 'delete':
+					$allowed = user_access('delete clade file', $account);
+					break;
+			}
+		}
+	}
+	return $allowed;
+}
+
+/**
+ * TODO!
+ * Implementation of hook_menu
+ * callbacks
+ * create clade file
+ *    @param clade {node}
+ *    @param the directory to upload to {taxonomy term}
+ */
+function clade_files_menu() {
+  $items = array();
+
+	$items['clade/%/files'] = array(
+		'title' => 'Files',
+		'description' => 'View the clade\'s file system.',
+		'page callback' => 'clade_files_view_fs',
+		'page arguments' => array(1),
+		'access arguments' => array('access content'),
+		'type' => MENU_LOCAL_TASK,
+		'weight' => 11,
+	);
+//   $items['clade/%/files/%'] = array(
+//       'page callback' => 'clade_files_view_fs_directory_contents_ajax',
+//       'page arguments' => array(3),
+//       'access arguments' => array('access content'),
+//       'type' => MENU_CALLBACK,
+//     );
+//   $items['clade/%/files/%/new-subdir/%'] = array(
+//       'page callback' => 'clade_files_view_fs_create_subdir',
+//       'page arguments' => array(3, 5),
+//       'access arguments' => array('create clade file'),
+//       'type' => MENU_CALLBACK,
+//     );
+  $items['clade/%/files/%/new-subdir'] = array(
+  		'title' => 'Create new folder',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('clade_files_fs_create_subdir_form', 1, 3),
+      'access arguments' => array('create clade file'),
+      'type' => MENU_CALLBACK,
+    );
+  $items['clade/%/files/%/new-subdir/ajax'] = array(
+  		'title' => 'Create new folder',
+      'page callback' => 'clade_files_fs_create_subdir_form_ajax',
+      'page arguments' => array(1, 3),
+      'access arguments' => array('create clade file'),
+      'type' => MENU_CALLBACK,
+    );
+  $items['clade/%/files/%/new-subdir/ajax/submit'] = array(
+  		'title' => 'Create new folder',
+      'page callback' => 'clade_files_fs_create_subdir_form_ajax_submit',
+      'page arguments' => array(1, 3),
+      'access arguments' => array('create clade file'),
+      'type' => MENU_CALLBACK,
+    );
+  return $items;
+}
+
+function clade_files_theme() {
+	return array(
+		'clade_files_fs' => array(
+			'arguments' => array(
+				'clade' => NULL,
+				'term' => NULL,
+				),
+			'template' => 'theme/clade_files_fs',
+			),
+		'clade_files_fs_directory' => array(
+			'arguments' => array(
+				'clade' => NULL,
+				'term' => NULL,
+				),
+			'template' => 'theme/clade_files_fs_directory',
+			),
+		'clade_files_fs_directory_contents' => array(
+			'arguments' => array(
+				'clade' => NULL,
+				'term' => NULL,
+				),
+			'template' => 'theme/clade_files_fs_directory_contents',
+			),
+		'clade_files_fs_document' => array(
+			'arguments' => array(
+				'clade' => NULL,
+				'term' => NULL,
+				'clade_file' => NULL,
+				),
+			'template' => 'theme/clade_files_fs_document',
+			),
+		'clade_files_fs_menu' => array(
+			'arguments' => array(
+				'clade' => NULL,
+				'term' => NULL,
+				),
+			'template' => 'theme/clade_files_fs_menu',
+			),
+		'clade_page_attachment' => array(
+			'arguments' => array(
+				'clade_file' => NULL,
+				'teaser' => NULL,
+				'page' => NULL,
+				),
+			'template' => 'theme/clade_page_attachment',
+			),
+		);
+}
+
+/**
+ * implementation of hook_form()
+ * taxonomy field is auto-generated and file field is cck
+ */
+function clade_files_form(&$node) {
+  $type = node_get_types('type', $node);
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => -5
+  );
+
+  return $form;
+}
+
+function clade_files_form_alter(&$form, &$form_state, $form_id) {
+	global $user;
+	if ($form_id == 'clade_file_node_form') {
+		if ($clade = clade_get_context()) {
+			$fs_root = taxonomy_get_term($clade->clade_fs_root);
+			$tree = taxonomy_get_tree($fs_root->vid, $fs_root->tid);
+			$options = array();
+			$i = 0;
+			$options[$i] = new stdClass;
+			$options[$i]-> option = array($fs_root->tid => $fs_root->name);
+			foreach ($tree as $subdir) {
+				$i++;
+				$options[$i] = new stdClass;
+				$name = '--' . $subdir->name;
+				for ($j = 0; $j < $subdir->depth; $j++) {
+					$name = '--' . $name;
+				}
+				$options[$i]->option = array($subdir->tid => $name);
+			}
+			$form['taxonomy'][variable_get('clade_files_fs', 0)]['#options'] = $options;
+			if (empty($form['taxonomy'][variable_get('clade_files_fs', 0)]['#default_value'])) {
+				$form['taxonomy'][variable_get('clade_files_fs', 0)]['#default_value'] = $fs_root->tid;
+			}
+		}
+	
+		$form['path']['#access'] = $user->uid == 1;
+		$form['menu']['#access'] = $user->uid == 1;
+		$form['author']['#access'] = $user->uid == 1;
+		$form['options']['#access'] = $user->uid == 1;
+		$form['comment_settings']['#access'] = $user->uid == 1;
+		$form['revision_information']['#access'] = $user->uid == 1;
+	} else if ($form_id == 'clade_page_node_form') {
+		// get clade_image_node_form
+		if ($form['#node']->nid) {
+			if ($clade_file_id = db_result(db_query("SELECT n1.nid FROM {node} n0 JOIN {clade_file_relationships} cfr ON cfr.related_nid = n0.nid JOIN {node} n1 ON n1.nid = cfr.nid WHERE n0.nid = %d", $form['#node']->nid))) {
+				$clade_file = node_load($clade_file_id);
+			}
+		}
+		if (empty($clade_file)) {
+			$clade_file = new stdClass;
+			$clade_file->uid = $user->uid;
+			$clade_file->type = 'clade_file';
+			$clade_file->title = $form_state['values']['group_file_info']['title'];
+			$clade_file->clade_file_file = $form_state['values']['group_file_info']['clade_file_file'];
+			$clade_file->taxonomy = $form_state['values']['group_file_info']['taxonomy'];
+		}
+		
+		$file_form_state = array(
+			'storage' => NULL,
+			'submitted' => FALSE,
+			);	
+		$file_form = drupal_retrieve_form('clade_file_node_form', $file_form_state, $clade_file);
+		drupal_prepare_form('clade_file_node_form', $file_form, $file_form_state);
+
+		$form['#attributes']['enctype'] = 'multipart/form-data';
+		
+		$form['group_file_info'] = $file_form['group_file_info'];
+		$form['group_file_info']['#title'] = t('Attach an File');
+		$form['group_file_info']['#collapsible'] = TRUE;
+		$collapsed = empty($clade_file->clade_file_file[0]['filename']) && empty($clade_file->title);
+		$form['group_file_info']['#collapsed'] = $collapsed;
+		$form['group_file_info']['#weight'] = 11;
+		$form['group_file_info']['#tree'] = TRUE;
+		
+		$form['group_file_info']['nid'] = $file_form['nid'];
+		
+		$form['group_file_info']['title'] = $file_form['title'];
+		$form['group_file_info']['title']['#required'] = FALSE;
+		$form['group_file_info']['title']['#description'] = t('Defaults to filename.');
+		
+		$form['group_file_info']['clade_file_file']['#required'] = FALSE;
+		$form['group_file_info']['clade_file_file'][0]['#required'] = FALSE;
+		
+		$form['group_file_info']['taxonomy'] = $file_form['taxonomy'];
+		$cfs_vid = variable_get('clade_files_fs', 0);
+    $form['group_file_info']['taxonomy'][$cfs_vid]['#required'] = FALSE;
+    $form['group_file_info']['taxonomy']['#weight'] = 10;
+		
+		$form['#validate'][] = 'clade_files_clade_page_attach_file_validate';
+		$form['buttons']['submit']['#submit'][] = 'clade_files_clade_page_attach_file_submit';
+		$form['buttons']['preview']['#submit'][] = 'clade_files_clade_page_attach_file_preview';
+		
+		if (! empty($form['#node']->theme) && $form['#node']->theme = 'clade-page-mini-form') {
+			$form['group_file_info']['#prefix'] = theme('image', drupal_get_path('theme','myplant').'/images/paper_clip_24.png', '', '', array('class' => 'image-button'));
+			$form['group_file_info']['#suffix'] = '<span class="button-value"></span>';
+			$form['group_file_info']['#collapsible'] = FALSE;
+		}
+//  		drupal_set_message(sprintf('<pre>%s</pre>', print_r($form['buttons'], TRUE)));
+	}
+}
+
+function clade_files_clade($op, $clade) {
+	if ($op == 'clade load') {
+		$clade->clade_fs_root = clade_files_get_fs_root($clade);
+	} else if ($op == 'clade insert') {
+		// create cfs root for clade
+		$cfs_root = array(
+			'name' => $clade->name,
+			'parent' => 0,
+			'weight' => $clade->weight,
+			'relations' => array($clade->tid),
+			);
+		taxonomy_save_term($cfs_root);
+	} else if ($op == 'clade delete') {
+		// TODO
+	}
+}
+
+function clade_files_clade_page_attach_file_validate($form, &$form_state) {
+	$values = $form_state['values']['group_file_info'];
+	$cfs_vid = variable_get('clade_files_fs', 0);
+	if (! (
+					empty($values['clade_file_file'][0]['filename']) &&
+					empty($values['title'])
+			))
+	{
+ 		// drupal_set_message(sprintf('<pre>%s</pre>', print_r($values, TRUE)));
+ 		if (empty($values['clade_file_file'][0]['filename'])) {
+ 			form_set_error("group_file_info][clade_file_file][0][upload", t('Select a file to attach.'));
+		}
+		
+		if (empty($values['taxonomy'][$cfs_vid])) {
+			form_set_error("group_file_info][taxonomy][$cfs_vid", t('Select the CFS folder to upload the file to.'));
+		}
+		
+		if (empty($values['title'])) {
+			$form_state['values']['group_file_info']['title'] = $values['clade_file_file'][0]['filename'];
+		}
+		
+	}
+}
+
+function clade_files_clade_page_attach_file_submit($form, &$form_state) {
+	global $user;
+	$values = $form_state['values']['group_file_info'];
+	// just check one required field, <code>clade_gallery_clade_page_attach_image_validate</code>
+	// takes care of making sure all required fields are there.
+	if (! empty($values['clade_file_file'][0]['filename'])) {
+		if (empty($values['nid'])) {
+			$clade_file_node = new stdClass;
+			$clade_file_node->uid = $user->uid;
+			$clade_file_node->name = $user->name;
+			$clade_file_node->type = 'clade_file';
+			$clade_file_node->language = language_default()->language;
+			$clade_file_node->comment = $form_state['values']['comment'];
+			$clade_file_node->promote = $form_state['values']['promote'];
+			$clade_file_node->taxonomy = array(
+					variable_get('clade_vocabulary', 0) => array(clade_get_context()->tid => clade_get_context())
+				);
+			$clade_file_node->taxonomy += $values['taxonomy'];
+		} else {
+			$clade_file_node = node_load($values['nid']);
+			$cfs_vid = variable_get('clade_files_fs', 0);
+			$clade_file_node->taxonomy[$cfs_vid] = $values['taxonomy'][$cfs_vid];
+		}
+
+		$clade_file_node->title = $values['title'];
+		$clade_file_node->clade_file_file = $values['clade_file_file'];
+		
+		if ($clade_file_node->nid) {
+			// update image node
+			node_submit($clade_file_node);
+			node_save($clade_file_node);
+		} else {
+			// save image node
+			node_submit($clade_file_node);
+			node_save($clade_file_node);
+			$form_state['values']['group_file_info']['nid'] = $clade_file_node->nid;
+			
+			// relate post and image
+			$relationship = new stdClass;
+			$relationship->nid = $clade_file_node->nid;
+			$relationship->related_nid = $form_state['nid'];
+			
+			drupal_write_record('clade_file_relationships', $relationship);
+		}
+	}
+}
+	
+function clade_files_clade_page_attach_file_preview($form, &$form_state) {
+	if (! empty($form_state['values']['group_file_info']['clade_file_file'][0]['filename'])) {
+		$clade_file_node = new stdClass;
+		$clade_file_node->title = empty($form_state['values']['group_file_info']['title']) ?
+				$form_state['values']['group_file_info']['clade_file_file'][0]['filename'] :
+				$form_state['values']['group_file_info']['title'];
+		$clade_file_node->clade_file_file = $form_state['values']['group_file_info']['clade_file_file'];
+		$attach_preview = theme('clade_page_attachment', $clade_file_node);
+		$preview = $form_state['node_preview'];
+		$preview = substr($preview, 0, strrpos($preview, '</div>'));
+		$preview = substr($preview, 0, strrpos($preview, '</div>'));
+ 		$form_state['node_preview'] = $preview . $attach_preview . '</div></div>';
+	}
+}
+
+function clade_files_get_fs_root($clade) {
+	$cfs_vid = variable_get('clade_files_fs', 0);
+  $tid = db_result(db_query("select td.tid from term_data td join term_hierarchy th on th.tid = td.tid and th.parent = 0 join term_relation tr on tr.tid1 = td.tid OR tr.tid2 = td.tid join term_data c on c.tid = tr.tid1 OR c.tid = tr.tid2 where td.vid = %d AND c.tid = %d", $cfs_vid, $clade->tid));
+  return $tid;
+}
+
+function clade_files_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+	if ($node->type == 'clade_file') {
+		// TODO?!
+	}
+	else if ($node->type == 'clade_page') {
+		if ($op == 'alter') {
+			if ($relationship = db_fetch_object(db_query("SELECT * FROM {clade_file_relationships} WHERE related_nid = %d", $node->nid))) {
+				$file = node_load($relationship->nid);
+				if ($teaser) {
+					$node->teaser .= theme('clade_page_attachment', $file, $teaser, $page);
+				} else {
+					$node->body .= theme('clade_page_attachment', $file, $teaser, $page);
+					node_tag_new($file->nid);
+				}
+			}
+		}
+		else if ($op == 'delete') {
+			db_query("DELETE FROM {clade_file_relationships} WHERE related_nid = %d", $node->nid);
+		}
+	}
+}
+
+function clade_files_preprocess_clade_page_attachment(&$vars) {
+	$clade_file = $vars['clade_file'];
+	$vars['downloadLink'] = l(
+			sprintf(
+				'%s (%s %s)',
+				$clade_file->title,
+				$clade_file->clade_file_file[0]['filename'],
+				format_size($clade_file->clade_file_file[0]['filesize'])
+			),
+			file_create_url($clade_file->clade_file_file[0]['filepath'])
+		);
+}
+
+function clade_files_preprocess_clade_files_fs(&$vars) {
+	drupal_add_css(drupal_get_path('module', 'clade_files') . '/css/clade_files_fs.css');
+	drupal_add_css(drupal_get_path('theme', 'myplant') . '/css/jquery-ui-myplant/jquery-ui-myplant.css');
+	jquery_ui_add(array('ui.core','ui.dialog'));
+	
+	$term = $vars['term'];
+	$clade = $vars['clade'];
+	$parents = taxonomy_get_parents($term->tid);
+	if ($parents) {
+		$parent = array_pop($parents);
+		$vars['parent_dir'] = l('..', "clade/$clade->tid/files/$parent->tid", array('attributes' => array('class' => 'parent-dirlink', 'title' => t('Up a directory'))));
+	}
+	$vars['fs_dir'] = theme('clade_files_fs_directory', $clade, $term);
+	$vars['fs_dir_contents'] = theme('clade_files_fs_directory_contents', $clade, $term);
+}
+
+function clade_files_preprocess_clade_files_fs_directory(&$vars) {
+	$clade = $vars['clade'];
+	$term = $vars['term'];
+	$vars['fs_dir'] = l($term->name, "clade/$clade->tid/files/$term->tid", array('attributes' => array('class' => 'dirlink')));
+	$vars['dir_num_files'] = taxonomy_term_count_nodes($term->tid);
+	if (user_access('create clade file')) {
+		$vars['menu'] = theme('clade_files_fs_menu', $clade, $term);
+	}
+}
+
+function clade_files_preprocess_clade_files_fs_directory_contents(&$vars) {
+	$child_terms = taxonomy_get_children($vars['term']->tid, $vars['term']->vid);
+	$subdirs = '';
+	foreach ($child_terms as $term) {
+		$subdirs .= theme('clade_files_fs_directory', $vars['clade'], $term);
+	}
+	$vars['subdirs'] = $subdirs;
+	
+  $documents = taxonomy_select_nodes(array($vars['term']->tid));
+	$files = '';
+  while ($doc_nid = db_result($documents)) {
+  	$files .= theme('clade_files_fs_document', $vars['clade'], $term, node_load($doc_nid));
+  }
+	$vars['files'] = $files;
+	
+	if (empty($subdirs) && empty($files)) {
+		$vars['empty'] = TRUE;
+	} else {
+		$vars['empty'] = FALSE;
+	}
+}
+
+function clade_files_preprocess_clade_files_fs_document(&$vars) {
+	$doc = $vars['clade_file'];
+	$iconUrl = filefield_icon_url($doc->clade_file_file[0]);
+	$relationship = db_fetch_object(db_query("SELECT * FROM {clade_file_relationships} WHERE nid = %d", $doc->nid));
+	$vars['doc_link'] = l(sprintf('<img src="%s"> %s (%s)', $iconUrl, $doc->title, $doc->clade_file_file[0]['filename']), "node/$relationship->related_nid", array('html' => TRUE));
+	$vars['timestamp'] = format_date($doc->created, 'custom', 'Y-m-d H:i');
+	$vars['size'] = format_size($doc->clade_file_file[0]['filesize']);
+}
+
+function clade_files_preprocess_clade_files_fs_menu(&$vars) {
+	$term = $vars['term'];
+	$clade = $vars['clade'];
+	$vars['new_subdir_link'] = l(t('New Subfolder'), "clade/$clade->tid/files/$term->tid/new-subdir", array('attributes' => array('class' => 'clade-fs-new-subfolder')));
+	$vars['upload_link'] = l(t('Upload new file'), "clade/$clade->tid/post/add", array('query' => array("taxonomy[$term->vid]" => array($term->tid))));
+}
+
+function clade_files_preprocess_clade_files_fs_create_subdir_form(&$vars) {
+	// TODO
+}
+
+function clade_files_view_fs($clade_id, $tid = NULL) {
+	$clade = clade_get_clade($clade_id);
+	$term = NULL;
+	if ($tid) {
+		$term = taxonomy_get_term($tid);
+		if ($term) {
+			$parents = taxonomy_get_parents_all($term->tid);
+			$root = array_pop($parents);
+			if ($root->tid != $clade->clade_fs_root) {
+				drupal_goto("clade/$clade_id/files");
+			}
+		}
+	} else {
+		$term = taxonomy_get_term($clade->clade_fs_root);
+	}
+  
+	if (empty($_GET['ajax'])) {
+		drupal_set_title($clade->name . t(' File Repository'));
+		drupal_add_js(drupal_get_path('module','clade_files').'/js/clade_files.js');
+		hoverintent_add();
+		$output = theme('clade_files_fs', $clade, $term);
+		return $output;
+	} else {
+		$output = theme('clade_files_fs_directory_contents', $clade, $term);
+		print drupal_to_js(array('contents' => $output));
+		die;
+	}
+}
+
+function clade_files_fs_create_subdir_form(&$form_state, $clade_id, $parent_tid) {
+	$form = array();
+	
+	$form['parentdir'] = array(
+		'#type' => 'hidden',
+		'#value' => $parent_tid,
+		);
+	
+	$form['subdirname'] = array(
+		'#type' => 'textfield',
+		'#title' => t('New folder name'),
+		'#required' => TRUE,
+		'#ahah' => array(
+				'path' => "clade/$clade_id/files/$parent_tid/new-subdir/ajax/submit",
+				'wrapper' => 'subdirname_wrapper',
+			),
+		'#prefix' => '<div id="subdirname_wrapper">',
+		'#suffix' => '</div>',
+		'#default_value' => empty($form_state['values']['subdirname']) ? '' : $form_state['values']['subdirname'],
+		);
+	
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Submit'),
+		);
+		
+	return $form;
+}
+
+function clade_files_fs_create_subdir_form_submit($form, &$form_state) {
+  $term = taxonomy_get_term($form_state['values']['parentdir']);
+	$subterm = array();
+	$subterm['vid'] = $term->vid;
+	$subterm['parent'] = $term->tid;
+	$subterm['name'] = $form_state['values']['subdirname'];  
+	if (taxonomy_save_term($subterm)) {
+		$form_state['storage']['subdirid'] = $subterm['tid'];
+		$form_state['ahah_valid'] = TRUE;
+	}
+}
+
+function clade_files_fs_create_subdir_form_ajax($clade_id, $parent_tid) {
+	$output = drupal_get_form('clade_files_fs_create_subdir_form', $clade_id, $parent_tid);
+	print drupal_json(array('status' => TRUE, 'form' => $output));
+}
+
+function clade_files_fs_create_subdir_form_ajax_submit($clade_id, $parent_tid) {
+  $form_state = array('storage' => NULL, 'submitted' => FALSE);
+  $form_build_id = $_POST['form_build_id'];
+  $form = form_get_cache($form_build_id, $form_state);
+  $args = $form['#parameters'];
+  $form_id = array_shift($args);
+  $form_state['post'] = $form['#post'] = $_POST;
+  // Enable the submit/validate handlers to determine whether AHAH-submittted.
+  $form_state['ahah_valid'] = FALSE;
+  $form['#programmed'] = $form['#redirect'] = FALSE;
+  drupal_process_form($form_id, $form, $form_state);
+  $args = array($form_state, $clade_id, $parent_tid);
+  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+	if ($form_state['ahah_valid']) {
+		$clade = clade_get_clade($clade_id);
+		$dir = taxonomy_get_term($form_state['storage']['subdirid']);
+		print drupal_json(
+			array(
+				'valid' => TRUE,
+				'data' => theme('clade_files_fs_directory', $clade, $dir),
+			));
+	} else {
+		print drupal_json(
+			array(
+				'valid' => FALSE,
+				'messages' => theme('status_messages'),
+				'form' => drupal_render($form['subdirname'])
+			));
+	}
+	exit();
+}
+
+// function clade_files_view_fs_create_subdir($tid, $subdirname) {
+//   $term = taxonomy_get_term($tid);
+//   if ($subdirname) {
+//     $subterm = array();
+//     $subterm['vid'] = $term->vid;
+//     $subterm['parent'] = $term->tid;
+//     $subterm['name'] = $subdirname;
+//     
+//     taxonomy_save_term($subterm);
+//     
+//     $resp = new stdClass;
+//     $resp->success = TRUE;
+//     print drupal_to_js($resp);
+//   }
+// }
+// 
+// function clade_files_create_subdir_form($parent_tid) {
+//   $parent_term = taxonomy_get_term($parent_tid);
+//   $form = <<<FORM
+// <div class="mask-content">
+// <div class="mask-content-header">Create New Folder in &quot;$parent_term->name&quot;</div>
+// <div class="mask-content-content">
+// <form id="clade-fs-new-subfolder-form" onsubmit="return false;">
+//   <div id="clade-fs-new-subfolder-form-feedback" class="messages error" style="display:none;"></div>
+//   <input type="hidden" name="parentdir" value="$parent_tid" />
+//   <dl class="form-item">
+//     <dt>New Folder Name</dt>
+//     <dd><input type="text" class="required" name="subdirname" size="45" /></dd>
+//   </dl>
+//   <input type="submit" value="Submit" />
+//   <input type="button" id="clade-fs-new-subfolder-form-cancel" value="Cancel" />
+// </form>
+// </div>
+// </div>
+// <div id="clade-fs-new-subfolder-form-mask" class="mask">
+// </div>
+// FORM;
+// 
+//   $script = 'Drupal.clade_files.showMask();';
+//   $script .= '$("#clade-fs-new-subfolder-form-cancel").click(Drupal.clade_files.removeMask);';
+//   $script .= '$("#clade-fs-new-subfolder-form").submit(';
+//   $script .= 'function() { ';
+//   $script .= '$("#clade-fs-new-subfolder-form-feedback").animate({\'opacity\':\'hide\'}, \'fast\');';
+//   $script .= 'var values = $(this).serializeArray();';
+//   $script .= 'if (values[1].value) { ';
+//   $script .= '$.ajax({';
+//   $script .= 'url: "files/" + values[0].value + "/new-subdir/" + values[1].value,';
+//   $script .= 'success: function(resp) {';
+//   $script .= '  Drupal.clade_files.removeMask();';
+//   $script .= '  var dir = $("#clade_fs_'.$parent_tid.'");';
+//   $script .= '  Drupal.clade_files.closeDirectory(dir);';
+//   $script .= '  dir.parent().next(".item-level").remove();';
+//   $script .= '  Drupal.clade_files.openDirectory(dir);';
+//   $script .= '}});';
+//   $script .= '} else {';
+//   $script .= '$("#clade-fs-new-subfolder-form-feedback").empty().append("<span class=\"error\">Please provide a name for the new folder.</span>");';
+//   $script .= '$("#clade-fs-new-subfolder-form-feedback").animate({\'opacity\':\'show\'}, \'fast\');';
+//   $script .= '$("[name=subdirname]").addClass("error")';
+//   $script .= '} return false;});';
+//   
+//   $resp = new stdClass;
+//   $resp->form = $form;
+//   $resp->script = $script;
+//   print drupal_to_js($resp);
+// }
+// 
+// function _clade_files_get_directory_menu($term) {
+//   return
+// 		'<ul>'.
+//     	'<li>'.
+//     		'<a class="clade-fs-new-subfolder" id="'._clade_files_get_new_subfolder_link_id($term).'">New Subfolder</a>'.
+//     	'</li>'.
+// 	    '<li>'.
+// 	    	'<a href="'.url('node/add/clade-file', array('query'=>array('clades'=>array(clade_get_context()->tid),'taxonomy['.$term->vid.']'=>array($term->tid)))).'">Upload New File</a>'.
+// 	    '</li>'.
+// 	  '</ul>';
+// }
+
+function _clade_files_get_directory_id($term) {
+  return 'clade_fs_'.$term->tid;
+}
+
+function _clade_files_get_new_subfolder_link_id($term) {
+  return 'clade_fs_new_folder_'.$term->tid;
+}
+
+function _clade_files_get_upload_link_id($term) {
+  return 'clade_fs_new_file_'.$term->tid;
+}
+
+function clade_files_preprocess_node(&$vars) {
+	$node = $vars['node'];
+	
+	if ($node->type == 'clade_file') {
+		$terms = $node->taxonomy;
+		$clades = array();
+		$tags = array();
+		$clade_vid = variable_get('clade_vocabulary', 0);
+		foreach ($terms as $term) {
+			if ($term->vid == $clade_vid) {
+				$clades[] = l($term->name, taxonomy_term_path($term));
+			} else {
+				$tags[] = l($term->name, taxonomy_term_path($term));
+			}
+		}
+		$items = array();
+		$items[] = sprintf('%s: %s', format_plural(count($clades), 'Clade', 'Clades'), implode(', ', $clades));
+		if ($tags) {
+			$items[] = sprintf('%s: %s', format_plural(count($tags), 'Category', 'Categories'), implode(', ', $tags));
+		}
+		$vars['terms'] = theme('item_list', $items, NULL, 'ul', array('class' => 'nostyle'));
+	}
+}

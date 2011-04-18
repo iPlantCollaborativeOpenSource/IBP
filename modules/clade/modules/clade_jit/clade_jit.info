@@ -1,0 +1,9 @@
+; $Id$
+name = Clade JIT Integration
+description = "A module to support integrating Clade with JIT."
+dependencies[] = clade
+dependencies[] = jit
+dependencies[] = jit_spacetree
+package = "Clade"
+core = 6.x
+

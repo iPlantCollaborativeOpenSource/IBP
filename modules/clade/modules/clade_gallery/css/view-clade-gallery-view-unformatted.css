@@ -1,0 +1,8 @@
+.view-clade-gallery-view {
+	text-align: center;
+}
+
+.view-clade-gallery-view .views-row {
+	display: inline-block;
+	margin: 1em;
+}

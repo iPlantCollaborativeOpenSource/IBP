@@ -1,0 +1,397 @@
+<?php
+
+function clade_gallery_node_info() {
+  return array(
+      'clade_image' => array(
+        'name' => t('Image'),
+        'module' => 'clade_gallery',
+        'description' => 'A image upload associated with a clade.',
+      ),
+    );
+}
+
+function clade_gallery_perm() {
+  return array(
+			'create clade image',
+			'edit own clade image',
+			'edit any clade image',
+			'delete clade image',
+		);
+}
+
+function clade_gallery_access($op, $node, $account) {
+  global $user;
+  $allowed = false;
+  if ($op == 'view') {
+  	// short circuit
+  	$allowed = true;
+  } else {
+		if (module_exists('clade_subscriptions')) {
+			clade_subscriptions_grant_roles($account);
+		}
+    $type = is_string($node) ? $node : (is_array($node) ? $node['type'] : $node->type);
+		if ($type == 'clade_image') {
+				switch ($op) {
+					case 'create':
+						$allowed = user_access('create clade image', $account);
+						break;
+					case 'update':
+						if ($node->uid == $user->uid) {
+						  $allowed = user_access('edit own clade image', $account);
+						} else {
+						  $allowed = user_access('edit any clade image', $account);
+						}
+						break;
+					case 'delete':
+						$allowed = user_access('delete clade image', $account);
+						break;
+				}
+		}
+	}
+	return $allowed;
+}
+
+/**
+ * implementation of hook_form()
+ */
+function clade_gallery_form(&$node) {
+  $type = node_get_types('type', $node);
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#required' => TRUE,
+    '#default_value' => $node->title,
+    '#weight' => -5
+  );
+  return $form;
+}
+
+function clade_gallery_form_alter(&$form, &$form_state, $form_id) {
+	global $user;
+	
+	if ($form_id == 'clade_image_node_form') {
+		$form['path']['#access'] = $user->uid == 1;
+		$form['menu']['#access'] = $user->uid == 1;
+		$form['author']['#access'] = $user->uid == 1;
+		$form['options']['#access'] = $user->uid == 1;
+		$form['comment_settings']['#access'] = $user->uid == 1;
+		$form['revision_information']['#access'] = $user->uid == 1;
+	} else if ($form_id == 'clade_page_node_form') {
+		// get clade_image_node_form
+		// TODO check for existing node, try and look up previously attached image
+		if ($form['#node']->nid) {
+			if ($clade_image_id = db_result(db_query("SELECT n1.nid FROM {node} n0 JOIN {clade_image_relationships} cir ON cir.related_nid = n0.nid JOIN {node} n1 ON n1.nid = cir.nid WHERE n0.nid = %d", $form['#node']->nid))) {
+				$clade_image = node_load($clade_image_id);
+			}
+		}
+		
+		if (empty($clade_image)) {
+			$clade_image = new stdClass;
+			$clade_image->uid = $user->uid;
+			$clade_image->type = 'clade_image';
+		}
+		
+		$image_form_state = array(
+			'storage' => NULL,
+			'submitted' => FALSE,
+			);
+		$image_form = drupal_retrieve_form('clade_image_node_form', $image_form_state, $clade_image);
+		drupal_prepare_form('clade_image_node_form', $image_form, $image_form_state);
+		$form['#attributes']['enctype'] = 'multipart/form-data';
+		$form['group_image_info'] = $image_form['group_image_info'];
+		$form['group_image_info']['#collapsible'] = TRUE;
+		$form['group_image_info']['#collapsed'] = empty($clade_image->nid);
+		$form['group_image_info']['#weight'] = 10;
+		$form['group_image_info']['#title'] = t('Attach an Image');
+		$form['group_image_info']['#tree'] = TRUE;
+		
+		$form['group_image_info']['nid'] = $image_form['nid'];
+		
+		$form['group_image_info']['title'] = $image_form['title'];
+		$form['group_image_info']['title']['#required'] = FALSE;
+		$form['group_image_info']['title']['#description'] = t('Defaults to filename.');
+		
+		$form['group_image_info']['clade_gallery_image']['#required'] = FALSE;
+		$form['group_image_info']['clade_gallery_image'][0]['#required'] = FALSE;
+		
+		$form['group_image_info']['field_copyright']['#required'] = FALSE;
+		$form['group_image_info']['field_copyright'][0]['#required'] = FALSE;
+		
+		$form['group_image_info']['field_geotag'][0]['#collapsible'] = TRUE;
+		$form['group_image_info']['field_geotag'][0]['#collapsed'] = TRUE;
+		
+		$form['#validate'][] = 'clade_gallery_clade_page_attach_image_validate';
+		$form['buttons']['submit']['#submit'][] = 'clade_gallery_clade_page_attach_image_submit';
+		
+		if (! empty($form['#node']->theme) && $form['#node']->theme = 'clade-page-mini-form') {
+			$form['group_image_info']['#prefix'] = theme('image', drupal_get_path('theme','myplant').'/images/camera_icon_24.png', '', '', array('class' => 'image-button'));
+			$form['group_image_info']['#suffix'] = '<span class="button-value"></span>';
+			$form['group_image_info']['#collapsible'] = FALSE;
+		}
+//  		drupal_set_message(sprintf('<pre>%s</pre>', print_r($image_form, TRUE)));
+	}
+}
+
+function clade_gallery_clade_page_attach_image_validate($form, &$form_state) {
+	$values = $form_state['values']['group_image_info'];
+	if (! (
+			empty($values['title']) &&
+			empty($values['clade_gallery_image'][0]['filename']) &&
+			empty($values['field_copyright'][0]['value'])
+		))
+	{
+ 		// drupal_set_message(sprintf('<pre>%s</pre>', print_r($values, TRUE)));
+		if (empty($values['title'])) {
+			$form_state['values']['group_image_info']['title'] = $values['clade_gallery_image'][0]['filename'];
+		}
+		if (empty($values['clade_gallery_image'][0]['filename'])) {
+			form_set_error('group_image_info][clade_gallery_image][0][upload', t('An upload is required'));
+		}
+		if (empty($values['field_copyright'][0]['value'])) {
+			form_set_error('group_image_info][field_copyright][0][value', t('Copyright information is required'));
+		}
+	}
+}
+
+function clade_gallery_clade_page_attach_image_submit($form, &$form_state) {
+	global $user;
+	$values = $form_state['values']['group_image_info'];
+	// just check one required field, <code>clade_gallery_clade_page_attach_image_validate</code>
+	// takes care of making sure all required fields are there.
+	if (! empty($values['clade_gallery_image'][0]['filename'])) {
+		if (empty($values['nid'])) {
+			$clade_image_node = new stdClass;
+			$clade_image_node->uid = $user->uid;
+			$clade_image_node->name = $user->name;
+			$clade_image_node->type = 'clade_image';
+			$clade_image_node->language = language_default()->language;
+			$clade_image_node->comment = $form_state['values']['comment'];
+			$clade_image_node->promote = $form_state['values']['promote'];
+			$clade_image_node->taxonomy = array(
+					clade_get_context()->tid => clade_get_context(),
+				);
+		} else {
+			$clade_image_node = node_load($values['nid']);
+		}
+
+		$clade_image_node->title = $values['title'];
+		$clade_image_node->clade_gallery_image = $values['clade_gallery_image'];
+		$clade_image_node->field_copyright = $values['field_copyright'];
+		// optional fields
+		$clade_image_node->field_description = $values['field_description'];
+		$clade_image_node->field_photographer = $values['field_photographer'];
+		$clade_image_node->field_source = $values['field_source'];
+		$clade_image_node->field_geotag = $values['field_geotag'];
+		
+		if ($clade_image_node->nid) {
+			// update image node
+			node_submit($clade_image_node);
+			node_save($clade_image_node);
+		} else {
+			// save image node
+			node_submit($clade_image_node);
+			node_save($clade_image_node);
+			// relate post and image
+			$relationship = new stdClass;
+			$relationship->nid = $clade_image_node->nid;
+			$relationship->related_nid = $form_state['nid'];
+			drupal_write_record('clade_image_relationships', $relationship);
+		}
+// 		drupal_set_message('<pre>'.print_r($form_state['nid'], TRUE) . '</pre>');
+	}
+}
+
+function clade_gallery_imagecache_default_presets() {
+  $presets = array();
+  $presets['large'] = array (
+    'presetname' => 'large',
+    'actions' => 
+    array (
+      0 => 
+      array (
+        'weight' => '0',
+        'module' => 'imagecache',
+        'action' => 'imagecache_scale',
+        'data' => 
+        array (
+          'width' => '800',
+          'height' => '800',
+          'upscale' => 0,
+        ),
+      ),
+    ),
+  );
+  $presets['small'] = array (
+    'presetname' => 'small',
+    'actions' => 
+    array (
+      0 => 
+      array (
+        'weight' => '0',
+        'module' => 'imagecache',
+        'action' => 'imagecache_scale',
+        'data' => 
+        array (
+          'width' => '200',
+          'height' => '200',
+          'upscale' => 0,
+        ),
+      ),
+    ),
+  );
+  $presets['thumb'] = array (
+    'presetname' => 'thumb',
+    'actions' => 
+    array (
+      0 => 
+      array (
+        'weight' => '0',
+        'module' => 'imagecache',
+        'action' => 'imagecache_scale',
+        'data' => 
+        array (
+          'width' => '100',
+          'height' => '100',
+          'upscale' => 0,
+        ),
+      ),
+    ),
+  );
+  return $presets;
+}
+
+/*** Views integration ***/
+
+function clade_gallery_views_api() {
+  return array('api' => 2.0);
+}
+
+function clade_gallery_og_create_links($group) {
+	return array(
+			'create_clade_image' =>
+					l(t('Upload Image'), "node/add/clade-image", array(
+						'attributes' => array('title' => t('Upload a new image in this clade.')),
+						'query' => "gids[]=$group->nid",
+						))
+		);
+}
+
+function clade_gallery_clade_details_items($clade) {
+	return array(
+		'gallery_page' => array(
+			'data' => l(t('Gallery'), sprintf('clade/%d/gallery', $clade->tid)),
+			'data-sort' => 1,
+			'class' => 'iplant',
+			),
+		);
+}
+
+function clade_gallery_nodeapi(&$node, $op, $teaser = null, $page = null) {
+	if ($node->type == 'clade_image') {
+		if ($op == 'alter') {
+			if ($teaser) {
+				$node->teaser = theme('clade_gallery_image', $node, $teaser, $page);
+			} else {
+				$node->body = theme('clade_gallery_image', $node, $teaser, $page);
+			}
+		}
+		else if ($op == 'delete') {
+			db_query("DELETE FROM {clade_image_relationships} WHERE nid = %d", $node->nid);
+		}
+	}
+	else if ($node->type == 'clade_page') {
+		if ($op == 'alter') {
+			if ($relationship = db_fetch_object(db_query("SELECT * FROM {clade_image_relationships} WHERE related_nid = %d", $node->nid))) {
+				$clade_image = node_load($relationship->nid);
+				if ($teaser) {
+					$node->teaser = 
+						l(theme(
+								'imagecache',
+								'thumb',
+								$clade_image->clade_gallery_image[0]['filepath'],
+								$clade_image->clade_gallery_image[0]['alt'],
+								$clade_image->clade_gallery_image[0]['title'],
+								array('class' => 'attached-clade-image')
+							), "node/$clade_image->nid", array('html' => TRUE)
+						). $node->teaser . '<div class="clearing"></div>';
+				} else {
+					$node->body = 
+						l(theme(
+								'imagecache',
+								'small',
+								$clade_image->clade_gallery_image[0]['filepath'],
+								$clade_image->clade_gallery_image[0]['alt'],
+								$clade_image->clade_gallery_image[0]['title'],
+								array('class' => 'attached-clade-image')
+							), "node/$clade_image->nid", array('html' => TRUE)
+						). $node->body . '<div class="clearing"></div>';
+					node_tag_new($clade_image->nid);
+				}
+			}
+		}
+		else if ($op == 'delete') {
+			db_query("DELETE FROM {clade_image_relationships} WHERE related_nid = %d", $node->nid);
+		}
+	}
+}
+
+function clade_gallery_theme() {
+	return array(
+		'clade_gallery_image' => array(
+			'arguments' => array(
+				'node' => null,
+				'teaser' => false,
+				'page' => false,
+				),
+			'template' => 'theme/clade_gallery_image',
+			),
+		'views_view_unformatted__clade_gallery_view' => array(
+			'arguments' => array(
+				'view' => NULL,
+				'options' => NULL,
+				'rows' => NULL,
+				'title' => NULL
+				),
+			'template' => 'views-view-unformatted--clade-gallery-view',
+			'original hook' => 'views_view_unformatted',
+			'path' => drupal_get_path('module', 'clade_gallery') . '/theme',
+			),
+		'views_view_fields__clade_gallery_view' => array(
+			'arguments' => array(
+				'view' => NULL,
+				'options' => NULL,
+				'row' => NULL,
+				),
+			'template' => 'views-view-fields--clade-gallery-view',
+			'original hook' => 'views_view_fields',
+			'path' => drupal_get_path('module', 'clade_gallery') . '/theme',
+			),
+		);
+}
+
+function clade_gallery_preprocess_views_view_unformatted__clade_gallery_view(&$vars) {
+	drupal_add_css(drupal_get_path('module', 'clade_gallery') . '/css/view-clade-gallery-view-unformatted.css');
+}
+
+function clade_gallery_preprocess_node(&$vars) {
+	$node = $vars['node'];
+	if ($node->type == 'clade_image') {
+		$terms = $node->taxonomy;
+		$clades = array();
+		$tags = array();
+		$clade_vid = variable_get('clade_vocabulary', 0);
+		foreach ($terms as $term) {
+			if ($term->vid == $clade_vid) {
+				$clades[] = l($term->name, taxonomy_term_path($term));
+			} else {
+				$tags[] = l($term->name, taxonomy_term_path($term));
+			}
+		}
+		$items = array();
+		$items[] = sprintf('%s: %s', format_plural(count($clades), 'Clade', 'Clades'), implode(', ', $clades));
+		if ($tags) {
+			$items[] = sprintf('%s: %s', format_plural(count($tags), 'Category', 'Categories'), implode(', ', $tags));
+		}
+		$vars['terms'] = theme('item_list', $items, NULL, 'ul', array('class' => 'nostyle'));
+	}
+}

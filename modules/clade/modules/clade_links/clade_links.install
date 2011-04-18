@@ -1,0 +1,90 @@
+<?php
+// $Id$
+/**
+ * Copyright (c) 2010, iPlant Collaborative, University of Arizona, Cold Spring Harbor Laboratories, University of Texas at Austin
+ * This software is licensed under the CC-GNU GPL version 2.0 or later.
+ * License: http://creativecommons.org/licenses/GPL/2.0/
+ */
+
+function clade_links_schema() {
+  $schema = array();
+  $schema['clade_links'] = array(
+      'description' => 'Table to store clade links for a Clade {node}s.',
+      'fields' => array(
+          'lid' => array(
+              'description' => 'The link id.',
+              'type' => 'serial',
+              'size' => 'normal',
+              'not null' => TRUE,
+              'unsigned' => TRUE,
+            ),
+          'tid' => array(
+              'description' => "The clade's id.",
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+            ),
+          'url' => array(
+              'description' => "The link's URL", //http://www.myplantsite.org/myclade or whatever
+              'type' => 'text',
+              'not null' => TRUE,
+              'length' => 256,
+            ),
+          'linktext' => array(
+              'description' => "The text to display for the link", //Tree of Life
+              'type' => 'text',
+              'not null' => TRUE,
+              'length' => 256,
+            ),
+          'linkdescription' => array(
+              'description' => "An optional description of the site/page being linked to", //The Tree of Life has in depth information about many species...blah blah...
+              'type' => 'text',
+              'not null' => TRUE,
+              'length' => 256,
+            ),            
+        ),
+      'primary key' => array('lid'),
+    );
+  return $schema;
+}
+
+function clade_links_install() {
+  drupal_install_schema('clade_links');
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	db_query("UPDATE {system} SET weight = %d WHERE name = 'clade_links'", $weight + 1);
+}
+
+
+function clade_links_uninstall() {
+  drupal_uninstall_schema('clade_links');
+}
+
+function clade_links_update_6001() {
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	
+	$ret = array();
+	$ret [] = update_sql(sprintf("UPDATE {system} SET weight = %d WHERE name = 'clade_links'", $weight + 1));
+	
+	return $ret;
+}
+
+function clade_links_update_6003() {
+	
+	$ret = array();
+	
+	$clade_vid = variable_get('clade_vocabulary', 0);
+	if ($clade_vid) {
+		$ret[] = update_sql("ALTER TABLE {clade_links} CHANGE COLUMN nid tid int not null");
+		
+		// move links
+		$sql = "select l.*, d.tid as term_tid from clade_links l join node n on n.nid = l.tid join term_data d on d.vid = %d and d.name = n.title";
+		$results = db_query($sql, $clade_vid);
+		while ($link = db_fetch_array($results)) {
+			$link['tid'] = $link['term_tid'];
+			unset($link['term_tid']);
+			drupal_write_record('clade_links', $link, array('lid'));
+		}
+	}
+	
+	return $ret;
+}
