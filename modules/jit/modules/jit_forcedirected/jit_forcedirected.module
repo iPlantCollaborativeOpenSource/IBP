@@ -1,0 +1,119 @@
+<?php
+//$Id$
+
+function jit_forcedirected_resources() {
+	jit_resources();
+	drupal_add_js(drupal_get_path('module', 'jit_forcedirected') .'/jit_forcedirected.js');
+	drupal_add_css(drupal_get_path('module', 'jit_forcedirected') .'/jit_forcedirected.css');
+}
+
+function jit_forcedirected_menu() {
+	
+	$items = array();
+	if (variable_get('jit_enable_debug', 0)) {
+		$items['jit/forcedirected/debug'] = array(
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('_jit_forcedirected_debug_form'),
+			'title' => 'JIT Force Directed: DEBUG',
+			'type' => MENU_CALLBACK,
+			'access arguments' => array('access content'),
+			);
+// 		$items['jit/forcedirected/debug/node_info/%'] = array(
+// 			'page callback' => '_jit_forcedirected_debug_node_info',
+// 			'page arguments' => array(4),
+// 			'title' => 'JIT Force Directed: DEBUG node info',
+// 			'type' => MENU_CALLBACK,
+// 			'access arguments' => array('access content'),
+// 			);
+// 		$items['jit/forcedirected/debug/search'] = array(
+// 			'page callback' => '_jit_forcedirected_debug_node_search',
+// 			'title' => 'JIT Force Directed: DEBUG node search',
+// 			'type' => MENU_CALLBACK,
+// 			'access arguments' => array('access content'),
+// 			);
+	}
+	return $items;
+}
+
+function jit_forcedirected_theme() {
+	return array(
+		/*
+		 * @param	$json the JSON data to visualize;
+		 * @param $options additional parameters for JIT, overrides $defaults
+		 */
+		'jit_forcedirected' => array(
+			'arguments' => array(
+				'json' => null,
+				'options' => null,
+				),
+			'template' => 'theme/jit-forcedirected',
+			),
+		);
+}
+
+function jit_forcedirected_preprocess_jit_forcedirected(&$vars) {
+	jit_forcedirected_resources();
+	
+	$defaults = array(
+		'id' => 'forcedirected',										// id of FD HTML element
+		);
+	
+	$vars['options'] = array_merge($defaults, $vars['options']);
+}
+
+function _jit_forcedirected_debug_form(&$form_state) {
+	$form = array();
+	
+	$form['demo'] = array(
+		'#value' => theme('jit_forcedirected', _jit_forcedirected_debug_generate(), array())
+		);
+	
+	return $form;
+}
+
+/**
+ * Implementation of hook_ctools_plugin_directory().
+ *
+ * It simply tells panels where to find the .inc files that define various
+ * args, contexts, content_types. In this case the subdirectories of
+ * ctools_plugin_example/panels are used.
+ */
+function jit_forcedirected_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'ctools' && !empty($plugin)) {
+    return "ctools_plugins/$plugin";
+  }
+}
+
+
+function _jit_forcedirected_debug_generate($nodes = 10) {
+	$types = array('circle', 'square', 'triangle', 'star');
+	$colors = array('#83548B','#EBB056','#416D9C','#C74243','#70A35E');
+	$json = array();
+	
+	for ($i = 0; $i < $nodes; $i++) {
+		$node = new stdClass;
+		$node->adjacencies = array();
+		$node->data = new stdClass;
+		$node->data->{'$type'} = $types[array_rand($types)];
+		$node->data->{'$dim'} = rand(10,15);
+		$node->data->{'$color'} = $colors[array_rand($colors)];
+		$node->id = $node->name = "graphnode$i";
+		$json[] = $node;
+	}
+	
+	$colors = array('#000000', '#cd0000', '#00cd00', '#0000cd');
+	
+	for ($i = 0; $i < $nodes; $i++) {
+		$keys = array_rand($json, rand(2,$nodes-1));
+		foreach ($keys as $key) {
+			$adj = new stdClass;
+			$adj->nodeTo = "graphnode$key";
+			$adj->nodeFrom = "graphnode$i";
+			$adj->data = new stdClass;
+			$adj->data->{'$color'} = $colors[array_rand($colors)];
+			$json[$i]->adjacencies[] = $adj;
+		}
+	}
+	
+	return $json;
+}

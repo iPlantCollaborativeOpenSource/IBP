@@ -1,0 +1,7 @@
+; $Id$
+name = JIT Force Directed Visualization
+description = "The JIT Force Directed Visualization."
+core = 6.x
+package = "Visualzation"
+
+dependencies[] = jit
