@@ -1,0 +1,7 @@
+<?php
+//$Id$
+
+function teaser_comments_uninstall() {
+	variable_del('teaser_comments_node_types');
+	variable_del('teaser_comments_node_page');
+}

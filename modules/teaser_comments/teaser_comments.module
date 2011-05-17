@@ -1,0 +1,442 @@
+<?php
+// $Id$
+
+/**
+ * Teaser Comments module.
+ */
+ 
+function teaser_comments_init() {
+	// make sure this is in every page in case of ajax-loaded content
+	drupal_add_css(drupal_get_path('module', 'comment') .'/comment.css');
+	drupal_add_css(drupal_get_path('module', 'teaser_comments') . '/css/teaser_comments.css', 'module');
+	drupal_add_js(drupal_get_path('module', 'teaser_comments') . '/js/teaser_comments.js', 'module');
+}
+
+function teaser_comments_menu() {
+	$items = array();
+	
+	$items['admin/settings/teaser_comments'] = array(
+		'access arguments' => array('administer comments'),
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('teaser_comments_admin_form'),
+		'title' => 'Teaser Comments',
+		);
+	
+	$items['teaser_comments/js/comments/%node'] = array(
+		'access arguments' => array('access comments'),
+		'page callback' => 'teaser_comments_node_comments_ajax',
+		'page arguments' => array(3),
+		);
+		
+	return $items;
+}
+
+function teaser_comments_admin_form() {
+	$form = array();
+	
+	$form['teaser_comments_node_page'] = array(
+		'#type' => 'checkbox',
+		'#title' => t('Use teaser-comments-styled comments on node pages'),
+		'#description' => t('Selecting this option overrides the comment themeing to make comments on node pages look the same as in node teasers.'),
+    '#default_value' => variable_get('teaser_comments_node_page', 0),
+	);
+	
+	$form['node_types'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Content types'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  $form['node_types']['teaser_comments_node_types'] = array(
+    '#type' => 'checkboxes',
+    '#description' => t('Select node types you want to activate teaser comments on.'),
+    '#default_value' => variable_get('teaser_comments_node_types', array()),
+    '#options' => node_get_types('names'),
+  );
+	
+  return system_settings_form($form);
+}
+
+function teaser_comments_preprocess_node(&$variables) {
+// 	error_log(print_r($variables, TRUE));
+	if ($variables['teaser'] && !$variables['preview']) {
+		$tctypes = variable_get('teaser_comments_node_types', array());
+		if (isset($tctypes[$variables['type']]) && $tctypes[$variables['type']]) {
+			$variables['links'] .= theme('teaser_comments_wrapper', $variables['node']);
+		}
+	}
+}
+
+function teaser_comments_theme() {
+	return array(
+			'teaser_comments_wrapper' => array(
+				'arguments' => array(
+					'node' => null,
+					'comment_content' => null,
+					'truncated' => false,
+					'show_all' => null,
+					),
+				'template' => 'teaser_comments_teaser_comments_wrapper',
+				),
+			'teaser_comment' => array(
+				'arguments' => array(
+					'comment' => null,
+					'classes' => null,
+					),
+				'template' => 'teaser_comments_teaser_comment',
+				),
+			'teaser_comment_submitted' => array(
+				'arguments' => array(
+					'comment' => null,
+					),
+				),
+			'teaser_comments_comment_form' => array(
+				'arguments' => array(
+					'form' => null,
+					),
+				),
+		);
+}
+
+function teaser_comments_theme_registry_alter(&$registry) {
+	if (variable_get('teaser_comments_node_page', 0)) {
+		$registry['comment_wrapper']['template'] = 'teaser_comments_teaser_comments_wrapper';
+		$registry['comment_wrapper']['path'] = drupal_get_path('module', 'teaser_comments');
+
+		$registry['comment']['template'] = 'teaser_comments_teaser_comment';
+		$registry['comment']['path'] = drupal_get_path('module', 'teaser_comments');
+	}
+}
+
+function teaser_comments_preprocess_comment_wrapper(&$variables) {
+	if (variable_get('teaser_comments_node_page', 0)) {
+		teaser_comments_preprocess_teaser_comments_wrapper($variables);
+	}
+}
+
+function teaser_comments_preprocess_comment(&$variables) {
+	if (variable_get('teaser_comments_node_page', 0)) {
+		teaser_comments_preprocess_teaser_comment($variables);
+	}
+}
+
+function teaser_comments_preprocess_teaser_comments_wrapper(&$variables) {
+	global $user;
+	
+	$node = $variables['node'];
+
+	$comments = teaser_comments_node_comments($node);
+	$num_comments = count($comments);
+	
+	$comment_content = '';
+	$i = 0;
+	if ($node->teaser) {
+		if ($num_comments > 3) {
+			$i = $num_comments - 2;
+			$variables['show_all'] = l(t('Show @hidden older comments', array('@hidden' => $num_comments - 2)), "teaser_comments/js/comments/{$node->nid}", array('attributes' => array('class' => 'teaser-comment-show-hidden')));
+		}
+	}
+	for (; $i <$num_comments; $i++) {
+		$comment = $comments[$i];
+		$comment_content .= theme('teaser_comment', $comment, 'teaser-comment');
+	}
+	
+	$variables['content'] = $comment_content;
+	$variables['num_comments'] = $num_comments;
+	
+	if ($user->uid) {
+		$variables['comment_form'] = l(t('Write new comment'), "comment/reply/{$node->nid}", array('attributes'=>array('class'=>'teaser-comment-write-comment'))) . drupal_get_form('teaser_comments_comment_form_' . $node->nid, $node->nid);
+	}
+}
+
+function teaser_comments_preprocess_teaser_comment(&$variables) {
+	global $user;
+	$comment = $variables['comment'];
+	$variables['content'] = check_markup($comment->comment, $comment->format, FALSE);	
+	$variables['submitted']	= theme('teaser_comment_submitted', $comment);
+	$author = user_load($comment->uid);
+	if ($user->uid) {
+		$actions = array();
+		$actions[] = l(theme('image', drupal_get_path('module', 'teaser_comments') . '/images/reply.png', 'Reply', 'Reply'), "comment/reply/{$comment->nid}/{$comment->cid}", array('html' => true, 'attributes' => array('class' => 'teaser-comment-reply')));
+		if ($user->uid == $comment->uid || user_access('administer comments')) {
+			$actions[] = l(theme('image', drupal_get_path('module', 'teaser_comments') . '/images/edit.png', 'Edit', 'Edit'), "comment/edit/{$comment->cid}", array('html' => true, 'attributes' => array('class' => 'teaser-comment-edit')));
+			$variables['edit_form'] = drupal_get_form('teaser_comments_edit_form_' . $comment->cid, $comment->cid);
+		}
+		if (user_access('administer comments')) {
+			$actions[] = l(theme('image', drupal_get_path('module', 'teaser_comments') . '/images/delete.png', 'Delete', 'Delete'), "comment/delete/{$comment->cid}", array('html' => true, 'attributes' => array('class' => 'teaser-comment-delete')));
+		}
+		$variables['actions'] = theme('item_list', $actions);
+		$variables['reply_form'] = drupal_get_form('teaser_comments_comment_form_' . $comment->nid . '_' . $comment->cid, $comment->nid, $comment->cid);
+		$variables['author'] = theme('username', $author);
+		if ($author->picture) {
+			$variables['author_picture']	= l(theme('imagecache', 'profile_tiny', $author->picture, '', '', array('class' => 'author-pic')), "user/{$comment->uid}", array('html' => true));
+		}
+	} else {
+		$variables['author'] = theme('username', $author);
+		if ($author->picture) {
+			$variables['author_picture']	= theme('imagecache', 'profile_tiny', $author->picture, '', '', array('class' => 'author-pic'));
+		}
+	}
+	
+	$variables['status'] .= ' teaser-comment';
+}
+
+function teaser_comments_node_comments($node) {
+	$query = 'SELECT c.cid as cid, c.pid, c.nid, c.subject, c.comment,
+		c.format, c.timestamp, c.name, c.mail, c.homepage, u.uid, u.name AS
+		registered_name, u.signature, u.signature_format, u.picture, u.data,
+		c.thread, c.status FROM {comments} c INNER JOIN {users} u ON c.uid =
+		u.uid WHERE c.nid = %d';
+	$args = array($node->nid);
+	if ($cid) {
+		// single comment
+		$query .= ' AND c.cid = %d';
+		$args[] = $cid;
+		$results = db_query($query, $args);
+		if ($r = db_fetch_object($results)) {
+			return $r;
+		}
+	} else {
+		// multiple comments
+		$mode = _comment_get_display_setting('mode', $node);
+		$order = _comment_get_display_setting('sort', $node);
+		if ($order == COMMENT_ORDER_NEWEST_FIRST) {
+			if ($mode == COMMENT_MODE_FLAT_COLLAPSED || $mode == COMMENT_MODE_FLAT_EXPANDED) {
+				$query .= ' ORDER BY c.cid DESC';
+			} else {
+				$query .= ' ORDER BY c.thread DESC';
+			}
+		} else if ($order == COMMENT_ORDER_OLDEST_FIRST) {
+			if ($mode == COMMENT_MODE_FLAT_COLLAPSED || $mode == COMMENT_MODE_FLAT_EXPANDED) {
+				$query .= ' ORDER BY c.cid';
+			} else {
+				$query .= ' ORDER BY SUBSTRING(c.thread, 1, (LENGTH(c.thread) - 1))';
+			}
+		}
+		$comments = array();
+		$results = db_query($query, $args);
+		while ($r = db_fetch_object($results)) {
+			$comments[] = $r;
+		}
+		return $comments;
+	}
+}
+
+function teaser_comments_node_comments_ajax($node) {
+	$comments = teaser_comments_node_comments($node);
+	$content = '';
+	$mode = _comment_get_display_setting('mode', $node);
+	if ($mode == COMMENT_MODE_FLAT_COLLAPSED || $mode == COMMENT_MODE_FLAT_EXPANDED) {
+		foreach ($comments as $comment) {
+			$content .= theme('teaser_comment', $comment, 'teaser-comment');
+		}
+	} else {
+		$divs = 0;
+		foreach ($comments as $comment) {
+			$depth = count(explode('.', $comment->thread)) - 1;
+			if ($depth > $divs) {
+				$content .= '<div class="indented">';
+				$divs++;
+			} else {
+				while ($depth < $divs) {
+					$content .= '</div>';
+					$divs--;
+				}
+			}
+			$content .= theme('teaser_comment', $comment, 'teaser-comment');
+		}
+	}
+	print $content;
+	die;
+}
+
+function teaser_comments_forms($form_id, $args) {
+	$forms = array();
+	if (strpos($form_id, 'teaser_comments_comment_form') === 0) {
+		$forms[$form_id] = array(
+			'callback' => 'teaser_comments_comment_form',
+			);
+	} else if (strpos($form_id, 'teaser_comments_edit_form') === 0) {
+		$forms[$form_id] = array(
+			'callback' => 'teaser_comments_edit_form',
+			);
+	}
+	return $forms;
+}
+
+function teaser_comments_edit_form(&$form_state, $cid) {
+	global $user;
+	
+	$comment = _comment_load($cid);
+	$form = array();
+	$form['cid'] = array(
+		'#type' => 'value',
+		'#value' => $comment->cid,
+		);
+	$form['nid'] = array(
+		'#type' => 'value',
+		'#value' => $comment->nid,
+		);
+	$form['pid'] = array(
+		'#type' => 'value',
+		'#value' => $comment->pid,
+		);
+	$form['uid'] = array(
+		'#type' => 'value',
+		'#value' => $user->uid,
+		);
+	$form['comment'] = array(
+		'#type' => 'textarea',
+		'#rows' => 3,
+		'#required' => true,
+		'#title' => t('Comment'),
+		'#default_value' => $comment->comment,
+		);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save'),
+		'#prefix' => '<div class="buttons">',
+		);
+	$form['cancel'] = array(
+		'#type' => 'markup',
+		'#value' => l(t('Cancel'), "node/{$comment->nid}", array('attributes'=>array('class'=>'teaser-comment-edit-comment-cancel'))),
+		'#suffix' => '</div>',
+		);
+	$form['#validate'] = array('teaser_comments_edit_form_validate');
+	$form['#submit'] = array('teaser_comments_edit_form_submit');
+	$form['#theme'] = 'teaser_comments_comment_form';
+	
+	return $form;
+}
+
+function teaser_comments_edit_form_validate($form, &$form_state) {
+	if (form_get_errors()) {
+		$errors = drupal_get_messages('error'); // clear error messages set from core
+		$resp = new stdClass;
+		$resp->success = 0;
+		$body = '';
+		foreach ($errors['error'] as $error) {
+			$body .= $error;
+		}
+		$resp->body = $body;
+		print drupal_to_js($resp);
+		exit();
+	}
+}
+
+function teaser_comments_edit_form_submit($form, &$form_state) {
+	$values = $form_state['values'];
+	_comment_form_submit($values);
+	if ($cid = comment_save($values)) {
+		$comment = _comment_load($cid);
+		$resp = new stdClass;
+		$resp->success = 1;
+		$resp->body = check_markup($comment->comment, $comment->format, FALSE);
+		print drupal_to_js($resp);
+		exit();
+	} else {
+		$resp = new stdClass;
+		$resp->success = 0;
+		$resp->body = t('Error saving comment. Please try again');
+		print drupal_to_js($resp);
+		exit();
+	}
+}
+
+function teaser_comments_comment_form(&$form_state, $nid, $pid = NULL) {
+	global $user;
+	
+	$form = array();
+	$form['nid'] = array(
+		'#type' => 'value',
+		'#value' => $nid,
+		);
+	$form['pid'] = array(
+		'#type' => 'value',
+		'#value' => $pid,
+		);
+	$form['uid'] = array(
+		'#type' => 'value',
+		'#value' => $user->uid,
+		);
+	$form['comment'] = array(
+		'#type' => 'textarea',
+		'#rows' => 3,
+		'#required' => true,
+		'#title' => t('Comment'),
+		);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => $pid ? t('Post Reply') : t('Post Comment'),
+		'#prefix' => '<div class="buttons">',
+		);
+	$form['cancel'] = array(
+		'#type' => 'markup',
+		'#value' => l(t('Cancel'), "node/$nid", array('attributes'=>array('class'=>'teaser-comment-write-comment-cancel'))),
+		'#suffix' => '</div>',
+		);
+	$form['#validate'] = array('teaser_comments_comment_form_validate');
+	$form['#submit'] = array('teaser_comments_comment_form_submit');
+	$form['#theme'] = 'teaser_comments_comment_form';
+	
+	return $form;
+}
+
+function teaser_comments_comment_form_validate($form, &$form_state) {
+	if (form_get_errors()) {
+		$errors = drupal_get_messages('error'); // clear error messages set from core
+		$resp = new stdClass;
+		$resp->success = 0;
+		$body = '';
+		foreach ($errors['error'] as $error) {
+			$body .= $error;
+		}
+		$resp->body = $body;
+		print drupal_to_js($resp);
+		exit();
+	}
+}
+
+function teaser_comments_comment_form_submit($form, &$form_state) {
+	_comment_form_submit($form_state['values']);
+	if ($cid = comment_save($form_state['values'])) {
+		$comment = _comment_load($cid);
+		$resp = new stdClass;
+		$resp->success = 1;
+		$node = node_load($comment->nid);
+		$mode = _comment_get_display_setting('mode', $node);
+		if ($mode == COMMENT_MODE_FLAT_COLLAPSED || $mode == COMMENT_MODE_FLAT_EXPANDED) {
+			$resp->mode = 'flat';
+		} else {
+			$resp->mode = 'threaded';
+		}
+		$resp->body = theme('teaser_comment', $comment, 'teaser-comment');
+		print drupal_to_js($resp);
+		die;
+	} else {
+		$resp = new stdClass;
+		$resp->success = 0;
+		$resp->body = t('Error saving comment. Please try again');
+		print drupal_to_js($resp);
+		die;
+	}
+}
+
+function teaser_comments_link_alter(&$links, $node, $comment = null) {
+	unset($links['comment_add']);
+	unset($links['comment_comments']);
+	unset($links['comment_new_comments']);
+}
+
+function theme_teaser_comment_submitted($comment) {
+	return t('posted on @date',
+		array(
+			'@date'=> format_date($comment->timestamp, 'custom', 'g:i a, M d, Y')
+		));
+}
+
+function theme_teaser_comments_comment_form($form) {
+	// don't render label for comment field
+	unset($form['comment']['#title']);
+	return drupal_render($form);
+}

@@ -1,0 +1,8 @@
+; $Id$
+name = Teaser Comments
+description = Displays node comments inline; useful to put comments in teaser
+core = 6.x
+package = "Other"
+
+dependencies[] = comment
+dependencies[] = jquery_update

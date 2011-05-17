@@ -1,0 +1,134 @@
+.teaser-comments-container {
+	margin: 1em 2.5em;
+	padding: 0;
+}
+
+.teaser-comments {
+}
+
+.teaser-comment,
+a.teaser-comment-show-hidden,
+div.teaser-comment-form {
+	border-width: 1px;
+	border-color: #bebebe;
+	border-style: solid;
+	background: #e6f3f6;
+	background: -moz-linear-gradient(top center, #f2f9fb, #f2f9fb, #d9edf2);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f2f9fb), color-stop(0.33, #f2f9fb), color-stop(0.67, #d9edf2));
+	margin-bottom: 3px;
+	padding: 3px;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	position: relative;
+}
+
+a.teaser-comment-show-hidden {
+	display: block;
+	text-align: center;
+}
+
+span.busy {
+	background-position: 0 -20px;
+	position: absolute;
+	top: 50%;
+	right: 7px;
+	width: 15px;
+	height: 15px;
+	margin-top: -7px;
+}
+
+div.teaser-comment-form form,
+div.teaser-comment-reply-form form,
+div.teaser-comment-edit-form form {
+	text-align: center;
+}
+
+div.teaser-comment-form form .resizable-textarea,
+div.teaser-comment-reply-form form .resizable-textarea,
+div.teaser-comment-edit-form form .resizable-textarea {
+	width: 95%;
+	margin: 0 2.5%;
+}
+
+div.teaser-comment-form form div.buttons,
+div.teaser-comment-reply-form form div.buttons,
+div.teaser-comment-edit-form form div.buttons {
+	text-align: right;
+	margin: 0 2.5%;
+}
+
+div.teaser-comment-form a.teaser-comment-write-comment {
+	display: block;
+	text-align: center;
+}
+
+div.teaser-comment-form form,
+div.teaser-comment-reply-form,
+div.teaser-comment-edit-form {
+	display: none;
+}
+
+.teaser-comment a.teaser-comment-delete,
+.teaser-comment a.teaser-comment-edit,
+.teaser-comment a.teaser-comment-reply {
+	display: none;
+}
+
+.teaser-comment:hover a.teaser-comment-delete,
+.teaser-comment:hover a.teaser-comment-edit,
+.teaser-comment:hover a.teaser-comment-reply {
+	display: block;
+}
+
+.teaser-comment div.author {
+}
+
+.teaser-comment div.author a,
+.teaser-comment div.author img,
+.teaser-comment div.author span {
+	vertical-align: middle;
+}
+
+.teaser-comment p {
+	margin: 0.5em 0.1em;
+}
+
+.teaser-comment div.meta {
+	color: #7a7a7a;
+}
+
+.teaser-comment-form textarea,
+.teaser-comment-reply-form textarea {
+	font-size: 0.9em;
+	line-height: 1.2em;
+	border: 1px solid #cccccc;
+}
+
+.teaser-comment .actions {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+}
+
+.teaser-comment .actions a {
+	opacity: 0.50;
+}
+
+.teaser-comment .actions a:hover {
+	opacity: 1;
+}
+
+.teaser-comment .actions ul {
+	list-style: none;
+}
+
+.teaser-comment .actions ul li {
+	float: right;
+	margin-right: 0.2em;
+}
+
+.teaser-comment.replying .actions,
+.teaser-comment.editing .actions {
+	display: none;
+}
