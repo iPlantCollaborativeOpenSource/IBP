@@ -2047,53 +2047,59 @@ function clade_admin_page() {
 }
 
 function clade_admin_relationships() {
-	
-	
 	return drupal_get_form('clade_admin_relationships_form');
 }
 
 function clade_admin_relationships_form(&$form_state) {
+	drupal_add_js(drupal_get_path('module', 'clade') . '/clade-admin-relationships.js');
 	$vid = variable_get('clade_vocabulary', 0);
 	$form = array();
 	$tree = taxonomy_get_tree($vid);
+	$form['groups'] = array(
+		'#tree' => TRUE,
+		);
 	foreach($tree as $clade) {
 		$key = strtolower(str_replace(' ', '_', $clade->name));
-		$form[$key] = array(
+		$form['groups'][$key] = array(
 			'#type' => 'fieldset',
 			'#title' => $clade->name . ' Relationships',
 			'#tree' => TRUE,
+			'#attributes' => array('class' => 'displayinline')
 			);
-		$form[$key]['tid'] = array(
-			'#type' => 'value',
+		$form['groups'][$key]['tid'] = array(
+			'#type' => 'hidden',
 			'#value' => $clade->tid,
 			);
-		$form[$key]['relations'] = _taxonomy_term_select(
-			t('Related Clades'),
-			'relations',
-			array_keys(taxonomy_get_related($clade->tid)),
-			$vid,
-			NULL,
-			1,
-			'<'. t('none') .'>',
-			array($clade->tid)
+		$form['groups'][$key]['relations'] = _taxonomy_term_select(
+				t('Related Clades'),
+				'relations',
+				array_keys(taxonomy_get_related($clade->tid)),
+				$vid,
+				NULL,
+				1,
+				'<'. t('none') .'>',
+				array($clade->tid)
+			);
+		$form['groups'][$key]['relations']['#attributes'] = array(
+			'class' => 'clade-relationships'
 			);
 	}
 	
 	$form['submit'] = array(
 		'#type' => 'submit',
 		'#value' => t('Submit'),
+		'#prefix' => '<div>',
+		'#suffix' => '</div>',
 		);
 	
 	return $form;
 }
 
 function clade_admin_relationships_form_submit($form, &$form_state) {
-	foreach ($form_state['values'] as $value) {
+	foreach ($form_state['values']['groups'] as $value) {
 		$term = (array) taxonomy_get_term($value['tid']);
-		if (is_array($value['relations'])) {
+		if ($value['relations']) {
 			$term['relations'] = $value['relations'];
-		} else {
-			$term['relations'] = array($value['relations']);
 		}
 		taxonomy_save_term($term);
 	}

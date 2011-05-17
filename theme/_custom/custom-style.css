@@ -1,0 +1,153 @@
+/****************************/
+/* CUSTOM STYLE CSS         */
+/****************************/
+/* 
+Put your custom css and css overrides in this file.  By restricting 
+your css changes to custom-style.css, your changes will not be overwritten 
+when upgrading to a new version of this theme.
+
+Steps to customize your 0 Point theme:                       
+1. Add your custom css to this file                
+2. Uncomment different examples and modify data as you wish 
+3. Clear cached data at admin/settings/performance 
+4. Save this file with a different name to avoid loosing it after a theme update.
+*/
+/****************************/
+
+/* Erase or comment the lines below to get rid of the image in the right sidebar 
+ * and the brand image or choose another image and change the path instead. */
+
+#wrapper {
+	background: transparent url(../images/all/_sidebarimg.png) 99% 99% no-repeat;
+}
+
+#brand {
+/*	background: url(../images/all/_brand.png) 50% 30% no-repeat; */
+	background: url(../images/all/IBPFooter50.png) 50% 30% no-repeat;
+	position: left;
+	margin: 5px auto 0;
+/*	width: 250px;*/
+	width: 500px;
+	height: 50px;
+}
+
+/************************/
+/* HEADER IMAGE ROTATOR */
+/************************/
+.himg #headimg {
+	background: #fff url(headerimg/rotate.php) no-repeat 100% 100%; /* rotates images in the headerimg folder */
+	border-bottom: 1px solid #eee;
+}
+
+/********************/
+/* DROP DOWN SHADOW */
+/********************/
+
+ul.firstsublayer, 
+ul.sublayer {
+	background: url(../images/menushadow.png) no-repeat 7px 5px; 
+}
+
+
+
+
+/* Uncomment the first declaration below to hide the titles on the front page 
+ * Addapt the second declaration to hide a certain title. 
+ * Third one is for no "Read more" on the first page. */ 
+/*
+.front h2 a {
+	display: none;
+}
+.front #node-XXX h2 a {
+	display: none;
+}
+.front .node_read_more {
+	display: none;
+}
+*/
+
+
+/*******************************/
+/* CUSTOM FIXED or FLUID WIDTH */
+/*******************************/ 
+/* First choose "Custom Layout width" in 0 Point settings page.
+ * Uncomment the lines below and modify the value as you wish. 
+ * E.g. 1000px for fixed width or 85% for fluid width */
+/*
+body.layout-fluid .sizer {
+	width: 90%;
+}
+body.layout-fixed .sizer {
+	width: 980px;
+}
+*/
+
+
+/*******************************/
+/* CUSTOM Equal width sidebars */
+/*******************************/ 
+/* First choose "Equal width sidebars" in 0 Point settings page.
+ * Uncomment the lines below and modify the values keeping pair values. */
+/*
+body.l-m-r-eq .colleft, body.m-r-eq .colleft, body.l-m-eq .colleft {
+	width: 199px;
+	margin-left: -199px;
+}
+body.l-m-r-eq .colright, body.m-r-eq .colright, body.l-m-eq .colright {
+	width: 199px;
+	margin-right: -199px;
+}
+body.l-m-r-eq .outer, body.l-m-eq .outer, body.l-m-eq .outer {
+	margin-left: 199px;
+}
+body.l-m-r-eq .outer, body.m-r-eq .outer, body.m-r-eq .outer {
+	margin-right: 199px;
+}
+body.l-m-eq .colleft {
+	width: 199px;
+	margin-left: -199px;
+}
+body.m-r-eq .colright {
+	width: 199px;
+	margin-right: -199px;
+}
+*/
+
+
+/******************************/
+/* SPECIAL STATIC-MENU COLORS */
+/******************************/
+
+/* Uncomment this to have different colors (and chooose them) for first and last menu items. */
+/*
+#navlist li.first a {
+	background: #D0932C;
+}
+#navlist li.last a {
+	background: #BF5D8C;
+}
+*/
+
+
+/* Change the values below accordingly: XXX=menu numer; YYY=background color. */
+/*
+#navlist li.menu-XXX a {
+	background: #YYY;
+}
+*/
+
+
+/*******************************/
+/* UPDATE ICONS FOR NEW BLOCKS */
+/*******************************/
+/* where XXX is the block number */
+
+/*
+#block-block-XXX .block-icon {
+background: transparent url(../images/contact_48.png) no-repeat;
+}
+*/
+
+.displayinline {
+	display: inline;
+}

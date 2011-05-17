@@ -25,8 +25,14 @@ Drupal.jit.forceDirected = function(options) {
 		that.node_info.setPositionInViz = function(pos, animate) {
 			var canvas = $(that.fd.canvas.getElement());
 			var css = canvas.offset()
-			css.top += pos.y + canvas.height()/2 + that.fd.config.Tips.offsetY;
-			css.left += pos.x + canvas.width()/2 + that.fd.config.Tips.offsetX;
+			css.top += pos.y * that.fd.canvas.scaleOffsetY +
+									that.fd.canvas.translateOffsetY +
+									canvas.height()/2 +
+									that.fd.config.Tips.offsetY;
+			css.left += pos.x * that.fd.canvas.scaleOffsetX +
+									that.fd.canvas.translateOffsetX +
+									canvas.width() / 2 +
+									that.fd.config.Tips.offsetX;
 			if (animate)
 				that.node_info.div.animate(css);
 			else
@@ -158,6 +164,10 @@ Drupal.jit.forceDirected = function(options) {
       },
       onMouseLeave: function() {
         that.fd.canvas.getElement().style.cursor = '';
+      },
+      onMouseWheel: function() {
+      	if (options['enable_node_info'])
+					that.node_info.setPositionInViz(that.fd.graph.getNode(that.node_info.node_id).pos, false);
       },
       //Update node positions when dragged
       onDragMove: function(node, eventInfo, e) {
