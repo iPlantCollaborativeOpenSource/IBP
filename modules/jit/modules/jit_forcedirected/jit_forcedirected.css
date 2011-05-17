@@ -8,10 +8,10 @@
 	border-radius: 3px 3px;
 	
 	background-color: #b4d6ac;
-	background-image: -moz-linear-gradient(-45deg, #d3e7ce, #9fcb95, #d3e7ce);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, #9fcb95, #8bc07e, #d3e7ce);
-	background-image: -webkit-linear-gradient(-45deg, #d3e7ce, #9fcb95, #d3e7ce);
-	background-image: -o-linear-gradient(-45deg, #d3e7ce, #9fcb95, #d3e7ce);
+	background-image: -moz-radial-gradient(#d3e7ce, #9fcb95);
+	background-image: -webkit-gradient(radial, 50% 50%, 100, 50% 50%, 400, color-stop(0,#d3e7ce), color-stop(1,#9fcb95));
+	background-image: -webkit-radial-gradient(#d3e7ce, #9fcb95);
+	background-image: -o-radial-gradient(#d3e7ce, #9fcb95);
 }
 
 .jit-forcedirected .node {
@@ -21,11 +21,13 @@
 }
 
 .tip {
+	position: absolute;
+	z-index: 10000;
 	background-color: #fefbf4;
-	background-image: -moz-linear-gradient(-45deg, #fefbf4, #fcf4e5, #fefbf4);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, #fefbf4, #fcf4e5, #fefbf4);
-	background-image: -webkit-linear-gradient(-45deg, #fefbf4, #fcf4e5, #fefbf4);
-	background-image: -o-linear-gradient(-45deg, #fefbf4, #fcf4e5, #fefbf4);
+	background-image: -moz-linear-gradient(#fefbf4, #fcf4e5);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #fefbf4), color-stop(1, #fcf4e5));
+	background-image: -webkit-linear-gradient(#fefbf4, #fcf4e5);
+	background-image: -o-linear-gradient(#fefbf4, #fcf4e5);
 	
 	-moz-box-shadow:	0 0 2px 0px #444;
 	-webkit-box-shadow:	0 0 2px 0px #444;

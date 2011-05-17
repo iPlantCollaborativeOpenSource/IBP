@@ -17,6 +17,57 @@ Drupal.jit.forceDirected = function(options) {
 			useGradients = nativeCanvasSupport,
 			animate = !(iStuff || !nativeCanvasSupport);
 
+	if (options['enable_node_info']) {
+		that.node_info = {};
+		that.node_info.div = $('<div class="tip hidden">').attr('id', that.thisid + "_node_info");
+		$('body').append(that.node_info.div);
+		
+		that.node_info.setPositionInViz = function(pos, animate) {
+			var canvas = $(that.fd.canvas.getElement());
+			var css = canvas.offset()
+			css.top += pos.y + canvas.height()/2 + that.fd.config.Tips.offsetY;
+			css.left += pos.x + canvas.width()/2 + that.fd.config.Tips.offsetX;
+			if (animate)
+				that.node_info.div.animate(css);
+			else
+				that.node_info.div.css(css);
+		}
+	}
+	
+	var clickHandler = function(node) {
+		highlightAdj(node);
+		if (node && options['enable_node_info']) {
+			if (that.node_info.div.hasClass('shown'))
+				that.node_info.setPositionInViz(node.pos, true);
+			else
+				that.node_info.setPositionInViz(node.pos, false);
+			var id = node['id'].replace(that.thisid + '_node_', '');
+			var url = Drupal.settings.basePath + options['node_info_path'] + id;
+			$.ajax({
+				url: url,
+				dataType: 'json',
+				beforeSend: function(resp) {
+					that.node_info.node_id = node['id'];
+					that.node_info.div.fadeIn().removeClass('hidden').addClass('shown');
+					that.node_info.div.html("<div class='tip-title'>Loading...</div><div class='tip-text'></div>");
+				},
+				success: function(resp) {
+					if (resp.success) {
+						that.node_info.div.html("<div class='tip-title'>" + resp.title + "</div><div class='tip-text'>" + resp.body + "</div>");
+					} else {
+						that.node_info.div.html("<div class='tip-title'>Error!</div><div class='tip-text'>Unable to load node info</div>");
+					}
+				},
+				error: function() {
+					that.node_info.div.html("<div class='tip-title'>Error!</div><div class='tip-text'>Unable to load node info</div>");
+				}
+			});
+		} else {
+			that.node_info.div.fadeOut().removeClass('shown').addClass('hidden');
+			that.node_info.node_id = '';
+		}
+	}
+	
 	var highlightAdj = function(node) {
 		that.fd.graph.eachNode(function(n) {
 			n.eachAdjacency(function(adj) {
@@ -42,7 +93,7 @@ Drupal.jit.forceDirected = function(options) {
       //Enable panning events only if we're dragging the empty
       //canvas (and not a node).
       panning: 'avoid nodes',
-      zooming: 25 //zoom speed. higher is more sensible
+      zooming: 15 //zoom speed. higher is more sensible
     },
     // Change node and edge styles such as
     // color and width.
@@ -54,7 +105,7 @@ Drupal.jit.forceDirected = function(options) {
     },
     Edge: {
       overridable: true,
-      color: '#23A4FF',
+      color: options['edge_color'] ? options['edge_color'] : '#23A4FF',
       lineWidth: 0.4
     },
     //Native canvas text styling
@@ -62,20 +113,42 @@ Drupal.jit.forceDirected = function(options) {
       type: labelType, //Native or HTML
       size: 10,
       style: 'normal',
-      color: '#454545'
+      color: options['label_color'] ? options['label_color'] : '#454545',
     },
     //Add Tips
-    Tips: {
-      enable: true,
-      onShow: function(tip, node) {
-        //count connections
-        var count = 0;
-        node.eachAdjacency(function() { count++; });
-        //display node info in tooltip
-        tip.innerHTML = "<div class=\"tip-title\">" + node.name + "</div>"
-          + "<div class=\"tip-text\"><b>connections:</b> " + count + "</div>";
-      }
-    },
+//     Tips: {
+//       enable: options['enable_node_info'],
+//       onShow: function(tip, node) {
+//       	if (options['node_info_path']) {
+//       		var id = node['id'].replace(that.thisid + '_node_', '');
+//       		var url = Drupal.settings.basePath + options['node_info_path'] + id;
+//       		$.ajax({
+//       			url: url,
+//       			dataType: 'json',
+//       			beforeSend: function(resp) {
+//       				tip.innerHTML = "<div class='tip-title'>Loading...</div><div class='tip-text'></div>";
+//       			},
+//       			success: function(resp) {
+//       				if (resp.success) {
+// 								tip.innerHTML = "<div class='tip-title'>" + resp.title + "</div><div class='tip-text'>" + resp.body + "</div>";
+// 							} else {
+// 								tip.innerHTML = "<div class='tip-title'>Error!</div><div class='tip-text'>Unable to load node info</div>";
+// 							}
+//       			},
+//       			error: function() {
+//       				tip.innerHTML = "<div class='tip-title'>Error!</div><div class='tip-text'>Unable to load node info</div>";
+//       			}
+//       		});
+//       	} else { // default
+// 					//count connections
+// 					var count = 0;
+// 					node.eachAdjacency(function() { count++; });
+// 					//display node info in tooltip
+// 					tip.innerHTML = "<div class=\"tip-title\">" + node.name + "</div>"
+// 						+ "<div class=\"tip-text\"><b>connections:</b> " + count + "</div>";
+// 				}
+//       }
+//     },
     // Add node events
     Events: {
       enable: true,
@@ -91,6 +164,8 @@ Drupal.jit.forceDirected = function(options) {
           var pos = eventInfo.getPos();
           node.pos.setc(pos.x, pos.y);
           that.fd.plot();
+          if (options['enable_node_info'] && that.node_info.node_id == node['id'])
+          	that.node_info.setPositionInViz(node.pos, false);
       },
       //Implement the same handler for touchscreens
       onTouchMove: function(node, eventInfo, e) {
@@ -98,7 +173,7 @@ Drupal.jit.forceDirected = function(options) {
         this.onDragMove(node, eventInfo, e);
       },
       //Add also a click handler to nodes
-      onClick: highlightAdj,
+      onClick: clickHandler,
       onDragStart: highlightAdj,
       onTouchStart: function(node, eventInfo, e) {
         $jit.util.event.stop(e); //stop default touch event
@@ -150,10 +225,16 @@ Drupal.jit.forceDirected = function(options) {
 		});
 	};
 	
-	$(window).resize(function() {
+	
+	that.jitctxt.bind('mouseenter', function() {
+		that.fd.canvas.getPos(true);
+	});
+	
+	$(window).bind('resize', function() {
 		var w = $('#' + that.thisid).width(),
 				h = $('#' + that.thisid).height();
 		that.fd.canvas.resize(w,h);
+		that.fd.canvas.getPos(true);
 	});
 	
 	return that;

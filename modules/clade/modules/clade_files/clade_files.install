@@ -47,7 +47,7 @@ function clade_files_install() {
   // set clade_files vocabulary variable
   variable_set('clade_files_fs', $vocabulary['vid']);
     
-  // TODO create "directories" for any existing clades
+  // create "directories" for any existing clades
   $results = db_query("SELECT * from {term_data} where vid = %d");
   $clade_vid = variable_get('clade_vocabulary', 0);
   while ($term = db_fetch_object($results, $clade_vid)) {
@@ -62,99 +62,17 @@ function clade_files_install() {
     taxonomy_save_term($term);
   }
   
-  // create cck file field
-  $field = array (
-      'label' => 'File',
-      'field_name' => 'clade_file_file',
-      'type' => 'filefield',
-      'widget_type' => 'filefield_widget',
-      'change' => 'Change basic information',
-      'weight' => '-4',
-      'file_extensions' => '', // accept all files; security?
-      'progress_indicator' => 'bar',
-      'file_path' => '',
-      'max_filesize_per_file' => '',
-      'max_filesize_per_node' => '',
-      'description' => '',
-      'group' => false,
-      'required' => 1,
-      'multiple' => '0',
-      'list_field' => '0',
-      'list_default' => 1,
-      'description_field' => '1',
-      'op' => 'Save field settings',
-      'module' => 'filefield',
-      'widget_module' => 'filefield',
-      'columns' => 
-      array (
-        'fid' => 
-        array (
-          'type' => 'int',
-          'not null' => false,
-          'views' => true,
-        ),
-        'list' => 
-        array (
-          'type' => 'int',
-          'size' => 'tiny',
-          'not null' => false,
-          'views' => true,
-        ),
-        'data' => 
-        array (
-          'type' => 'text',
-          'serialize' => true,
-          'views' => true,
-        ),
-      ),
-      'display_settings' => 
-      array (
-        'label' => 
-        array (
-          'format' => 'inline',
-          'exclude' => 0,
-        ),
-        'teaser' => 
-        array (
-          'format' => 'default',
-          'exclude' => 0,
-        ),
-        'full' => 
-        array (
-          'format' => 'default',
-          'exclude' => 0,
-        ),
-        4 => 
-        array (
-          'format' => 'default',
-          'exclude' => 0,
-        ),
-        2 => 
-        array (
-          'format' => 'default',
-          'exclude' => 0,
-        ),
-        3 => 
-        array (
-          'format' => 'default',
-          'exclude' => 0,
-        ),
-        'token' => 
-        array (
-          'format' => 'default',
-          'exclude' => 0,
-        ),
-      ),
-    );
-  module_load_include('inc', 'content', 'includes/content.crud');
-  $field['type_name'] = 'clade_file';
-  content_field_instance_create($field);
+  // TODO: create cck fields here?
   
   // allow comments
   variable_set('comment_clade_file', '2');
   variable_set('comment_default_mode_clade_file', '2');
   variable_set('comment_default_order_clade_file', '2');
   variable_set('comment_controls_clade_file', '3');
+  variable_set('comment_form_location_clade_file', '1');
+  
+  // path auto
+  variable_set('pathauto_node_clade_file_pattern','clade/[term-raw]/files/[clade_file_file-filefield-onlyname]');
   
 	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
 	db_query("UPDATE {system} SET weight = %d WHERE name = 'clade_files'", $weight + 1);
@@ -162,12 +80,12 @@ function clade_files_install() {
 
 
 function clade_files_uninstall() {
+  drupal_uninstall_schema('clade_files');
+
   // delete clade_files vocabulary
   $vid = variable_get('clade_files_fs', '');
   taxonomy_del_vocabulary($vid);
-  
-  // TODO: delete clade files ?
-  
+    
   // remove clade_files variables
   variable_del('clade_files_fs');
   
@@ -175,6 +93,7 @@ function clade_files_uninstall() {
   variable_del('comment_default_mode_clade_file');
   variable_del('comment_default_order_clade_file');
   variable_del('comment_controls_clade_file');
+  variable_del('comment_form_location_clade_file');
 }
 
 function clade_files_update_6001() {

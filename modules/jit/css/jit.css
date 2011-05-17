@@ -205,14 +205,16 @@ div.jit-modal-close .button {
 	max-width: 200px;
 }
 
-.jit ul, .jit .item-list ul {
-	margin: 0.5em 0.5em 0;
-	padding: 0;
+.jit-node-info .content ul,
+.jit-help .content ul {
+	margin: 0 0.5em;
+	padding: 0 0 0 1em;
 }
 
-.jit ul li, .jit .item-list ul li {
+.jit-node-info .content ul li,
+.jit-help .content ul li {
 	margin: 0;
-	padding: 0 0 0 1em;
+	padding: 0;
 }
 
 .jit-before {

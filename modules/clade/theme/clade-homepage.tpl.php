@@ -5,6 +5,7 @@
 		</div>
 	<?php endif; ?>
 	
+<!-- 
 	<div class="clade-body">
 		<?php if ($new_members) : ?>
 			<h2 class="title"><?php print t('New Clade Members'); ?></h2>
@@ -44,6 +45,8 @@
 			</div>
 	<?php } ?>
 	</div>
+ -->
+ 
 <?php } else { ?>
 	<p>
 		<?php print t('This clade is not currently active.  Only clades that are active are available to join.  We encourage users that have an interest managing a clade to tell us.'); ?>

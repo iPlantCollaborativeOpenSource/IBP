@@ -27,9 +27,14 @@ function clade_jit_menu() {
 				'page callback' => clade_jit_spacetree,
 				'access arguments' => array('access content')
 				),
-			'clade/jit/spacetree/node_info/%' => array(
+			'clade/jit/forcedirected' => array(
+				'title' => t('Clade Force Directed Visualization'),
+				'page callback' => clade_jit_forcedirected,
+				'access arguments' => array('access content')
+				),
+			'clade/jit/node_info/%' => array(
 				'page callback' => 'clade_jit_jit_node_info',
-				'page arguments' => array(4),
+				'page arguments' => array(3),
 				'title' => 'Clade node info for JIT callback',
 				'type' => MENU_CALLBACK,
 				'access arguments' => array('access content'),
@@ -39,12 +44,17 @@ function clade_jit_menu() {
 
 function clade_jit_theme() {
 	return array(
-			'clade_homepage_clade_spacetree' => array(
-				'arguments' => array(
-					'spacetree' => null,
-					'title' => t('Local Network'),
-					),
-				'template' => 'theme/clade-homepage-clade-spacetree',
+// 			'clade_homepage_clade_spacetree' => array(
+// 				'arguments' => array(
+// 					'spacetree' => null,
+// 					'title' => t('Local Network'),
+// 					),
+// 				'template' => 'theme/clade-homepage-clade-spacetree',
+// 				),
+			
+			'clade_jit_node_info' => array(
+				'arguments' => array('clade' => null),
+				'template' => 'theme/clade-jit-node-info'
 				),
 		);
 }
@@ -64,40 +74,57 @@ function clade_jit_jit_help() {
 	return theme('item_list', $helplinks, '', 'ul', array('class'=>'iplant myplant'));
 }
 
-function clade_jit_jit_node_info($tid) {
-	global $user;
-	$html = '';
-	$clade = clade_get_clade($tid);
+function clade_jit_preprocess_clade_jit_node_info(&$vars) {
+	$clade = $vars['clade'];
 	if ($clade->active) {
 		$items = array();
-		$items[] = l(t('Clade Homepage'), "clade/$clade->tid") . '</li>';
-// 		$items[] = l(t('Discussion Forums'), "node/$clade->tid/og/forum") . '</li>';
-		$items[] = l(t('RSS Feed'), "clade/$clade->tid/rss") . '</li>';
-		if ($user->uid != 0 && module_exists('clade_subscriptions') && !array_key_exists($clade->tid, $user->clades)) {
-			$dest = drupal_get_destination();
-			$items[] = l(t('Join this clade'), "clade/$clade->tid/members/join", array('query'=> array('destination' => "clade/$clade->tid"))) . '</li>';
-		}
-		$html .= theme('item_list', $items, null, 'ul', array('class' => 'iplant myplant'));
+		$items[] = l(t('Clade Homepage'), "clade/$clade->tid");
+		$items[] = l(t('RSS Feed'), "clade/$clade->tid/rss");
+		$vars['node_info'] = theme('item_list', $items);
 	} else {
-		$html .= '<em>This clade is inactive!</em>';
-		$html .= '<div>This clade is not currently an active group.  ';
-		$html .= 'If you would like to join or manage this clade, ';
-		$query = array(
-			'name' => $clade->name
-		);
-		if ($parents = taxonomy_get_parents($clade->tid)) {
-			$parent = $parents[0];
-			$query['parent'] = $parent->name;
-		}
-		$html .= l(t('please let us know'), 'support/clade-suggestions', array('query' => $query)) . '!</div>';
+		$vars['node_info'] = sprintf('<em>%s</em>', t('This clade is inactive!'));
 	}
-	$result = array();
-	$result['success'] = true;
-	$result['title'] = $clade->name;
-	$result['body'] = $html;
 	
+}
+
+function clade_jit_jit_node_info($tid) {
+	$clade = clade_get_clade($tid);
+	if ($clade) {
+		$result = array(
+			'success' => TRUE,
+			'title' => $clade->name,
+			'body' => theme('clade_jit_node_info', $clade),
+			);
+	} else {
+		$result = array('success' => FALSE);
+	}
 	print drupal_json($result);
-	die;
+	exit();
+
+// 	global $user;
+// 	$html = '';
+// 	if ($clade->active) {
+// 		$items = array();
+// 		$items[] = l(t('Clade Homepage'), "clade/$clade->tid") . '</li>';
+// 		$items[] = l(t('RSS Feed'), "clade/$clade->tid/rss") . '</li>';
+// 		if ($user->uid != 0 && module_exists('clade_subscriptions') && !array_key_exists($clade->tid, $user->clades)) {
+// 			$dest = drupal_get_destination();
+// 			$items[] = l(t('Join this clade'), "clade/$clade->tid/members/join", array('query'=> array('destination' => "clade/$clade->tid"))) . '</li>';
+// 		}
+// 		$html .= theme('item_list', $items, null, 'ul', array('class' => 'iplant myplant'));
+// 	} else {
+// 		$html .= '<em>This clade is inactive!</em>';
+// 		$html .= '<div>This clade is not currently an active group.  ';
+// 		$html .= 'If you would like to join or manage this clade, ';
+// 		$query = array(
+// 			'name' => $clade->name
+// 		);
+// 		if ($parents = taxonomy_get_parents($clade->tid)) {
+// 			$parent = $parents[0];
+// 			$query['parent'] = $parent->name;
+// 		}
+// 		$html .= l(t('please let us know'), 'support/clade-suggestions', array('query' => $query)) . '!</div>';
+// 	}
 }
 
 function clade_jit_jitnode($clade) {
@@ -144,7 +171,7 @@ function clade_jit_spacetree($context_nid = 0, $jit_config = array()) {
 		'enable_hiding' => 1,
 		'enable_full_screen' => 1,
 		'enable_node_info' => 1,
-		'node_info_path' => 'clade/jit/spacetree/node_info',
+		'node_info_path' => 'clade/jit/node_info/',
 		'enable_help' => 1,
 		'help_function_name' => 'clade_jit_jit_help',
 		'enable_search' => 1,
@@ -169,7 +196,7 @@ function clade_jit_spacetree_block($context_tid = 0, $jit_config = array()) {
 		'enable_hiding' => 0,
 		'enable_full_screen' => 0,
 		'enable_node_info' => 1,
-		'node_info_path' => 'clade/jit/spacetree/node_info',
+		'node_info_path' => 'clade/jit/node_info/',
 		'enable_help' => 0,
 		'enable_search' => 0,
 		'edge_color' => '#ffffff',
@@ -184,10 +211,6 @@ function clade_jit_spacetree_block($context_tid = 0, $jit_config = array()) {
 
 /**
  * Implementation of hook_ctools_plugin_directory().
- *
- * It simply tells panels where to find the .inc files that define various
- * args, contexts, content_types. In this case the subdirectories of
- * ctools_plugin_example/panels are used.
  */
 function clade_jit_ctools_plugin_directory($module, $plugin) {
   if ($module == 'ctools' && !empty($plugin)) {
@@ -195,7 +218,39 @@ function clade_jit_ctools_plugin_directory($module, $plugin) {
   }
 }
 
-function clade_jit_preprocess_clade_homepage(&$vars) {
-	$clade = $vars['clade'];
-	$vars['network'] = theme('clade_homepage_clade_spacetree', clade_jit_spacetree_block($clade->tid, array('height' => 200, 'levelsToShow' => 1)));
+// function clade_jit_preprocess_clade_homepage(&$vars) {
+// 	$clade = $vars['clade'];
+// 	$vars['network'] = theme('clade_homepage_clade_spacetree', clade_jit_spacetree_block($clade->tid, array('height' => 200, 'levelsToShow' => 1)));
+// }
+
+function clade_jit_forcedirected($options) {
+	$json = array();
+	$clades = taxonomy_get_tree(variable_get('clade_vocabulary', 0));
+	foreach ($clades as &$clade) {
+		$fdnode = new stdClass;
+		$fdnode->data = new stdClass;
+		$fdnode->data->{'$dim'} = 10;
+		$fdnode->data->{'$color'} = variable_get('jit_forcedirected_default_node_color', '#0000cd');
+		$fdnode->data->{'$type'} = variable_get('jit_forcedirected_default_shape', 'circle');
+		$fdnode->name = $clade->name;
+		$fdnode->id = $clade->tid;
+		
+		$relations = taxonomy_get_related($clade->tid);
+		$fdnode->adjacencies = array();
+		foreach ($relations as $relation) {
+			$adj = new stdClass;
+			$adj->nodeTo = $relation->tid;
+			$adj->nodeFrom = $fdnode->id;
+			$adj->data = new stdClass;
+			$adj->data->{'$color'} = variable_get('jit_forcedirected_default_edge_color', '#888888');
+			$fdnode->adjacencies[] = $adj;
+		}
+		
+		$json[] = $fdnode;
+	}
+	
+	$options['enable_node_info'] = TRUE;
+	$options['node_info_path'] = 'clade/jit/node_info/';
+	
+	return theme('jit_forcedirected', $json, $options);
 }

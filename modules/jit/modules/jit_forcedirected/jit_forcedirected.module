@@ -18,6 +18,12 @@ function jit_forcedirected_menu() {
 			'type' => MENU_CALLBACK,
 			'access arguments' => array('access content'),
 			);
+		$items['admin/settings/jit/forcedirected'] = array(
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('jit_forcedirected_admin_form'),
+			'title' => t('JIT Force Directed settings'),
+			'access arguments' => array('administer jit')
+			);
 // 		$items['jit/forcedirected/debug/node_info/%'] = array(
 // 			'page callback' => '_jit_forcedirected_debug_node_info',
 // 			'page arguments' => array(4),
@@ -56,9 +62,21 @@ function jit_forcedirected_preprocess_jit_forcedirected(&$vars) {
 	
 	$defaults = array(
 		'id' => 'forcedirected',										// id of FD HTML element
+		'label_color' => '#454545',
+		'edge_color' => '#454545',
+		'levelDistance' => variable_get('jit_forcedirected_level_distance', 150),
 		);
 	
 	$vars['options'] = array_merge($defaults, $vars['options']);
+	
+	$node_prefix = $vars['options']['id'] . '_node_';
+	foreach ($vars['json'] as &$node) {
+		$node->id = $node_prefix . $node->id;
+		foreach ($node->adjacencies as &$adj) {
+			$adj->nodeTo = $node_prefix . $adj->nodeTo;
+			$adj->nodeFrom = $node_prefix . $adj->nodeFrom;
+		}
+	}
 }
 
 function _jit_forcedirected_debug_form(&$form_state) {
@@ -101,8 +119,6 @@ function _jit_forcedirected_debug_generate($nodes = 10) {
 		$json[] = $node;
 	}
 	
-	$colors = array('#000000', '#cd0000', '#00cd00', '#0000cd');
-	
 	for ($i = 0; $i < $nodes; $i++) {
 		$keys = array_rand($json, rand(2,$nodes-1));
 		foreach ($keys as $key) {
@@ -110,10 +126,72 @@ function _jit_forcedirected_debug_generate($nodes = 10) {
 			$adj->nodeTo = "graphnode$key";
 			$adj->nodeFrom = "graphnode$i";
 			$adj->data = new stdClass;
-			$adj->data->{'$color'} = $colors[array_rand($colors)];
+			$adj->data->{'$color'} = '#2d89b2';
 			$json[$i]->adjacencies[] = $adj;
 		}
 	}
 	
 	return $json;
+}
+
+function jit_forcedirected_admin_form(&$form_state) {
+	$form = array();
+	
+	$form['jit_forcedirected_default_node_color'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Default node color'),
+		'#default_value' => variable_get('jit_forcedirected_default_node_color', '#0000cd'),
+		);
+		
+	$form['jit_forcedirected_default_edge_color'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Default edge color'),
+		'#default_value' => variable_get('jit_forcedirected_default_edge_color', '#888888'),
+		);
+		
+	$form['jit_forcedirected_default_shape'] = array(
+		'#type' => 'select',
+		'#options' => array('circle'=>'circle', 'square'=>'square', 'triangle'=>'triangle', 'star'=>'star'),
+		'#title' => t('Default node shape'),
+		'#default_value' => variable_get('jit_forcedirected_default_shape', 'circle')
+		);
+		
+	$form['jit_forcedirected_level_distance'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Edge length/Level distance'),
+		'#description' => t('The distance between nodes for the Force Directed layout algorithm.  The large the number, the farther apart nodes will be.'),
+		'#default_value' => variable_get('jit_forcedirected_level_distance', 150),
+		);
+	
+	$form['#validate'] = array('jit_forcedirected_admin_form_submit');
+	
+	return system_settings_form($form);
+}
+
+function jit_forcedirected_admin_form_submit($form, &$form_state) {
+	$nodeColor = $form_state['values']['jit_forcedirected_default_node_color'];
+	if (strpos($nodeColor, '#') === 0) {
+		$nodeColor = substr($nodeColor, 1);
+	}
+	if (strlen($nodeColor) === 3 || strlen($nodeColor) === 6) {
+		if (! preg_match('/[a-fA-F0-9]+/', $nodeColor)) {
+			form_set_error('jit_forcedirected_default_node_color', t('Please provide a valid hexadecimal color code for the node color.'));
+		}
+	} else {
+		form_set_error('jit_forcedirected_default_node_color', t('Please provide a valid hexadecimal color code for the node color.'));
+	}
+	$edgeColor = $form_state['values']['jit_forcedirected_default_edge_color'];
+	if (strpos($edgeColor, '#') === 0) {
+		$edgeColor = substr($edgeColor, 1);
+	}
+	if (strlen($edgeColor) === 3 || strlen($edgeColor) === 6) {
+		if (! preg_match('/[a-fA-F0-9]+/', $edgeColor)) {
+			form_set_error('jit_forcedirected_default_edge_color', t('Please provide a valid hexadecimal color code for the edge color.'));
+		}
+	} else {
+		form_set_error('jit_forcedirected_default_edge_color', t('Please provide a valid hexadecimal color code for the edge color.'));
+	}
+	if (! is_numeric($form_state['values']['jit_forcedirected_level_distance'])) {
+		form_set_error('jit_forcedirected_level_distance', t('Edge length must be a numeric value.'));
+	}
 }

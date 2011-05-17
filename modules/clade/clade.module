@@ -91,6 +91,35 @@ function clade_hook_info() {
 		);
 }
 
+function clade_taxonomy($op, $type, $array = NULL) {
+	if ($type == "term") {
+		switch ($op) {
+			case "delete":
+				// delete from clade table
+				$sql = 'DELETE FROM {clade} WHERE tid = %d';
+				db_query(sprintf($sql, $array['tid']));
+				break;
+			case "insert":
+				// insert into clade table
+				$clade = array(
+					'tid' => $array['tid'],
+					'active' => TRUE,
+					'welcome' => $array['description']
+					);
+				drupal_write_record('clade', $clade);
+				break;
+			case "update":
+				$clade = array(
+					'tid' => $array['tid'],
+					'active' => TRUE,
+					'welcome' => $array['description']
+					);
+				drupal_write_record('clade', $clade, array('tid'));
+				break;
+		}
+	}
+}
+
 function clade_determine_context() {
 	$context = NULL;
 	
@@ -257,16 +286,7 @@ function clade_menu() {
 			'access arguments' => array(2, 'review clade add'),
 			'type' => MENU_CALLBACK,
 		);
-	
-	$items['clade/manage/reorder'] = array(
-			'title' => 'Reorder clades',
-			'description' => 'Form for reordering clades',
-			'page callback' => 'drupal_get_form',
-			'page arguments' => array('clade_reorder_form'),
-			'access arguments' => array('review clade add'),
-			'type' => MENU_CALLBACK,
-		);
-			
+		
 	$items['clade/autocomplete'] = array(
 			'title' => 'Clade autocomplete',
 			'page callback' => 'clade_autocomplete',
@@ -288,6 +308,29 @@ function clade_menu() {
   		'access arguments' => array('access content'),
 			'type' => MENU_CALLBACK,
   	);
+
+	$items['admin/settings/clade'] = array(
+			'title' => 'Clade settings',
+			'description' => 'Clade admin settings page',
+			'page callback' => 'clade_admin_page',
+			'access arguments' => array('edit any clade'),
+		);
+	
+	$items['admin/settings/clade/reorder'] = array(
+			'title' => 'Reorder clades',
+			'description' => 'Form for reordering clades',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('clade_reorder_form'),
+			'access arguments' => array('review clade add'),
+		);
+	
+	$items['admin/settings/clade/relationships'] = array(
+			'title' => 'Clade relationships',
+			'description' => 'Manage relationships between Clades',
+			'page callback' => 'clade_admin_relationships',
+			'access arguments' => array('edit any clade'),
+		);
+			
 	return $items;
 }
 
@@ -642,9 +685,11 @@ function clade_get_clade($clade_id, $reset = FALSE) {
 	if ($reset) {
 		$clades = array();
 	}
-	
 	if (!isset($clades[$clade_id])) {	
 		$clade = taxonomy_get_term($clade_id);
+		if (! $clade) {
+			return null;
+		}
 		$clade->parent = taxonomy_get_parents($clade->tid);
 		$clade->relations = taxonomy_get_related($clade->tid);
 		$data = db_fetch_object(db_query("select * from {clade} where tid = %d", $clade->tid));
@@ -1933,11 +1978,11 @@ function clade_preprocess_clade_homepage(&$vars) {
 	$vars['name'] = check_plain($clade->name);
 	$vars['welcome'] = check_markup($clade->welcome);
 	
-	$parent = taxonomy_get_parents($clade->tid);
-	if ($parent) {
-		$vars['parent'] = $parent[0];
-		$vars['parent_name'] = check_plain($parent[0]->name);
-	}
+// 	$parent = taxonomy_get_parents($clade->tid);
+// 	if ($parent) {
+// 		$vars['parent'] = $parent[0];
+// 		$vars['parent_name'] = check_plain($parent[0]->name);
+// 	}
 	
 // 	if ($user->uid) {
 // 		if (in_array('clade manager', array_values($user->roles))) {
@@ -1946,8 +1991,8 @@ function clade_preprocess_clade_homepage(&$vars) {
 // 		//$vars['new_activity'] = clade_new_activity($node, $user);
 // 	}
 	
-	$vars['feed'] = theme('clade_feed', $clade);
-	$vars['posts_by_category'] = views_embed_view('clade_posts_by_category', 'default', $clade->tid);
+// 	$vars['feed'] = theme('clade_feed', $clade);
+// 	$vars['posts_by_category'] = views_embed_view('clade_posts_by_category', 'default', $clade->tid);
 }
 
 function clade_preprocess_clade_feed(&$vars) {
@@ -1991,4 +2036,66 @@ function clade_preprocess_node(&$vars) {
 		}
 		$vars['terms'] = theme('item_list', $items, NULL, 'ul', array('class' => 'nostyle'));
 	}
+}
+
+function clade_admin_page() {
+	$links = array(
+		l(t('Manage Clade relationships'), 'admin/settings/clade/relationships'),
+		);
+		
+	return theme('item_list', $links);
+}
+
+function clade_admin_relationships() {
+	
+	
+	return drupal_get_form('clade_admin_relationships_form');
+}
+
+function clade_admin_relationships_form(&$form_state) {
+	$vid = variable_get('clade_vocabulary', 0);
+	$form = array();
+	$tree = taxonomy_get_tree($vid);
+	foreach($tree as $clade) {
+		$key = strtolower(str_replace(' ', '_', $clade->name));
+		$form[$key] = array(
+			'#type' => 'fieldset',
+			'#title' => $clade->name . ' Relationships',
+			'#tree' => TRUE,
+			);
+		$form[$key]['tid'] = array(
+			'#type' => 'value',
+			'#value' => $clade->tid,
+			);
+		$form[$key]['relations'] = _taxonomy_term_select(
+			t('Related Clades'),
+			'relations',
+			array_keys(taxonomy_get_related($clade->tid)),
+			$vid,
+			NULL,
+			1,
+			'<'. t('none') .'>',
+			array($clade->tid)
+			);
+	}
+	
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Submit'),
+		);
+	
+	return $form;
+}
+
+function clade_admin_relationships_form_submit($form, &$form_state) {
+	foreach ($form_state['values'] as $value) {
+		$term = (array) taxonomy_get_term($value['tid']);
+		if (is_array($value['relations'])) {
+			$term['relations'] = $value['relations'];
+		} else {
+			$term['relations'] = array($value['relations']);
+		}
+		taxonomy_save_term($term);
+	}
+	
 }

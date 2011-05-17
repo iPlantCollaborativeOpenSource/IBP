@@ -140,58 +140,37 @@ function clade_schema() {
 function clade_install() {
   drupal_install_schema('clade');
   
-  // any nodes of type clade already?
-  db_query("INSERT into {clade} SELECT nid, 1, '', '', '' from {node} WHERE type = 'clade'");
+	// create clades vocabulary
+	$clades = array(
+			'name' => t('Clades'),
+			'description' => t('The Clade hierarchy'),
+			'multiple' => 0,
+			'required' => 1,
+			'hierarchy' => 1,
+			'relations' => 1,
+			'module' => 'clade',
+			'weight' => -20,
+			'nodes' => array('clade_page' => 1),
+		);
+	taxonomy_save_vocabulary($clades);
+	variable_set('clade_vocabulary', $clades['vid']);
 
-  /**
-   * Setup Organic Groups
-   * The default organic groups settings expected are:
-   * og_content_type_usage_:
-   *    clade: group,
-   *    clade_page: group_post_standard,
-   *    clade_wiki: group_post_wiki,
-   * og_max_groups_:
-   *    clade: ,
-   *    clade_page: ,
-   *    clade_wiki: ,
-   * 
-   */
-  variable_set('og_content_type_usage_clade','group');
-  variable_set('og_content_type_usage_clade_page','group_post_standard');
-  variable_set('og_content_type_usage_clade_wiki','group_post_wiki');
-  
-  variable_set('og_max_groups_clade','');
-  variable_set('og_max_groups_clade_page','');
-  variable_set('og_max_groups_clade_wiki','');
-  
-  /**
-   * Setup Node Hierarchy
-   * Clade are both parent and child in the node hierarchy.
-   */
-  variable_set('nh_parent_clade', 1);
-  variable_set('nh_child_clade', 1);
-  
-  // no menus; treegroups does this for us
-  variable_set('nh_createmenu_clade', 'never');
-  
-  // TODO? create 'plantae' node and set as default parent?
+	if (module_exists('pathauto')) {
+		variable_set('pathauto_taxonomy_' . $clades['vid'] . '_pattern', 'clade/[cat-raw]');
+	}
   
   /**
    * Comments
-   * Clade: no
-   * Clade_page: yes
-   * Clade_wiki: yes
    */
-  variable_set('comment_clade', '0');
   variable_set('comment_clade_page', '2');
-  variable_set('comment_default_mode_clade_page', '4');
+  variable_set('comment_default_mode_clade_page', '2');
   variable_set('comment_default_order_clade_page', '2');
   variable_set('comment_controls_clade_page', '3');
-  variable_set('comment_clade_wiki', '2');
-  variable_set('comment_default_mode_clade_wiki', '4');
-  variable_set('comment_default_order_clade_wiki', '2');
-  variable_set('comment_controls_clade_wiki', '3');
+  variable_set('comment_form_location_clade_page', '1');
   
+  // path auto
+  variable_set('pathauto_node_clade_page_pattern','clade/[term-raw]/post/[title-raw]');
+	
   db_query("UPDATE {system} SET weight = 11 WHERE name = 'clade'");
 }
 
@@ -222,25 +201,6 @@ function clade_update_6002() {
 function clade_update_6003() {
 	// move clades to taxonomy
 	$ret = array();
-
-	// create clades vocabulary
-	$clades = array(
-			'name' => t('Clades'),
-			'description' => t('The Clade hierarchy'),
-			'multiple' => 0,
-			'required' => 1,
-			'hierarchy' => 1,
-			'relations' => 1,
-			'module' => 'clade',
-			'weight' => -20,
-			'nodes' => array('clade_page' => 1),
-		);
-	taxonomy_save_vocabulary($clades);
-	variable_set('clade_vocabulary', $clades['vid']);
-
-	if (module_exists('pathauto')) {
-		variable_set('pathauto_taxonomy_' . $clades['vid'] . '_pattern', 'clade/[cat-raw]');
-	}
 	
 	// move clades
 	$results = db_query("select node.title as name, og_description as description, order_by as weight, p.title as parent_name from {node} join {og} on og.nid = node.nid join {nodehierarchy} nh on nh.nid = node.nid left outer join {node} p on p.nid = nh.parent where node.type ='clade' order by nh.order_by");

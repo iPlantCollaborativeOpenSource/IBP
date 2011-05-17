@@ -228,18 +228,18 @@ function clade_subscriptions_clade_admins($clade) {
 	return $admins;
 }
 
-function clade_subscriptions_preprocess_clade_homepage(&$vars) {
-	$clade = $vars['clade'];
-	
- 	$members_view = views_get_view('clade_members_faces');
- 	$output = $members_view->preview('default', array($clade->tid));
- 	if ($members_view->result) {
- 		$members = $output;
- 	} else {
- 		$members = t('No members. ') . l(t('Join this Clade!'), "/clade/subscribe/$clade->tid");
- 	}
-	$vars['members'] = theme('clade_homepage_members', $members);
-}
+// function clade_subscriptions_preprocess_clade_homepage(&$vars) {
+// 	$clade = $vars['clade'];
+// 	
+//  	$members_view = views_get_view('clade_members_faces');
+//  	$output = $members_view->preview('default', array($clade->tid));
+//  	if ($members_view->result) {
+//  		$members = $output;
+//  	} else {
+//  		$members = t('No members. ') . l(t('Join this Clade!'), "/clade/subscribe/$clade->tid");
+//  	}
+// 	$vars['members'] = theme('clade_homepage_members', $members);
+// }
 
 function clade_subscriptions_views_api() {
   return array(
