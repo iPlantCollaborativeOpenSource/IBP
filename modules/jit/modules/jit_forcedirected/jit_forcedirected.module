@@ -18,12 +18,6 @@ function jit_forcedirected_menu() {
 			'type' => MENU_CALLBACK,
 			'access arguments' => array('access content'),
 			);
-		$items['admin/settings/jit/forcedirected'] = array(
-			'page callback' => 'drupal_get_form',
-			'page arguments' => array('jit_forcedirected_admin_form'),
-			'title' => t('JIT Force Directed settings'),
-			'access arguments' => array('administer jit')
-			);
 // 		$items['jit/forcedirected/debug/node_info/%'] = array(
 // 			'page callback' => '_jit_forcedirected_debug_node_info',
 // 			'page arguments' => array(4),
@@ -38,6 +32,12 @@ function jit_forcedirected_menu() {
 // 			'access arguments' => array('access content'),
 // 			);
 	}
+	$items['admin/settings/jit/forcedirected'] = array(
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('jit_forcedirected_admin_form'),
+		'title' => t('JIT Force Directed settings'),
+		'access arguments' => array('administer jit')
+		);
 	return $items;
 }
 
