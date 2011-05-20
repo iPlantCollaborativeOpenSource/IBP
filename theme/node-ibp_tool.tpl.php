@@ -1,25 +1,30 @@
 <div class="content ibp_tool">
 <h2><?php echo theme($node->title); ?></h2>
-<table>
-<tr><th>Name</th><th>Description</th><th>Platform</th><th>Link</th></tr>
-<tr>
-	<td><?php echo $node->title; ?></td>
-	<td><div class="pane-content"><p><?php echo $node->field_tool_description[0]['view']; ?></p></div></td>
-	<td>
-		<?php 
-			$html = "Available Platforms: ";
-			foreach($node->field_tool_platform as $platform) {
-				$html .= " " . $platform['view'];
-			}
-			echo $html;
-		?>
-	</td>
-	<td><?php echo l(t("Download Link"), $node->field_tool_dl_link[0]['url'], array('attributes' => array('target' => '_blank'))); ?></td></tr>
-</table>
+
+<h3>Description</h3>
+<p>
+<?php print $node->field_tool_description[0]['view']; ?>
+</p>
+<dl>
+	<dt>Category</dt>
+	<dd><?php print $node->field_tool_category[0]['view']; ?></dd>
+	<dt>Usability</dt>
+	<dd><?php print $node->field_tool_usability[0]['view']; ?></dd>
+	<dt>Supported platforms</dt>
+	<dd><?php print implode(', ', array_map(function($val) { return $val['view']; }, $node->field_tool_platform)); ?></dd>
+	<dt>Version</dt>
+	<dd><?php print $node->field_tool_version[0]['view'] ? $node->field_tool_version[0]['view'] : 'n/a'; ?></dd>
+	<dt>Download link</dt>
+	<dd><?php print l(t('Download link'), $node->field_tool_dl_link[0]['url'], array('attributes' => array('target' => '_blank')))?></dd>
+</dl>
+
+<!--
 <pre>
 <?php
 print_r($node);
 ?>
 </pre>
+-->
+
 </div>
 <div class="clear-block clear"></div>

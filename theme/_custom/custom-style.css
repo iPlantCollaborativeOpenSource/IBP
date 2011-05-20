@@ -151,3 +151,21 @@ background: transparent url(../images/contact_48.png) no-repeat;
 .displayinline {
 	display: inline;
 }
+
+dl {
+}
+
+dl dt {
+	font-weight: bold;
+	float: left;
+	clear: left;
+	width: 13em;
+}
+
+dl dd {
+	clear: right;
+	min-height: 1.25em;
+	line-height: 1.25em;
+	margin: 0 0 0.2em 13em;
+}
+
