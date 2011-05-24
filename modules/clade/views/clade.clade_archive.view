@@ -168,6 +168,7 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
+$handler->override_option('title', 'Archived posts');
 $handler->override_option('row_plugin', 'node');
 $handler->override_option('row_options', array(
   'relationship' => 'none',
@@ -194,3 +195,41 @@ $handler->override_option('tab_options', array(
 $handler = $view->new_display('block', 'Block', 'block_1');
 $handler->override_option('block_description', '');
 $handler->override_option('block_caching', -1);
+$handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
+$handler->override_option('pane_title', '');
+$handler->override_option('pane_description', '');
+$handler->override_option('pane_category', array(
+  'name' => 'View panes',
+  'weight' => 0,
+));
+$handler->override_option('allow', array(
+  'use_pager' => FALSE,
+  'items_per_page' => FALSE,
+  'offset' => FALSE,
+  'link_to_view' => FALSE,
+  'more_link' => FALSE,
+  'path_override' => FALSE,
+  'title_override' => FALSE,
+  'exposed_form' => FALSE,
+  'fields_override' => FALSE,
+));
+$handler->override_option('argument_input', array(
+  'tid' => array(
+    'type' => 'context',
+    'context' => 'clade.tid',
+    'context_optional' => 0,
+    'panel' => '0',
+    'fixed' => '',
+    'label' => 'Taxonomy: Term ID',
+  ),
+  'created_year_month' => array(
+    'type' => 'none',
+    'context' => 'node.uid',
+    'context_optional' => 0,
+    'panel' => '0',
+    'fixed' => '',
+    'label' => 'Node: Created year + month',
+  ),
+));
+$handler->override_option('link_to_view', 0);
+$handler->override_option('inherit_panels_path', 0);
