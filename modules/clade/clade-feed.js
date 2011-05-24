@@ -56,3 +56,29 @@ Drupal.clade.initFeed = function(clade_id) {
 			}
 		);
 };
+
+Drupal.clade.communityFeed = function() {
+	$('.mp-advanced-feed-more').click(
+			function() {
+				var offset = $('.clade-feed').children().length;
+				$.ajax({
+					'url': Drupal.settings.basePath + 'clade/community-feed/' + offset,
+					'dataType': 'json',
+					'beforeSend': function() {
+						$('.mp-advanced-feed-more').addClass('throbber active');
+					},
+					'success': function(resp) {
+							if (resp.body && resp.body.length > 0) {
+								$('.clade-feed').append(resp.body);
+								Drupal.attachBehaviors($('.clade-feed'));
+							} else {
+								$('.mp-advanced-feed-more').addClass('no-more');
+							}
+					},
+					'complete': function() {
+						$('.mp-advanced-feed-more').removeClass('throbber active');
+					}
+				});
+			}
+		);
+};

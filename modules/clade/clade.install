@@ -144,7 +144,7 @@ function clade_install() {
 	$clades = array(
 			'name' => t('Clades'),
 			'description' => t('The Clade hierarchy'),
-			'multiple' => 0,
+			'multiple' => 1,
 			'required' => 1,
 			'hierarchy' => 1,
 			'relations' => 1,
@@ -154,7 +154,21 @@ function clade_install() {
 		);
 	taxonomy_save_vocabulary($clades);
 	variable_set('clade_vocabulary', $clades['vid']);
-
+	
+		// create clades vocabulary
+	$keywords = array(
+			'name' => t('Keywords'),
+			'description' => t('Keywords for Clade posts'),
+			'multiple' => 1,
+			'required' => 0,
+			'hierarchy' => 0,
+			'relations' => 0,
+			'module' => 'clade',
+			'weight' => -10,
+			'nodes' => array('clade_page' => 1),
+		);
+	taxonomy_save_vocabulary($keywords);
+	
 	if (module_exists('pathauto')) {
 		variable_set('pathauto_taxonomy_' . $clades['vid'] . '_pattern', 'clade/[cat-raw]');
 	}

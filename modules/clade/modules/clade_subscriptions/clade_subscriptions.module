@@ -25,12 +25,23 @@ function clade_subscriptions_menu() {
 		clade/%/members/list - clade_members_list
 	*/
 			
+	$items['clade/%/my-membership'] = array(
+		'title callback' => 'clade_subscriptions_my_membership_title',
+		'title arguments' => array(1),
+		'type' => MENU_CALLBACK,
+		'page callback' => 'clade_subscriptions_my_membership',
+		'page arguments' => array(1),
+		'access callback' => 'clade_subscriptions_my_membership_access',
+		'access arguments' => array(1),
+		);
+			
 	$items['clade/%/members/join'] = array(
 		'title' => 'Join Clade',
 		'type' => MENU_CALLBACK,
 		'page callback' => 'clade_subscriptions_join',
 		'page arguments' => array(1),
-		'access arguments' => array('access content'),
+		'access callback' => 'clade_subscriptions_access_join',
+		'access arguments' => array(1),
 		);
 	
 	$items['clade/%/members/unjoin/%user'] = array(
@@ -123,35 +134,40 @@ function clade_subscriptions_theme() {
 			'template' => 'unsubscribe_email',
 			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
 			),
+		'clade_subscriptions_subscriptions' => array(
+			'arguments' => array(
+				'user' => NULL,
+				'clade' => NULL,
+				),
+			'template' => 'clade_subscriptions_subscriptions',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
+		'clade_subscriptions_membership' => array(
+			'arguments' => array(
+				'user' => NULL,
+				'clade' => NULL,
+				),
+			'template' => 'clade_subscriptions_membership',
+			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+			),
 		);
 }
-/*
+
 function clade_subscriptions_form_alter(&$form, &$form_state, $form_id) {
 	global $user;
-	if ($form_id == 'clade_page_node_form') {
-		$form['#after_build'][] = 'clade_subscriptions_clade_node_form_after_build';
+	if ($form_id == 'notifications_subscription_form') {
+		$subscription = $form['subscription']['#value'];
+		if ($subscription->type == 'taxonomy') {
+			if ($clade = clade_get_clade($subscription->fields['tid'])) {
+				$form['info']['#title'] = t('Clade subscription');
+				$form['info']['#description'] = t('Subscribe to content in this Clade.');
+				$form['info']['#value'] = l($clade->name, "clade/{$clade->tid}");
+				unset($form['delete']);
+			}
+		}
 	}
 }
 
-function clade_subscriptions_clade_node_form_after_build($form, &$form_state) {
-	global $user;
-	// unless user has access to all clades, limit just to subscribed clades
-	if (! user_access('edit any clade')) {
-		$options = $form['taxonomy'][variable_get('clade_vocabulary', 0)]['#options'];
-		$user_clades = array_keys($user->clades);
-		foreach ($options as $key => $option) {
-			if ($key !== '') {
-				$opt_id = array_keys($option->option);
-				if (! in_array($opt_id[0], $user_clades)) {
-					unset($options[$key]);
-				}
-			}
-		}
-		$form['taxonomy'][variable_get('clade_vocabulary', 0)]['#options'] = $options;
-	}
-	return $form;
-}
-*/
 function clade_subscriptions_preprocess_views_view_fields__clade_members_faces(&$vars) {
 	drupal_add_css(drupal_get_path('module', 'clade_subscriptions') . '/css/clade_subscriptions_views.css');
 }
@@ -181,31 +197,101 @@ function clade_subscriptions_clade_details_items($clade) {
 		'members' => array(
 			'data' => l(t('@num members', array('@num' => $count)), "clade/$clade->tid/members"),
 			'data-sort' => 10,
-			'class' => 'iplant',
+			'class' => 'clade-details-item',
 			),
 		'admins' => array(
-			'data' => theme('item_list', $admins, 'Clade Managers', 'ul', array('class' => 'nostyle')),
+			'data' => theme('item_list', $admins, 'Clade Managers', 'ul', array('class' => 'clade-details-admins')),
 			'data-sort' => 12
 			),
 		);
 	
 	if ($user->uid) {
 		if (! array_key_exists($clade->tid, $user->clades)) {
-			$items['join'] = array(
+			$items['membership'] = array(
 				'data' => l(t('Join this Clade'), "clade/$clade->tid/members/join"),
 				'data-sort' => 11,
-				'class' => 'iplant',
+				'class' => 'clade-details-item',
+				);
+		} else {
+			$items['membership'] = array(
+				'data' => l(t('My membership'), "clade/$clade->tid/my-membership"),
+				'data-sort' => 11,
+				'class' => 'clade-details-item',
 				);
 		}
 	} else {
-		$items['join'] = array(
-			'data' => l(t('Login to join or post'), "user/login", array('query' => array('destination' => "clade/$clade->tid"))),
+		$items['membership'] = array(
+			'data' => l(t('Login to join or post'), variable_get('shib_auth_handler_url', 'user/login'), array('query' => array('destination' => "clade/$clade->tid"))),
 			'data-sort' => 11,
-			'class' => 'iplant',
+			'class' => 'clade-details-item',
 			);
 	}
 	
 	return $items;
+}
+
+function clade_subscriptions_clade_jit_node_info_items($clade) {
+	global $user;
+	
+	$items = array();
+	if ($user->uid) {
+		if (!($user->clades && array_key_exists($clade->tid, $user->clades))) {
+			$items[] = array('data' => l(t('Join this Clade'), "clade/$clade->tid/members/join"), 'data-sort' => 5);
+		}
+	} else {
+		$items[] = array('data' => l(t('Login to join or post'), "user/login", array("query" => array("destination" => "clade/$clade->tid"))), 'data-sort' => 5);
+	}
+	return $items;
+}
+
+function clade_subscriptions_my_membership() {
+	global $user;
+
+	// Email settings	
+	$output = theme('clade_subscriptions_subscriptions', $user, clade_get_context());
+
+	// Join/leave
+	$output .= theme('clade_subscriptions_membership', $user, clade_get_context());
+	
+	return $output;
+}
+
+function clade_subscriptions_my_membership_title($clade_id) {
+	$clade = clade_get_clade($clade_id);
+	return t('Manage my membership: @clade', array('@clade' => $clade->name));
+}
+
+function clade_subscriptions_my_membership_access($clade_id) {
+	global $user;
+	
+	if ($user->uid) {
+		$clade = clade_get_clade($clade_id);
+		$members = clade_subscriptions_clade_members($clade);
+		return in_array($user->uid, $members);
+	}
+	
+	return FALSE;
+}
+
+function clade_subscriptions_preprocess_clade_subscriptions_subscriptions(&$vars) {
+	$user = $vars['user'];
+	$clade = $vars['clade'];
+	
+	$sub = array_pop(notifications_get_subscriptions(array('type' => 'taxonomy', 'uid' => $user->uid), array('tid' => $clade->tid), TRUE));
+	if ($sub) {
+		$vars['subscription'] = $sub;	
+		module_load_include('inc', 'notifications', 'notifications.pages');
+		$vars['subscription_form'] = drupal_get_form('notifications_subscription_form', $sub);
+	} else {
+		$vars['subscription_form'] = l(t('Start getting email notifications for this Clade'), "notifications/subscribe/$user->uid/taxonomy/tid/$clade->tid");
+	}
+}
+
+function clade_subscriptions_preprocess_clade_subscriptions_membership(&$vars) {
+	$user = $vars['user'];
+	$clade = $vars['clade'];
+	
+	$vars['membership_form'] = drupal_get_form('clade_subscriptions_unjoin_form', $clade->tid, $user);
 }
 
 function clade_subscriptions_clade_members($clade) {
@@ -380,6 +466,22 @@ function clade_subscriptions_confirm_join_submit($form, &$form_state) {
   $form_state['redirect'] = 'clade/'. $form_state['values']['clade_id'];
 }
 
+function clade_subscriptions_access_join($clade_id) {
+	global $user;
+
+	if ($user->uid) {
+		$clade = clade_get_clade($clade_id);
+		$members = clade_subscriptions_clade_members($clade);
+		if (in_array($user->uid, $members)) {
+			drupal_set_message(t('You are already a member of @clade!', array('@clade' => $clade->name)));
+			drupal_goto("clade/$clade_id");
+		} else {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 function clade_subscriptions_access_unjoin($clade_id, $account) {
 	global $user;
 	$access = FALSE;
@@ -411,7 +513,29 @@ function clade_subscriptions_access_unjoin($clade_id, $account) {
 	return $access;
 }
 
-function clade_subscriptions_confirm_unjoin($form_state, $clade_id, $account) {
+function clade_subscriptions_unjoin_form(&$form_state, $clade_id, $account) {
+	$clade = clade_get_clade($clade_id);
+	
+	$form = array();
+	
+  $form['clade'] = array('#type' => 'value', '#value' => $clade);
+  $form['account'] = array('#type' => 'value', '#value' => $account);
+  
+  $form['message'] = array(
+  	'#value' => '<strong>' . t('Leave the @clade Clade', array('@clade' => $clade->name)) . '</strong> ',
+  	);
+  
+  $form['submit'] = array(
+  	'#type' => 'submit',
+  	'#value' => 'Leave',
+  	);
+  
+  $form['#redirect'] = "clade/$clade_id/members/unjoin/{$account->uid}";
+	
+	return $form;
+}
+
+function clade_subscriptions_confirm_unjoin(&$form_state, $clade_id, $account) {
   global $user;
   $clade = clade_get_clade($clade_id);
   $form['clade'] = array('#type' => 'value', '#value' => $clade);
@@ -424,7 +548,8 @@ function clade_subscriptions_confirm_unjoin($form_state, $clade_id, $account) {
     $message = t('Are you sure you want to remove !name from the clade %title?', array('!name' => theme('username', $account), '%title' => $clade->name));
     $confirm_text = t("Remove");
   }
-  return confirm_form($form, $message, 'clade/'. $clade->tid .'/members', ' ', $confirm_text, t('Cancel'));
+
+  return confirm_form($form, $message, "clade/$clade_id", ' ', $confirm_text, t('Cancel'));
 }
 
 /**
@@ -681,5 +806,13 @@ function clade_subscriptions_remove_admin($form_state, $clade_id, $account) {
 }
 
 function clade_subscriptions_remove_admin_submit($form, &$form_state) {
-	
+	$account = $form_state['values']['account'];
+	$clade = $form_state['values']['clade'];
+	$clade_uid_record = db_fetch_object(db_query("SELECT * FROM {clade_uid} WHERE tid = %d AND uid = %d", $clade->tid, $account->uid));
+	$clade_uid_record->is_admin = FALSE;
+	if (drupal_write_record('clade_uid', $clade_uid_record, array('tid', 'uid'))) {
+		drupal_set_message(t('!user has been removed from @clade managers.', array('!user' => theme('username', $account), '@clade' => $clade->name)));
+	} else {
+		drupal_set_message(t('There was an error removing !user from @clade managers.  Please try again.', array('!user' => theme('username', $account), '@clade' => $clade->name)));
+	}
 }

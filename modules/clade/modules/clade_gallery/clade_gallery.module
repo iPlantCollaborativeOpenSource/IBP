@@ -100,7 +100,7 @@ function clade_gallery_form_alter(&$form, &$form_state, $form_id) {
 		$form['#attributes']['enctype'] = 'multipart/form-data';
 		$form['group_image_info'] = $image_form['group_image_info'];
 		$form['group_image_info']['#collapsible'] = TRUE;
-		$form['group_image_info']['#collapsed'] = empty($clade_image->nid);
+		$form['group_image_info']['#collapsed'] = empty($clade_image->nid) && empty($_GET['image']);
 		$form['group_image_info']['#weight'] = 10;
 		$form['group_image_info']['#title'] = t('Attach an Image');
 		$form['group_image_info']['#tree'] = TRUE;
@@ -281,7 +281,7 @@ function clade_gallery_clade_details_items($clade) {
 		'gallery_page' => array(
 			'data' => l(t('Gallery'), sprintf('clade/%d/gallery', $clade->tid)),
 			'data-sort' => 1,
-			'class' => 'iplant',
+			'class' => 'clade-details-item',
 			),
 		);
 }

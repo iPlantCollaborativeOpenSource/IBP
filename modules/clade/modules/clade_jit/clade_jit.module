@@ -25,19 +25,21 @@ function clade_jit_menu() {
 			'clade/jit/spacetree' => array(
 				'title' => t('Clade SpaceTree Visualization'),
 				'page callback' => clade_jit_spacetree,
-				'access arguments' => array('access content')
+				'access arguments' => array('access content'),
+				'type' => MENU_CALLBACK
 				),
 			'clade/jit/forcedirected' => array(
 				'title' => t('Clade Force Directed Visualization'),
 				'page callback' => clade_jit_forcedirected,
-				'access arguments' => array('access content')
+				'access arguments' => array('access content'),
+				'type' => MENU_CALLBACK
 				),
 			'clade/jit/node_info/%' => array(
 				'page callback' => 'clade_jit_jit_node_info',
 				'page arguments' => array(3),
 				'title' => 'Clade node info for JIT callback',
-				'type' => MENU_CALLBACK,
 				'access arguments' => array('access content'),
+				'type' => MENU_CALLBACK
 				),
 		);
 }
@@ -77,14 +79,26 @@ function clade_jit_jit_help() {
 function clade_jit_preprocess_clade_jit_node_info(&$vars) {
 	$clade = $vars['clade'];
 	if ($clade->active) {
-		$items = array();
-		$items[] = l(t('Clade Homepage'), "clade/$clade->tid");
-		$items[] = l(t('RSS Feed'), "clade/$clade->tid/rss");
+		$items = module_invoke_all('clade_jit_node_info_items', $clade);
+		usort($items, '_clade_jit_node_info_items_sort');
 		$vars['node_info'] = theme('item_list', $items);
 	} else {
 		$vars['node_info'] = sprintf('<em>%s</em>', t('This clade is inactive!'));
 	}
-	
+}
+
+function clade_jit_clade_jit_node_info_items($clade) {
+	$items = array();
+	$items[] = array('data' => l(t('Clade Homepage'), "clade/$clade->tid"), 'data-sort' => 0);
+	$items[] = array('data' => l(t('RSS Feed'), "clade/$clade->tid/feed"), 'data-sort' => 10);
+	return $items;
+}
+
+function _clade_jit_node_info_items_sort($item0, $item1) {
+	if (isset($item0['data-sort']) && isset($item1['data-sort'])) {
+		return $item0['data-sort'] - $item1['data-sort'];
+	}
+	return 0;
 }
 
 function clade_jit_jit_node_info($tid) {

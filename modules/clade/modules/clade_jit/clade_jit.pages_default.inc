@@ -1,4 +1,0 @@
-<?php
-/**
- * defines ctools pages
- */

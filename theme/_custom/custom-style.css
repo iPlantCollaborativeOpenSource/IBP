@@ -169,3 +169,61 @@ dl dd {
 	margin: 0 0 0.2em 13em;
 }
 
+.node.teaser.odd,
+.node.full-node .node-top {
+	overflow: hidden;
+	clear: both;
+	border-width: 1px 0;
+	border-style: solid;
+	border-color: #eeeeee;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	padding: 0 12px;
+	background-color: #f6f6f6;
+	background-image: -moz-linear-gradient(#f4f4f4, #ffffff 25%, #ffffff 75%, #f4f4f4);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #f4f4f4), color-stop(.25, #ffffff), color-stop(.75, #ffffff), color-stop(1, #f4f4f4));
+	background-image: -webkit-linear-gradient(#f4f4f4, #ffffff 25%, #ffffff 75%, #f4f4f4);
+}
+
+.node.teaser.even {
+	border: none;
+}
+
+.node.teaser {
+	padding: 6px !important;
+	margin: 0.5em 0 !important;
+}
+
+.node .meta {
+	float: left;
+	width: 50%;
+	margin: 10px 0;
+}
+
+.node .terms {
+	float: right;
+	width: 50%;
+}
+
+.node .content {
+	clear: both;
+}
+
+.node .title {
+	margin-top: 0.25em;
+}
+
+#section2 {
+	background-color: #efefef;
+	background-image: -moz-linear-gradient(#eeeeee, #ffffff, #eeeeee);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #eeeeee), color-stop(0.5, #ffffff), color-stop(1, #eeeeee));
+	background-image: -webkit-linear-gradient(#eeeeee, #ffffff, #eeeeee);
+	background-repeat: no-repeat;
+	background-position: 100% 0;
+	min-height: 200px;
+	border-color: #dddddd;
+	border-style: solid;
+	border-width: 1px 0;
+	margin: 0 -1px
+}

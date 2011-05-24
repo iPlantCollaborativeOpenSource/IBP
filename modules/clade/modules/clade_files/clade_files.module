@@ -29,7 +29,7 @@ function clade_files_clade_details_items($clade) {
 		'files_page' => array(
 			'data' => l(t('Files'), sprintf('clade/%d/files', $clade->tid)),
 			'data-sort' => 2,
-			'class' => 'iplant',
+			'class' => 'clade-details-item',
 			),
 		);
 }
@@ -210,8 +210,12 @@ function clade_files_form_alter(&$form, &$form_state, $form_id) {
 			}
 			$form['taxonomy'][variable_get('clade_files_fs', 0)]['#options'] = $options;
 			if (empty($form['taxonomy'][variable_get('clade_files_fs', 0)]['#default_value'])) {
-				$form['taxonomy'][variable_get('clade_files_fs', 0)]['#default_value'] = $fs_root->tid;
+				$form['taxonomy'][variable_get('clade_files_fs', 0)]['#default_value'] = array($fs_root->tid);
 			}
+		}
+		
+		if ($_GET['cfs']) {
+			$form['taxonomy'][variable_get('clade_files_fs', 0)]['#default_value'] = $_GET['cfs'];
 		}
 	
 		$form['path']['#access'] = $user->uid == 1;
@@ -248,7 +252,7 @@ function clade_files_form_alter(&$form, &$form_state, $form_id) {
 		$form['group_file_info'] = $file_form['group_file_info'];
 		$form['group_file_info']['#title'] = t('Attach an File');
 		$form['group_file_info']['#collapsible'] = TRUE;
-		$collapsed = empty($clade_file->clade_file_file[0]['filename']) && empty($clade_file->title);
+		$collapsed = empty($clade_file->clade_file_file[0]['filename']) && empty($clade_file->title) && empty($_GET['cfs']);
 		$form['group_file_info']['#collapsed'] = $collapsed;
 		$form['group_file_info']['#weight'] = 11;
 		$form['group_file_info']['#tree'] = TRUE;
@@ -485,7 +489,7 @@ function clade_files_preprocess_clade_files_fs_menu(&$vars) {
 	$term = $vars['term'];
 	$clade = $vars['clade'];
 	$vars['new_subdir_link'] = l(t('New Subfolder'), "clade/$clade->tid/files/$term->tid/new-subdir", array('attributes' => array('class' => 'clade-fs-new-subfolder')));
-	$vars['upload_link'] = l(t('Upload new file'), "clade/$clade->tid/post/add", array('query' => array("taxonomy[$term->vid]" => array($term->tid))));
+	$vars['upload_link'] = l(t('Upload new file'), "clade/$clade->tid/post/add", array('query' => array("cfs" => array($term->tid))));
 }
 
 function clade_files_preprocess_clade_files_fs_create_subdir_form(&$vars) {

@@ -1,0 +1,12 @@
+<?php
+// $Id$
+// IBP Helper Module
+//
+
+function ibphelper_perm() {
+	return array(
+		'admin ibp helper',
+		);
+}
+
+//function ibphelper_link_alter

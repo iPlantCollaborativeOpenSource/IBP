@@ -166,7 +166,7 @@ Drupal.jit.forceDirected = function(options) {
         that.fd.canvas.getElement().style.cursor = '';
       },
       onMouseWheel: function() {
-      	if (options['enable_node_info'])
+      	if (options['enable_node_info'] && that.node_info.node_id)
 					that.node_info.setPositionInViz(that.fd.graph.getNode(that.node_info.node_id).pos, false);
       },
       //Update node positions when dragged

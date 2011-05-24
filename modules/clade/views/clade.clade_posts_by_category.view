@@ -16,10 +16,8 @@ $handler->override_option('relationships', array(
     'label' => 'term',
     'required' => 0,
     'vids' => array(
-      '3' => 3,
-      '2' => 0,
+      '2' => 2,
       '1' => 0,
-      '18' => 0,
     ),
     'id' => 'term_node_tid',
     'table' => 'node',
@@ -61,14 +59,14 @@ $handler->override_option('fields', array(
 ));
 $handler->override_option('arguments', array(
   'tid' => array(
-    'default_action' => 'not found',
+    'default_action' => 'default',
     'style_plugin' => 'default_summary',
     'style_options' => array(),
     'wildcard' => 'all',
     'wildcard_substitution' => 'All',
     'title' => '',
     'breadcrumb' => '',
-    'default_argument_type' => 'fixed',
+    'default_argument_type' => 'php',
     'default_argument' => '',
     'validate_type' => 'none',
     'validate_fail' => 'not found',
@@ -83,40 +81,28 @@ $handler->override_option('arguments', array(
     'validate_user_argument_type' => 'uid',
     'validate_user_roles' => array(
       '2' => 0,
-      '3' => 0,
-      '5' => 0,
       '4' => 0,
-      '7' => 0,
-      '8' => 0,
-      '9' => 0,
-      '6' => 0,
+      '3' => 0,
     ),
     'relationship' => 'none',
     'default_options_div_prefix' => '',
     'default_argument_fixed' => '',
     'default_argument_user' => 0,
-    'default_argument_php' => '',
+    'default_argument_php' => 'if ($clade = clade_get_context()) { return $clade->tid; }
+else { return NULL; }',
     'validate_argument_node_type' => array(
-      'webform' => 0,
-      'poll' => 0,
-      'faq' => 0,
-      'forum' => 0,
-      'clade' => 0,
       'clade_page' => 0,
-      'clade_file' => 0,
-      'clade_image' => 0,
+      'book' => 0,
+      'ibp_tool' => 0,
       'page' => 0,
-      'profile' => 0,
       'story' => 0,
-      'uprofile' => 0,
+      'webform' => 0,
     ),
     'validate_argument_node_access' => 0,
     'validate_argument_nid_type' => 'nid',
     'validate_argument_vocabulary' => array(
-      '2' => 0,
       '1' => 0,
-      '3' => 0,
-      '18' => 0,
+      '2' => 0,
     ),
     'validate_argument_type' => 'tid',
     'validate_argument_transform' => 0,
@@ -129,13 +115,11 @@ $handler->override_option('arguments', array(
   ),
   'name' => array(
     'default_action' => 'summary asc',
-    'style_plugin' => 'unformatted_summary',
+    'style_plugin' => 'default_summary',
     'style_options' => array(
       'count' => 1,
       'override' => 0,
       'items_per_page' => '25',
-      'inline' => 0,
-      'separator' => '',
     ),
     'wildcard' => 'all',
     'wildcard_substitution' => 'All',
@@ -244,8 +228,9 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
-$handler->override_option('empty', 'No categories.');
-$handler->override_option('empty_format', '4');
+$handler->override_option('title', 'Posts by category');
+$handler->override_option('empty', '<p>No categories.</p>');
+$handler->override_option('empty_format', '1');
 $handler->override_option('items_per_page', 0);
 $handler = $view->new_display('page', 'Page', 'page_1');
 $handler->override_option('row_plugin', 'node');
@@ -270,3 +255,48 @@ $handler->override_option('tab_options', array(
   'weight' => 0,
   'name' => 'navigation',
 ));
+$handler = $view->new_display('block', 'Block', 'block_1');
+$handler->override_option('empty', '<div class="item-list"><ul><li>No categories.</li></ul></div>');
+$handler->override_option('empty_format', '2');
+$handler->override_option('block_description', '');
+$handler->override_option('block_caching', -1);
+$handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
+$handler->override_option('empty', '<div class="item-list"><ul><li>No categories.</li></ul></div>');
+$handler->override_option('empty_format', '2');
+$handler->override_option('pane_title', '');
+$handler->override_option('pane_description', '');
+$handler->override_option('pane_category', array(
+  'name' => 'View panes',
+  'weight' => 0,
+));
+$handler->override_option('allow', array(
+  'use_pager' => FALSE,
+  'items_per_page' => FALSE,
+  'offset' => FALSE,
+  'link_to_view' => FALSE,
+  'more_link' => FALSE,
+  'path_override' => FALSE,
+  'title_override' => FALSE,
+  'exposed_form' => FALSE,
+  'fields_override' => FALSE,
+));
+$handler->override_option('argument_input', array(
+  'tid' => array(
+    'type' => 'context',
+    'context' => 'clade.tid',
+    'context_optional' => 0,
+    'panel' => '0',
+    'fixed' => '',
+    'label' => 'Taxonomy: Term ID',
+  ),
+  'name' => array(
+    'type' => 'none',
+    'context' => 'node.uid',
+    'context_optional' => 0,
+    'panel' => '0',
+    'fixed' => '',
+    'label' => 'Taxonomy: Term',
+  ),
+));
+$handler->override_option('link_to_view', 0);
+$handler->override_option('inherit_panels_path', 0);

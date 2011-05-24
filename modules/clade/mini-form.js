@@ -4,7 +4,7 @@ Drupal.behaviors.clade_mini_form = function(context) {
 	if (form.length > 0) {
 		if (form.data('initialized') === undefined) {
 		
-			var cladesField = $('#edit-taxonomy-5');
+			var cladesField = $('#edit-taxonomy-1');
 			var options = [];
 			var selected = [];
 			cladesField.find('option').each(function() {
@@ -68,6 +68,11 @@ Drupal.behaviors.clade_mini_form = function(context) {
 			
 			form.bind('submit', function() {
 				
+				// prevent accidental submission
+				if (typeof Drupal.autocompleteSubmit == "function" && ! Drupal.autocompleteSubmit()) {
+					return false;
+				}
+				
 				var cladeSelection = clades_auto.val().split(', ');
 				cladesField.find('option').removeAttr('selected');
 				for (var i = 0; i < cladeSelection.length; i++) {
@@ -98,7 +103,7 @@ Drupal.behaviors.clade_mini_form = function(context) {
 						Drupal.attachBehaviors(parent);
 					},
 					error: function(xmlr, status, err) {
-						console.log('error: ' + status);
+						//console.log('error: ' + status);
 					}
 				});
 				return false;

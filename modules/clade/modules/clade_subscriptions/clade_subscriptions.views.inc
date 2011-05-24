@@ -28,7 +28,10 @@ function clade_subscriptions_views_handlers() {
       'clade_subscriptions_handler_field_clade_uid_managelinkadmin' => array(
       	'parent' => 'clade_subscriptions_handler_field_clade_uid',
       ),
-      
+			'clade_subscriptions_handler_field_clade_uid_my_membership_link' => array(
+        'parent' => 'clade_subscriptions_handler_field_clade_uid',
+      ),
+
       // argument
       'clade_subscriptions_handler_argument_clade_uid_tid' => array(
         'parent' => 'views_handler_argument_numeric',
@@ -123,6 +126,15 @@ function clade_subscriptions_views_data() {
     'sort' => array(
        'handler' => 'views_handler_sort',
     ),
+  );
+	$data['clade_uid']['my_membership'] = array(
+		'title' => t('My membership link'),
+    'real field' => 'uid',
+		'field' => array(
+			'handler' => 'clade_subscriptions_handler_field_clade_uid_my_membership_link',
+			'click sortable' => FALSE,
+			'help' => t('Show a link to manage Clade membership.'),
+		),
   );
 	$data['clade_uid']['managelink'] = array(
     'title' => t('Clade: Remove membership link'),

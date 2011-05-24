@@ -27,6 +27,7 @@ h2.clade-page-mini-form-title {
 	background-color: #4FADC1;
 	background-image: -moz-linear-gradient(#75bfce, #2899a8);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#75bfce), to(#2899a8));
+	background-image: -webkit-linear-gradient(#75bfce, #2899a8);
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;

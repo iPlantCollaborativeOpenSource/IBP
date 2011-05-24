@@ -71,6 +71,36 @@ $handler->override_option('fields', array(
     'field' => 'admins',
     'relationship' => 'none',
   ),
+  'my_membership' => array(
+    'label' => 'Manage membership',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 0,
+    'empty_zero' => 0,
+    'show_join' => 1,
+    'exclude' => 0,
+    'id' => 'my_membership',
+    'table' => 'clade_uid',
+    'field' => 'my_membership',
+    'relationship' => 'none',
+  ),
 ));
 $handler->override_option('sorts', array(
   'name' => array(
@@ -148,12 +178,12 @@ $handler->override_option('menu', array(
   'title' => 'All Clades',
   'description' => '',
   'weight' => '0',
-  'name' => 'navigation',
+  'name' => 'primary-links',
 ));
 $handler->override_option('tab_options', array(
   'type' => 'normal',
   'title' => 'Clades',
   'description' => '',
   'weight' => '0',
-  'name' => 'navigation',
+  'name' => 'primary-links',
 ));

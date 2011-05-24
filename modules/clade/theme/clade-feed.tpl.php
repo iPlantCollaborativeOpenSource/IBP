@@ -16,11 +16,19 @@
 	</table>
 	<h2 class="title"><?php print $title; ?></h2>
 </div>		
-<div class="clade-activity activity">
+<div>
 	<?php if ($mini_form) : ?>
 		<?php print $mini_form; ?>
 	<?php endif; ?>
-	<div class="clade-feed"><?php print $feed; ?></div>
+	<div class="clade-feed">
+		<?php
+			if ($feed) {
+				print $feed;
+			} else {
+				print t('There are no posts in this Clade.');
+			}
+		?>
+	</div>
 	<div class="centered"><div class="mp-advanced-feed-more"></div></div>
 </div>
 <script>

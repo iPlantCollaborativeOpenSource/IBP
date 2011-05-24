@@ -274,6 +274,24 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
+$handler->override_option('header', '<?php
+$current_view = views_get_current_view();
+if ($clade = clade_get_clade($current_view->args[0])) {
+	print l(t(\'Upload an image\'), "clade/{$clade->tid}/post/add", array(\'query\' => array(\'image\' => TRUE), \'attributes\' => array(\'class\' => \'button\')));
+}
+?>');
+$handler->override_option('header_format', '3');
+$handler->override_option('header_empty', 0);
+$handler->override_option('footer', '<?php
+$current_view = views_get_current_view();
+if ($clade = clade_get_clade($current_view->args[0])) {
+	print l(t(\'Upload an image\'), "clade/{$clade->tid}/post/add", array(\'query\' => array(\'image\' => TRUE), \'attributes\' => array(\'class\' => \'button\')));
+}
+?>');
+$handler->override_option('footer_format', '3');
+$handler->override_option('footer_empty', 1);
+$handler->override_option('empty', 'There are no images in this Clade\'s gallery, yet.  You should upload one!');
+$handler->override_option('empty_format', '2');
 $handler->override_option('items_per_page', 25);
 $handler->override_option('use_pager', '1');
 $handler->override_option('row_options', array(

@@ -1,5 +1,15 @@
-.view-clade-gallery-view {
+.view-clade-gallery-view .view-content {
 	text-align: center;
+}
+
+.view-clade-gallery-view .view-header {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 1em;
+}
+
+.view-clade-gallery-view .view-footer {
+	border-top: 1px solid #ccc;
+	padding-top: 1em;
 }
 
 .view-clade-gallery-view .views-row {

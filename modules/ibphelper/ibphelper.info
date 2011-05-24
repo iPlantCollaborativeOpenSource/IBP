@@ -1,0 +1,7 @@
+; $Id$
+name = IBP Helper
+description = "A helper module for IBP.  Handles various customizations."
+package = "Other"
+core = 6.x
+
+dependencies[] = book

@@ -1,6 +1,5 @@
 <?php
-function clade_rss($clade_id) {
-	$clade = clade_get_clade($clade_id);
+function clade_rss($clade) {
 	$channel = array(
 		'link' => url(taxonomy_term_path($clade), array(absolute => 'TRUE')),
 		'title' => $clade->name,
