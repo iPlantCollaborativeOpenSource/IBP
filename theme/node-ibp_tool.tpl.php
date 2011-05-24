@@ -3,7 +3,7 @@
 
 <h3>Description</h3>
 <p>
-<?php print $node->field_tool_description[0]['view']; ?>
+<?php print $node->body; ?>
 </p>
 <dl>
 	<dt>Category</dt>
