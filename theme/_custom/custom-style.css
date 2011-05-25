@@ -225,3 +225,118 @@ background: transparent url(../images/contact_48.png) no-repeat;
 	border-width: 1px 0;
 	margin: 0 -1px
 }
+
+.book-navigation {
+	float: left;
+	position: relative;
+	padding-top: 0;
+	width: 100%;
+}
+
+.book-navigation-wrapper {
+}
+
+.book-navigation.two-col .left-back {
+	float: left;
+	position: relative;
+	right: 50%;
+	border-right: 1px solid #bbbbbb;
+}
+
+.book-navigation.two-col .right-back {
+	float: left;
+	position: relative;
+}
+
+.book-navigation .left,
+.book-navigation .right {
+	float: left;
+	position: relative;
+}
+
+.book-navigation.two-col .left,
+.book-navigation.two-col .right {
+	left: 50%;
+	width: 50%;
+}
+
+.book-navigation .column-wrapper {
+	margin: 0.5em;
+}
+
+.book-navigation ul.menu {
+	margin: 0 1em;
+	padding: 0;
+}
+
+.ibpbook .col-right {
+	float: left;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	border-left: 1px solid #bbbbbb;
+	padding-bottom: 1px;
+}
+
+.ibpbook .col-left {
+	float: left;
+	position: relative;
+	width: 100%;
+	right: 80%;
+	background-color: #eeeeee;
+	background-image: -moz-linear-gradient(#ffffff, #eeeeee 65%, #dddddd);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #ffffff), color-stop(0.65, #eeeeee), color-stop(1, #dddddd));
+	background-image: -webkit-linear-gradient(#ffffff, #eeeeee 65%, #dddddd);
+	border: 1px solid #bbbbbb;
+	-moz-box-shadow: 0px 1px 0px 0px #888888,
+							1px 1px 0px 0px #aaaaaa;
+	-webkit-box-shadow: 0px 1px 0px 0px #888888,
+							1px 1px 0px 0px #aaaaaa;
+	box-shadow: 0px 1px 0px 0px #888888,
+							1px 1px 0px 0px #aaaaaa;
+}
+
+.ibpbook .book-navigation-wrapper {
+	float: left;
+	position: relative;
+	width: 20%;
+	left: 80%;
+}
+
+.ibpbook .book-content {
+	float: left;
+	position: relative;
+	width: 80%;
+	left: 80%;
+}
+
+.ibpbook.double .col-right {
+	float: left;
+	position: relative;
+	width: 100%;
+}
+
+.ibpbook.double .col-left {
+	float: left;
+	position: relative;
+	width: 100%;
+	right: 60%;
+}
+
+.ibpbook.double .book-navigation-wrapper {
+	float: left;
+	position: relative;
+	width: 40%;
+	left: 60%;
+}
+
+.ibpbook.double .book-content {
+	float: left;
+	position: relative;
+	width: 60%;
+	left: 60%;
+}
+
+.ibpbook .book-content-wrapper {
+	margin: 0 0 0 0.5em;
+}

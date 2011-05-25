@@ -7,15 +7,15 @@ Drupal.behaviors.clade_admin_relationships = function(context) {
 			newval = [];
 		}
 		var oldval = $this.data('oldval');
-		var thisid = $this.attr('id').split('-')[3];
+		var thisid = $this.attr('id').split('-')[2];
 		if (oldval) {
 			var diff = oldval.filter(function(i) { return !(newval.indexOf(i) > -1);});
 			for (var i = 0; i < diff.length; i++) {
-				$('#edit-groups-group-'+diff[i]+'-relations').find('option[value='+thisid+']').attr('selected','');
+				$('#edit-groups-'+diff[i]+'-relations').find('option[value='+thisid+']').attr('selected','');
 			}
 		}
 		for (var i = 0; i < newval.length; i++) {
-			$('#edit-groups-group-'+newval[i]+'-relations').find('option[value='+thisid+']').attr('selected','selected');
+			$('#edit-groups-'+newval[i]+'-relations').find('option[value='+thisid+']').attr('selected','selected');
 		}
 		$this.data('oldval', newval);
 	});

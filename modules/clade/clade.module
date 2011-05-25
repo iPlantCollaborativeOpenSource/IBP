@@ -2030,18 +2030,17 @@ function clade_admin_relationships_form(&$form_state) {
 		'#tree' => TRUE,
 		);
 	foreach($tree as $clade) {
-		$key = strtolower(str_replace(' ', '_', $clade->name));
-		$form['groups'][$key] = array(
+		$form['groups'][$clade->tid] = array(
 			'#type' => 'fieldset',
 			'#title' => $clade->name . ' Relationships',
 			'#tree' => TRUE,
 			'#attributes' => array('class' => 'displayinline')
 			);
-		$form['groups'][$key]['tid'] = array(
+		$form['groups'][$clade->tid]['tid'] = array(
 			'#type' => 'hidden',
 			'#value' => $clade->tid,
 			);
-		$form['groups'][$key]['relations'] = _taxonomy_term_select(
+		$form['groups'][$clade->tid]['relations'] = _taxonomy_term_select(
 				t('Related Clades'),
 				'relations',
 				array_keys(taxonomy_get_related($clade->tid)),
@@ -2051,7 +2050,7 @@ function clade_admin_relationships_form(&$form_state) {
 				'<'. t('none') .'>',
 				array($clade->tid)
 			);
-		$form['groups'][$key]['relations']['#attributes'] = array(
+		$form['groups'][$clade->tid]['relations']['#attributes'] = array(
 			'class' => 'clade-relationships'
 			);
 	}

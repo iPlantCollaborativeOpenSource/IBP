@@ -28,17 +28,17 @@
 					<div class="book-content-wrapper">
 					<?php print $content ?>
 					</div>
-					<?php if ($links): ?>
-					<div class="links">
-						<?php print $links; ?>
-					</div>
-					<?php endif; ?>
-
 				</div>
 				
 			</div>  
 		</div>
 	</div>
+
+  <?php if ($links): ?>
+  <div class="links">
+    <?php print $links; ?>
+  </div>
+  <?php endif; ?>
 
   <?php if ($node_bottom && !$teaser): ?>
   <div id="node-bottom">

@@ -35,19 +35,20 @@ function ibphelper_preprocess_book_navigation(&$vars) {
 function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
 	if ($op == 'view' && !$teaser) {
 		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
+			if ($node->book['plid'] && $node->book['has_children']) {
+				$node->book_navigation_two_col = TRUE;
+			} else {
+				$node->book_navigation_two_col = FALSE;
+			}
 			$node->book_navigation = drupal_render($node->content['book_navigation']);
 			unset($node->content['book_navigation']);
 		}
 	}
-	if ($op == 'alter' && !$teaser) {
-		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
-			$node->body = $node->book_navigation . '<div class="book-content">' . $node->body . '</div>';
-		}
-	}
-}
-
-function ibphelper_preprocess_user_register(&$vars) {
-	drupal_set_message('here');
+// 	if ($op == 'alter' && !$teaser) {
+// 		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
+// 			$node->body = '<div class="navigation-wrapper">' .$node->book_navigation . '<div class="content-wrapper">' . $node->body . '</div></div>';
+// 		}
+// 	}
 }
 
 function ibphelper_hook_info() {

@@ -117,7 +117,7 @@ Drupal.jit.forceDirected = function(options) {
     //Native canvas text styling
     Label: {
       type: labelType, //Native or HTML
-      size: 10,
+      size: 14,
       style: 'normal',
       color: options['label_color'] ? options['label_color'] : '#454545',
     },
