@@ -10,3 +10,75 @@ function ibphelper_perm() {
 }
 
 //function ibphelper_link_alter
+
+function ibphelper_preprocess_book_navigation(&$vars) {
+	if ($vars['current_depth'] > 1) {
+		// child page; get parent
+		$parent_link = book_link_load($vars['book_link']['plid']);
+		$vars['parent_tree'] = book_children($parent_link);
+		$vars['parent_link'] = $parent_link;
+		$vars['parent_link_url'] = url($parent_link['href']);
+		$vars['parent_link_title'] = check_plain($parent_link['title']);
+	}
+	
+	$classes = 'book-navigation';
+	if ($vars['tree'] && $vars['parent_tree']) {
+		$classes .= ' two-col';
+		$vars['two_col'] = TRUE;
+	} else {
+		$classes .= ' one-col';
+		$vars['two_col'] = FALSE;
+	}
+	$vars['classes'] = $classes;
+}
+
+function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
+	if ($op == 'view' && !$teaser) {
+		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
+			$node->book_navigation = drupal_render($node->content['book_navigation']);
+			unset($node->content['book_navigation']);
+		}
+	}
+	if ($op == 'alter' && !$teaser) {
+		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
+			$node->body = $node->book_navigation . '<div class="book-content">' . $node->body . '</div>';
+		}
+	}
+}
+
+function ibphelper_preprocess_user_register(&$vars) {
+	drupal_set_message('here');
+}
+
+function ibphelper_hook_info() {
+	return array(
+		'ibphelper' => array(
+			'ibphelper' => array(
+				'user_register' => array(
+					'runs when' => t('User registration page is viewed by anonymous user.'),
+					),
+				),
+			),
+		);
+}
+
+function ibphelper_action_info_alter(&$info) {
+  if (isset($info['system_goto_action']['hooks'])) {
+    $info['system_goto_action']['hooks']['ibphelper'] = array('user_register');
+  }
+}
+
+function ibphelper_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == 'user_register') {
+		if ($aids = _trigger_get_hook_aids('ibphelper', $form_id)) {
+			$context = array(
+				'hook' => 'ibphelper',
+				'op' => $form_id,
+			);
+			$dummy = new stdClass();
+			foreach ($aids as $aid => $action_info) {
+				actions_do($aid, $dummy, $context);
+			}
+		}
+	}
+}
