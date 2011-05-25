@@ -144,6 +144,7 @@ function clade_install() {
 	$clades = array(
 			'name' => t('Clades'),
 			'description' => t('The Clade hierarchy'),
+			'help' => t('Enter the name of the Clade.'),
 			'multiple' => 1,
 			'required' => 1,
 			'hierarchy' => 1,
@@ -159,6 +160,7 @@ function clade_install() {
 	$keywords = array(
 			'name' => t('Keywords'),
 			'description' => t('Keywords for Clade posts'),
+			'help' => t('Enter topic keywords for this post.  Multiple keywords can be separated by commas.'),
 			'multiple' => 1,
 			'required' => 0,
 			'hierarchy' => 0,

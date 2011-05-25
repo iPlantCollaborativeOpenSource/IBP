@@ -229,7 +229,6 @@ $handler->override_option('cache', array(
   'type' => 'none',
 ));
 $handler->override_option('title', 'Posts by category');
-$handler->override_option('empty', '<p>No categories.</p>');
 $handler->override_option('empty_format', '1');
 $handler->override_option('items_per_page', 0);
 $handler = $view->new_display('page', 'Page', 'page_1');
@@ -256,13 +255,9 @@ $handler->override_option('tab_options', array(
   'name' => 'navigation',
 ));
 $handler = $view->new_display('block', 'Block', 'block_1');
-$handler->override_option('empty', '<div class="item-list"><ul><li>No categories.</li></ul></div>');
-$handler->override_option('empty_format', '2');
 $handler->override_option('block_description', '');
 $handler->override_option('block_caching', -1);
 $handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
-$handler->override_option('empty', '<div class="item-list"><ul><li>No categories.</li></ul></div>');
-$handler->override_option('empty_format', '2');
 $handler->override_option('pane_title', '');
 $handler->override_option('pane_description', '');
 $handler->override_option('pane_category', array(

@@ -152,20 +152,18 @@ background: transparent url(../images/contact_48.png) no-repeat;
 	display: inline;
 }
 
-dl {
+.node-type-ibp_tool .field {
+	clear: both;
 }
 
-dl dt {
+.node-type-ibp_tool .field .field-label {
 	font-weight: bold;
+	color: #777777;
 	float: left;
-	clear: left;
 	width: 13em;
 }
 
-dl dd {
-	clear: right;
-	min-height: 1.25em;
-	line-height: 1.25em;
+.node-type-ibp_tool .field .field-items {
 	margin: 0 0 0.2em 13em;
 }
 
