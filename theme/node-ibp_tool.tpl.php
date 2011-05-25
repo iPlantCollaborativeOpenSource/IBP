@@ -1,30 +1,45 @@
-<div class="content ibp_tool">
-<h2><?php echo theme($node->title); ?></h2>
+<div id="node-<?php print $node->nid; ?>" class="node <?php print $node_classes; ?>">
 
-<h3>Description</h3>
-<p>
-<?php print $node->body; ?>
-</p>
-<dl>
-	<dt>Category</dt>
-	<dd><?php print $node->field_tool_category[0]['view']; ?></dd>
-	<dt>Usability</dt>
-	<dd><?php print $node->field_tool_usability[0]['view']; ?></dd>
-	<dt>Supported platforms</dt>
-	<dd><?php print implode(', ', array_map(function($val) { return $val['view']; }, $node->field_tool_platform)); ?></dd>
-	<dt>Version</dt>
-	<dd><?php print $node->field_tool_version[0]['view'] ? $node->field_tool_version[0]['view'] : 'n/a'; ?></dd>
-	<dt>Download link</dt>
-	<dd><?php print l(t('Download link'), $node->field_tool_dl_link[0]['url'], array('attributes' => array('target' => '_blank')))?></dd>
-</dl>
+	<?php if ($page == 0): ?>
+	<h2 class="title"><a href="<?php print $node_url ?>" title="<?php print $title ?>"><?php print $title ?></a></h2>
+	<?php endif; ?>
 
-<!--
-<pre>
-<?php
-print_r($node);
-?>
-</pre>
--->
+	<?php if ($terms): ?>
+	<div class="terms">
+		<?php print $terms; ?>
+	</div>
+	<?php endif;?>
 
+  <?php if ($node_middle && !$teaser): ?>
+  <div id="node-middle">
+    <?php print $node_middle; ?>
+  </div>
+  <?php endif; ?>
+
+  <div class="content">
+		<h3>Description</h3>
+    <?php print $content ?>
+  </div>
+
+  <?php if ($links): ?>
+  <div class="links">
+    <?php print $links; ?>
+  </div>
+  <?php endif; ?>
+
+  <?php if ($node_bottom && !$teaser): ?>
+  <div id="node-bottom">
+    <?php print $node_bottom; ?>
+  </div>
+  <?php endif; ?>
+
+	<!--
+	<pre>
+	<?php
+	//print_r(array_keys(get_defined_vars()));
+	//print_r($node);
+	?>
+	</pre>
+	-->
 </div>
 <div class="clear-block clear"></div>
