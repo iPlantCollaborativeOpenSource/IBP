@@ -127,3 +127,13 @@ a#back-to-top {
   -webkit-border-radius: 0 0 3px 3px;
   border-radius: 0 0 3px 3px;
 }
+
+#page-bottom ul.menu,
+#page-bottom ul.menu li {
+	list-style-type: circle;
+	list-style-image: url(../images/arrow_right.png);
+}
+
+#page-bottom ul.menu li ul {
+	display: none;
+}

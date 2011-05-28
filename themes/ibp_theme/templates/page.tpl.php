@@ -208,9 +208,9 @@
 
     </div></div><!-- /#main, /#main-wrapper -->
 
-		<?php if ($navigation): ?>
-			<div id="bottom-nav"><div class="section">
-				<?php print $navigation; ?>
+		<?php if ($page_bottom): ?>
+			<div id="page-bottom"><div class="section">
+				<?php print $page_bottom; ?>
 			</div></div>
 		<?php endif; ?>
 		

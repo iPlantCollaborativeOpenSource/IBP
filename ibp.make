@@ -30,6 +30,7 @@ projects[] = link
 projects[] = messaging
 projects[] = menutrails
 projects[] = mimemail
+projects[] = multiblock
 projects[] = notifications
 projects[] = panels
 projects[] = pathauto

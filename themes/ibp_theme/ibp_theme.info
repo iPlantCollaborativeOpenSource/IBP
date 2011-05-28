@@ -66,6 +66,7 @@ regions[highlight]      = Highlighted content
 regions[content_top]    = Content top
 regions[content_bottom] = Content bottom
 regions[header]         = Header
+regions[page_bottom]   = Page bottom
 regions[footer]         = Footer
 regions[page_closure]   = Page closure
 

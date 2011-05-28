@@ -151,7 +151,7 @@ body.admin-menu {
 #navigation #block-menu-primary-links li.active-trail.expanded ul li a {
 	color: #00a3f7;
 	display: block;
-  padding: 12px 6px; /* LTR */
+  padding: 12px 12px; /* LTR */
 	font-weight: bold;
 	text-decoration: none;
 	font-family: Arial, sans-serif;
@@ -216,7 +216,7 @@ body.admin-menu {
 	height: 46px;
 }
 
-#bottom-nav {
+#page-bottom {
   position: relative;
   background-color: #ffffff;
   border: 1px solid #edebe6;
@@ -225,10 +225,6 @@ body.admin-menu {
   border-radius: 3px;
   padding: 6px;
   margin-top: 11px;
-}
-
-#bottom-nav #block-menu-primary-links ul li ul {
-	display: none;
 }
 
 #top-bar {
