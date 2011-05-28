@@ -89,7 +89,7 @@ function clade_jit_preprocess_clade_jit_node_info(&$vars) {
 
 function clade_jit_clade_jit_node_info_items($clade) {
 	$items = array();
-	$items[] = array('data' => l(t('Clade Homepage'), "clade/$clade->tid"), 'data-sort' => 0);
+	$items[] = array('data' => l(t('Clade homepage'), "clade/$clade->tid"), 'data-sort' => 0);
 	$items[] = array('data' => l(t('RSS Feed'), "clade/$clade->tid/feed"), 'data-sort' => 10);
 	return $items;
 }

@@ -200,7 +200,7 @@ function clade_subscriptions_clade_details_items($clade) {
 			'class' => 'clade-details-item',
 			),
 		'admins' => array(
-			'data' => theme('item_list', $admins, 'Clade Managers', 'ul', array('class' => 'clade-details-admins')),
+			'data' => theme('item_list', $admins, t('Clade Managers'), 'ul', array('class' => 'clade-details-admins')),
 			'data-sort' => 12
 			),
 		);

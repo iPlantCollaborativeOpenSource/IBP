@@ -28,6 +28,7 @@ projects[] = ldap_integration
 projects[] = libraries
 projects[] = link
 projects[] = messaging
+projects[] = menutrails
 projects[] = mimemail
 projects[] = notifications
 projects[] = panels
@@ -42,7 +43,7 @@ projects[] = webform
 
 ; Themes
 
-projects[] = zeropoint
+projects[] = zen
 
 ; Custom Modules
 
@@ -63,6 +64,12 @@ projects[teaser_comments][download][type] = git
 projects[teaser_comments][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
 projects[teaser_comments][download][subtree] = modules/teaser_comments
 projects[teaser_comments][type] = module
+
+; ibp_theme
+projects[teaser_comments][download][type] = git
+projects[teaser_comments][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+projects[teaser_comments][download][subtree] = themes/ibp_theme
+projects[teaser_comments][type] = theme
 
 ; Libraries
 

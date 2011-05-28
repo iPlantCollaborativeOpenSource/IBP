@@ -1,0 +1,359 @@
+/**
+ * @file
+ * Layout Styling (DIV Positioning)
+ *
+ * Define CSS classes to create a table-free, 3-column, 2-column, or single
+ * column layout depending on whether blocks are enabled in the left or right
+ * columns.
+ *
+ * This layout is based on the Zen Columns layout method.
+ *   http://drupal.org/node/201428
+ *
+ * Only CSS that affects the layout (positioning) of major elements should be
+ * listed here.  Such as:
+ *   display, position, float, clear, width, height, min-width, min-height
+ *   margin, border, padding, overflow
+ */
+
+
+/*
+ * Body
+ */
+body {
+	background-image: url(../images/background.png);
+	background-color: #fbf9f3;
+	background-attachment: scroll;
+	background-position: 50% 0;
+	background-repeat: no-repeat;
+}
+
+body.admin-menu {
+	background-position: 50% 21px;
+}
+
+#page-wrapper,
+.region-page-closure {
+  /*
+   * If you want to make the page a fixed width and centered in the viewport,
+   * this is the standards-compliant way to do that. See also the ie6.css file
+   * for the necessary IE5/IE6quirks hack to center a div.
+   */
+  margin-left: auto;
+  margin-right: auto;
+  width: 994px;
+}
+
+#page {
+}
+
+/*
+ * Header
+ */
+#header {
+	height: 174px;
+}
+
+#header .section {
+}
+
+#search-box {
+	float: left;
+}
+
+.region-header {
+  clear: both; /* Clear the logo */
+}
+
+/*
+ * Main (container for everything else)
+ */
+#main-wrapper {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #edebe6;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 6px;
+}
+
+#main {
+}
+
+/*
+ * Content
+ */
+#content,
+.no-sidebars #content {
+  float: left; /* LTR */
+  width: 980px;
+  margin-left: 0; /* LTR */
+  margin-right: -980px; /* LTR */ /* Negative value of #content's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to #content .section. */
+}
+
+.sidebar-first #content {
+  width: 740px;
+  margin-left: 240px; /* LTR */ /* The width of .region-sidebar-first. */
+  margin-right: -980px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.sidebar-second #content {
+  width: 740px;
+  margin-left: 0; /* LTR */
+  margin-right: -740px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+.two-sidebars #content {
+  width: 520px;
+  margin-left: 240px; /* LTR */ /* The width of .region-sidebar-first */
+  margin-right: -760px; /* LTR */ /* Negative value of #content's width + left margin. */
+}
+
+#content .section {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Navigation
+ */
+#navigation {
+	float: left;
+  width: 100%;
+  position: relative;
+  top: -20px;
+}
+
+#navigation #block-menu-primary-links {
+	float: left; /* LTR */
+  padding: 0;
+  width: 100%;
+}
+
+#navigation #block-menu-primary-links ul /* Primary and secondary links */ {
+	float: right;
+  margin: 0;
+  padding: 0;
+  text-align: left; /* LTR */
+  list-style: none;
+}
+
+#navigation #block-menu-primary-links li /* A simple method to get navigation links to appear in one line. */ {
+  float: left; /* LTR */
+  height: 46px;
+  padding: 0; /* LTR */
+  margin: 0;
+  list-style: none;
+}
+
+#navigation #block-menu-primary-links li a,
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a {
+	color: #00a3f7;
+	display: block;
+  padding: 12px 6px; /* LTR */
+	font-weight: bold;
+	text-decoration: none;
+	font-family: Arial, sans-serif;
+	font-size: 12pt;
+	text-shadow: -1px -1px 1px #333333;
+}
+
+#navigation #block-menu-primary-links li.expanded ul {
+	display: none;
+}
+
+#navigation #block-menu-primary-links li.active-trail {
+	text-align: center;
+	background-color: #3c3c3c;
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+}
+
+#navigation #block-menu-primary-links li.active-trail a {
+	color: #919191;
+	text-shadow: none;
+}
+
+#navigation #block-menu-primary-links li.active-trail.expanded ul {
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 46px;
+	width: 100%;
+	background: #3c3c3c;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#navigation #block-menu-primary-links li.active-trail.expanded ul li {
+  margin: 8px 5px 0px; /* LTR */
+  height: 38px;
+}
+
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a {
+  padding: 6px 12px; /* LTR */
+}
+
+#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a {
+	color: #919191;
+	text-shadow: none;
+	background: #545454;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#navigation .subnavigation {
+	width: 100%;
+	background: #3c3c3c;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	margin-top: 46px;
+	height: 46px;
+}
+
+#bottom-nav {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #edebe6;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 6px;
+  margin-top: 11px;
+}
+
+#bottom-nav #block-menu-primary-links ul li ul {
+	display: none;
+}
+
+#top-bar {
+	float: right;
+	position: relative;
+	right: 20px;
+	height: 24px;
+	-moz-border-radius: 0 0 3px 3px;
+	-webkit-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+	background-color: #363636;
+	padding: 8px 10px 10px;
+	text-align: center;
+}
+
+#top-bar .item-list {
+	float: left;
+	margin-top: 3px;
+}
+
+#top-bar .item-list ul {
+	margin: 0;
+	padding: 0;
+}
+
+#top-bar .item-list ul li {
+	float: left;
+	list-style: none;
+	padding: 0;
+	margin: 0 0.5em 0 0;
+}
+
+#top-bar .item-list ul li:after {
+	content: "|";
+	padding-left: 0.5em;
+	color: #6c6c6c;
+}
+
+#top-bar .item-list ul li.last:after {
+	content: "";
+}
+
+/*
+ * First sidebar
+ */
+.region-sidebar-first {
+  float: left; /* LTR */
+  width: 240px;
+  margin-left: 0; /* LTR */
+  margin-right: -240px; /* LTR */ /* Negative value of .region-sidebar-first's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-first .section. */
+}
+
+.region-sidebar-first .section {
+  margin: 0 20px 0 0; /* LTR */
+  padding: 0;
+}
+
+/*
+ * Second sidebar
+ */
+.region-sidebar-second {
+  float: left; /* LTR */
+  width: 240px;
+  margin-left: 740px; /* LTR */ /* Width of content + sidebar-first. */
+  margin-right: -980px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
+}
+
+.region-sidebar-second .section {
+  margin: 0 0 0 20px; /* LTR */
+  padding: 0;
+}
+
+/*
+ * Footer
+ */
+#footer {
+	clear: both;
+	text-align: center;
+	margin-top: 45px;
+	background-color: #f3efe4;
+	padding-top: 12px;
+	height: 31px;
+	width: 100%;
+	color: #a29a81;
+	font-size: 10pt;
+}
+
+#footer .section {
+}
+
+/*
+ * Closure
+ */
+.region-page-closure /* See also the #page-wrapper declaration above that this div shares. */ {
+}
+
+/*
+ * Prevent overflowing content
+ */
+#header,
+#content,
+#navigation,
+.region-sidebar-first,
+.region-sidebar-second,
+#footer,
+.region-page-closure {
+  overflow: visible;
+  word-wrap: break-word; /* A very nice CSS3 property */
+}
+
+#navigation {
+}
+
+/*
+ * If a div.clearfix doesn't have any content after it and its bottom edge
+ * touches the bottom of the viewport, Firefox and Safari will mistakenly
+ * place several pixels worth of space between the bottom of the div and the
+ * bottom of the viewport. Uncomment this CSS property to fix this.
+ * Note: with some over-large content, this property might cause scrollbars
+ * to appear on the #page-wrapper div.
+ */
+/*
+#page-wrapper {
+  overflow-y: hidden;
+}
+*/

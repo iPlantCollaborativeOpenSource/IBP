@@ -1,0 +1,342 @@
+/****************************/
+/* CUSTOM STYLE CSS         */
+/****************************/
+/* 
+Put your custom css and css overrides in this file.  By restricting 
+your css changes to custom-style.css, your changes will not be overwritten 
+when upgrading to a new version of this theme.
+
+Steps to customize your 0 Point theme:                       
+1. Add your custom css to this file                
+2. Uncomment different examples and modify data as you wish 
+3. Clear cached data at admin/settings/performance 
+4. Save this file with a different name to avoid loosing it after a theme update.
+*/
+/****************************/
+
+/* Erase or comment the lines below to get rid of the image in the right sidebar 
+ * and the brand image or choose another image and change the path instead. */
+
+#wrapper {
+	background: transparent url(../images/all/_sidebarimg.png) 99% 99% no-repeat;
+}
+
+#brand {
+/*	background: url(../images/all/_brand.png) 50% 30% no-repeat; */
+	background: url(../images/all/IBPFooter50.png) 50% 30% no-repeat;
+	position: left;
+	margin: 5px auto 0;
+/*	width: 250px;*/
+	width: 500px;
+	height: 50px;
+}
+
+/************************/
+/* HEADER IMAGE ROTATOR */
+/************************/
+.himg #headimg {
+	background: #fff url(headerimg/rotate.php) no-repeat 100% 100%; /* rotates images in the headerimg folder */
+	border-bottom: 1px solid #eee;
+}
+
+/********************/
+/* DROP DOWN SHADOW */
+/********************/
+
+ul.firstsublayer, 
+ul.sublayer {
+	background: url(../images/menushadow.png) no-repeat 7px 5px; 
+}
+
+
+
+
+/* Uncomment the first declaration below to hide the titles on the front page 
+ * Addapt the second declaration to hide a certain title. 
+ * Third one is for no "Read more" on the first page. */ 
+/*
+.front h2 a {
+	display: none;
+}
+.front #node-XXX h2 a {
+	display: none;
+}
+.front .node_read_more {
+	display: none;
+}
+*/
+
+
+/*******************************/
+/* CUSTOM FIXED or FLUID WIDTH */
+/*******************************/ 
+/* First choose "Custom Layout width" in 0 Point settings page.
+ * Uncomment the lines below and modify the value as you wish. 
+ * E.g. 1000px for fixed width or 85% for fluid width */
+/*
+body.layout-fluid .sizer {
+	width: 90%;
+}
+body.layout-fixed .sizer {
+	width: 980px;
+}
+*/
+
+
+/*******************************/
+/* CUSTOM Equal width sidebars */
+/*******************************/ 
+/* First choose "Equal width sidebars" in 0 Point settings page.
+ * Uncomment the lines below and modify the values keeping pair values. */
+/*
+body.l-m-r-eq .colleft, body.m-r-eq .colleft, body.l-m-eq .colleft {
+	width: 199px;
+	margin-left: -199px;
+}
+body.l-m-r-eq .colright, body.m-r-eq .colright, body.l-m-eq .colright {
+	width: 199px;
+	margin-right: -199px;
+}
+body.l-m-r-eq .outer, body.l-m-eq .outer, body.l-m-eq .outer {
+	margin-left: 199px;
+}
+body.l-m-r-eq .outer, body.m-r-eq .outer, body.m-r-eq .outer {
+	margin-right: 199px;
+}
+body.l-m-eq .colleft {
+	width: 199px;
+	margin-left: -199px;
+}
+body.m-r-eq .colright {
+	width: 199px;
+	margin-right: -199px;
+}
+*/
+
+
+/******************************/
+/* SPECIAL STATIC-MENU COLORS */
+/******************************/
+
+/* Uncomment this to have different colors (and chooose them) for first and last menu items. */
+/*
+#navlist li.first a {
+	background: #D0932C;
+}
+#navlist li.last a {
+	background: #BF5D8C;
+}
+*/
+
+
+/* Change the values below accordingly: XXX=menu numer; YYY=background color. */
+/*
+#navlist li.menu-XXX a {
+	background: #YYY;
+}
+*/
+
+
+/*******************************/
+/* UPDATE ICONS FOR NEW BLOCKS */
+/*******************************/
+/* where XXX is the block number */
+
+/*
+#block-block-XXX .block-icon {
+background: transparent url(../images/contact_48.png) no-repeat;
+}
+*/
+
+.displayinline {
+	display: inline;
+}
+
+.node-type-ibp_tool .field {
+	clear: both;
+}
+
+.node-type-ibp_tool .field .field-label {
+	font-weight: bold;
+	color: #777777;
+	float: left;
+	width: 13em;
+}
+
+.node-type-ibp_tool .field .field-items {
+	margin: 0 0 0.2em 13em;
+}
+
+.node.teaser.odd,
+.node.full-node .node-top {
+	overflow: hidden;
+	clear: both;
+	border-width: 1px 0;
+	border-style: solid;
+	border-color: #eeeeee;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	padding: 0 12px;
+	background-color: #f6f6f6;
+	background-image: -moz-linear-gradient(#f4f4f4, #ffffff 25%, #ffffff 75%, #f4f4f4);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #f4f4f4), color-stop(.25, #ffffff), color-stop(.75, #ffffff), color-stop(1, #f4f4f4));
+	background-image: -webkit-linear-gradient(#f4f4f4, #ffffff 25%, #ffffff 75%, #f4f4f4);
+}
+
+.node.teaser.even {
+	border: none;
+}
+
+.node.teaser {
+	padding: 6px !important;
+	margin: 0.5em 0 !important;
+}
+
+.node .meta {
+	float: left;
+	width: 50%;
+	margin: 10px 0;
+}
+
+.node .terms {
+	float: right;
+	width: 50%;
+}
+
+.node .content {
+	clear: both;
+}
+
+.node .title {
+	margin-top: 0.25em;
+}
+
+#section2 {
+	background-color: #efefef;
+	background-image: -moz-linear-gradient(#eeeeee, #ffffff, #eeeeee);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #eeeeee), color-stop(0.5, #ffffff), color-stop(1, #eeeeee));
+	background-image: -webkit-linear-gradient(#eeeeee, #ffffff, #eeeeee);
+	background-repeat: no-repeat;
+	background-position: 100% 0;
+	min-height: 200px;
+	border-color: #dddddd;
+	border-style: solid;
+	border-width: 1px 0;
+	margin: 0 -1px
+}
+
+.book-navigation {
+	float: left;
+	position: relative;
+	padding-top: 0;
+	width: 100%;
+}
+
+.book-navigation-wrapper {
+}
+
+.book-navigation.two-col .left-back {
+	float: left;
+	position: relative;
+	right: 50%;
+	border-right: 1px solid #bbbbbb;
+}
+
+.book-navigation.two-col .right-back {
+	float: left;
+	position: relative;
+}
+
+.book-navigation .left,
+.book-navigation .right {
+	float: left;
+	position: relative;
+}
+
+.book-navigation.two-col .left,
+.book-navigation.two-col .right {
+	left: 50%;
+	width: 50%;
+}
+
+.book-navigation .column-wrapper {
+	margin: 0.5em;
+}
+
+.book-navigation ul.menu {
+	margin: 0 1em;
+	padding: 0;
+}
+
+.ibpbook .col-right {
+	float: left;
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	border-left: 1px solid #bbbbbb;
+	padding-bottom: 1px;
+}
+
+.ibpbook .col-left {
+	float: left;
+	position: relative;
+	width: 100%;
+	right: 80%;
+	background-color: #eeeeee;
+	background-image: -moz-linear-gradient(#ffffff, #eeeeee 65%, #dddddd);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0, #ffffff), color-stop(0.65, #eeeeee), color-stop(1, #dddddd));
+	background-image: -webkit-linear-gradient(#ffffff, #eeeeee 65%, #dddddd);
+	border: 1px solid #bbbbbb;
+	-moz-box-shadow: 0px 1px 0px 0px #888888,
+							1px 1px 0px 0px #aaaaaa;
+	-webkit-box-shadow: 0px 1px 0px 0px #888888,
+							1px 1px 0px 0px #aaaaaa;
+	box-shadow: 0px 1px 0px 0px #888888,
+							1px 1px 0px 0px #aaaaaa;
+}
+
+.ibpbook .book-navigation-wrapper {
+	float: left;
+	position: relative;
+	width: 20%;
+	left: 80%;
+}
+
+.ibpbook .book-content {
+	float: left;
+	position: relative;
+	width: 80%;
+	left: 80%;
+}
+
+.ibpbook.double .col-right {
+	float: left;
+	position: relative;
+	width: 100%;
+}
+
+.ibpbook.double .col-left {
+	float: left;
+	position: relative;
+	width: 100%;
+	right: 60%;
+}
+
+.ibpbook.double .book-navigation-wrapper {
+	float: left;
+	position: relative;
+	width: 40%;
+	left: 60%;
+}
+
+.ibpbook.double .book-content {
+	float: left;
+	position: relative;
+	width: 60%;
+	left: 60%;
+}
+
+.ibpbook .book-content-wrapper {
+	margin: 0 0 0 0.5em;
+}
