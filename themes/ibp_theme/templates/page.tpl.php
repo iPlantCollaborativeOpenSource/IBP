@@ -160,10 +160,10 @@
       <?php print $header; ?>
       
 			<?php if ($navigation): ?>
-        <div id="navigation" class="section clearfix">
+        <div id="navigation">
           <?php print $navigation; ?>
           <div class="subnavigation"></div>
-        </div></div><!-- /.section, /#navigation -->
+        </div><!-- /#navigation -->
       <?php endif; ?>
 
     </div></div><!-- /.section, /#header -->

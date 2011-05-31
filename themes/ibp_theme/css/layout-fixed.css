@@ -50,7 +50,6 @@ body.admin-menu {
  * Header
  */
 #header {
-	height: 174px;
 }
 
 #header .section {
@@ -69,12 +68,7 @@ body.admin-menu {
  */
 #main-wrapper {
   position: relative;
-  background-color: #ffffff;
-  border: 1px solid #edebe6;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  padding: 6px;
+  top: -8px;
 }
 
 #main {
@@ -86,33 +80,38 @@ body.admin-menu {
 #content,
 .no-sidebars #content {
   float: left; /* LTR */
-  width: 980px;
+  width: 994px;
   margin-left: 0; /* LTR */
-  margin-right: -980px; /* LTR */ /* Negative value of #content's width + left margin. */
+  margin-right: -994px; /* LTR */ /* Negative value of #content's width + left margin. */
   padding: 0; /* DO NOT CHANGE. Add padding or margin to #content .section. */
 }
 
 .sidebar-first #content {
-  width: 740px;
+  width: 754px;
   margin-left: 240px; /* LTR */ /* The width of .region-sidebar-first. */
-  margin-right: -980px; /* LTR */ /* Negative value of #content's width + left margin. */
+  margin-right: -994px; /* LTR */ /* Negative value of #content's width + left margin. */
 }
 
 .sidebar-second #content {
-  width: 740px;
+  width: 754px;
   margin-left: 0; /* LTR */
-  margin-right: -740px; /* LTR */ /* Negative value of #content's width + left margin. */
+  margin-right: -754px; /* LTR */ /* Negative value of #content's width + left margin. */
 }
 
 .two-sidebars #content {
-  width: 520px;
+  width: 514px;
   margin-left: 240px; /* LTR */ /* The width of .region-sidebar-first */
-  margin-right: -760px; /* LTR */ /* Negative value of #content's width + left margin. */
+  margin-right: -754px; /* LTR */ /* Negative value of #content's width + left margin. */
 }
 
 #content .section {
-  margin: 0;
-  padding: 0;
+  background-color: #ffffff;
+  border: 1px solid #edebe6;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+	padding: 6px;
+	margin: 0px;
 }
 
 /*
@@ -122,7 +121,8 @@ body.admin-menu {
 	float: left;
   width: 100%;
   position: relative;
-  top: -20px;
+  top: -18px;
+  margin: 0;
 }
 
 #navigation #block-menu-primary-links {
@@ -181,6 +181,7 @@ body.admin-menu {
 	position: absolute;
 	left: 0;
 	top: 46px;
+	height: 45px;
 	width: 100%;
 	background: #3c3c3c;
 	-moz-border-radius: 3px;
@@ -213,7 +214,7 @@ body.admin-menu {
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	margin-top: 46px;
-	height: 46px;
+	height: 45px;
 }
 
 #page-bottom {
@@ -224,7 +225,7 @@ body.admin-menu {
   -webkit-border-radius: 3px;
   border-radius: 3px;
   padding: 6px;
-  margin-top: 11px;
+  margin-top: 3px;
 }
 
 #top-bar {
