@@ -13,12 +13,82 @@ h2.title a {
 
 .field-label {
 	float: left;
-	clear: left;
 	color: #7b7b7b;
 }
 
 .field-items {
-	margin-left: 10em;
+	margin: 0 0 0 10em;
+}
+
+.field-field-tool-platform .field-item {
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+.field-field-tool-dl-link {
+	border-bottom: none;
+	float: right;
+}
+
+.field-field-tool-dl-link .field-label {
+	float: none;
+}
+
+.field-field-tool-dl-link .field-items {
+	margin: 0;
+}
+
+.field-field-tool-dl-link .field-item a {
+	display: inline-block;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #3e3e3e;
+	font-weight: bold;
+	padding:6px 18px;
+	background-color: #3199f2;
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.field-field-tool-dl-link .field-item a:hover {
+	background-color: #51a9f4;
+	background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
+	background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
+}
+
+.field-field-tool-file {
+	border-bottom: none;
+	float: right;
+}
+
+.field-field-tool-file img {
+	display: none;
+}
+
+.field-field-tool-file a {
+	display: inline-block;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #3e3e3e;
+	font-weight: bold;
+	padding:6px 18px;
+	background-color: #3199f2;
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.field-field-tool-file a:hover {
+	background-color: #51a9f4;
+	background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
+	background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
 }
 
 .node {

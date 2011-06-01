@@ -390,7 +390,6 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 // 	} else if ($form_id == 'search_form' && arg(1) == 'clade') {
 // 		$form['see_all'] = array('#type'=>'markup','#value'=>l(t('&raquo;See All Users'), 'users/all', array('html'=>TRUE)));
 	} else if ($form_id == 'clade_page_node_form') {
-		
 		$form['path']['#access'] = $user->uid == 1;
 		$form['menu']['#access'] = $user->uid == 1;
 		$form['author']['#access'] = $user->uid == 1;
@@ -403,22 +402,19 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 		$form['taxonomy'][$clades_vid]['#required'] = TRUE;
 		$form['taxonomy'][$clades_vid]['#description'] = t('This is the Clade this post will appear in.');
 		if ($clade = clade_get_context()) {
-			$form['taxonomy'][$clades_vid]['#default_value'] = $clade->tid;
-			$form['taxonomy'][$clades_vid]['#disabled'] = TRUE;			
-		} else if (! empty($_GET['clades'])) {
-			$form['taxonomy'][$clades_vid]['#default_value'] = $_GET['clades'];
-			$form['taxonomy'][$clades_vid]['#disabled'] = TRUE;
-		}
-		if ($user->clades) {
+			$form['taxonomy'][$clades_vid]['#type'] = 'value';
+			$form['taxonomy'][$clades_vid]['#value'] = array($clade->tid);
+			$form['taxonomy'][$clades_vid]['#default_value'] = array($clade->tid);
+			unset($form['taxonomy'][$clades_vid]['#options']);
+			unset($form['taxonomy'][$clades_vid]['#theme']);
+		} else if ($user->clades) {
 			$options = array();
-			//error_log(print_r($user->clades, TRUE));
 			foreach($user->clades as $clade) {
 				$opt = new stdClass;
 				$opt->option = array($clade['tid'] => $clade['name']);
 				$options[] = $opt;
 			}
 			$form['taxonomy'][$clades_vid]['#options'] = $options;
-			//error_log(print_r($form['taxonomy'][$clades_vid]['#options'], TRUE));
 		}
 	
 		if (! empty($form['#node']->theme)) {
@@ -443,13 +439,6 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 				$form['#attributes']['class'] = 'clade-page-mini-form';
 				$clade = clade_get_context();
 				$form['body']['#rows'] = 1;
-			
-				if (! empty($form['taxonomy'][$clades_vid]['#default_value'])) {
-					$value = $form['taxonomy'][$clades_vid]['#default_value'];
-					unset($form['taxonomy'][$clades_vid]);
-					$form['taxonomy'][$clades_vid]['#type'] = 'value';
-					$form['taxonomy'][$clades_vid]['#value'] = array($value => $value);
-				}
 				
 				unset($form['buttons']['preview']);
 				
@@ -501,6 +490,7 @@ function clade_mini_form_submit($form, &$form_state) {
 		'theme' => 'clade_page_mini_form',
 		);
 
+	node_tag_new($form_state['nid']);
 	print drupal_json(
 		array(
 				'valid' => TRUE,

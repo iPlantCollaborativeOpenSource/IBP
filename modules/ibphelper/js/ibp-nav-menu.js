@@ -4,8 +4,8 @@ Drupal.behaviors.ibptools_nav_menu = function(context) {
 	menu.find('ul.ibtools_nav_submenu').hide();
 	menu.find('li.ibtools_nav_menu_item a.active').parent().addClass('expanded');
 	menu.find('li.ibtools_nav_submenu_item a.active')
-		.parents('li.ibtools_nav_menu_item')
-			.addClass('expanded')
+		.parents('li.ibtools_nav_menu_item').addClass('expanded');
+	menu.find('li.ibtools_nav_menu_item.expanded')
 			.find('ul.ibtools_nav_submenu').show();
 	
 	menu.find('li').bind('click', function() {

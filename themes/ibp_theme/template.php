@@ -86,7 +86,7 @@ function ibp_theme_loginlinks($user) {
 		$items[] = t("<span class='loginstatus'>You are logged in as <strong>@user</strong></span>", array("@user" => $user->name));
 		// TODO My Links
 		$mylinks = array();
-		$mylinks[] = l(t('My Saved Pages'), 'user');
+		$mylinks[] = l(t('My Saved Pages'), 'user/my-ibp-pages');
 		$mylinks[] = l(t('My Communities'), 'community');
 		$mylinks[] = l(t('My Issue Tracker'), 'issues');
 		$mylinks[] = l(t('My Account'), 'user');

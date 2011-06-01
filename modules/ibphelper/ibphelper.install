@@ -1,0 +1,38 @@
+<?php
+
+function ibphelper_schema() {
+	$schema = array();
+	$schema['ibphelper_user_pages'] = array(
+      'description' => 'Table to store saved user pages per user.',
+      'fields' => array(
+          'pid' => array(
+              'description' => "The user page id.",
+              'type' => 'serial',
+            ),
+          'uid' => array(
+              'description' => 'The user\'s uid.',
+              'type' => 'int',
+              'size' => 'tiny',
+              'not null' => TRUE,
+            ),
+          'title' => array(
+          		'description' => 'The page title.',
+          		'type' => 'text',
+          	),
+          'url' => array(
+          		'description' => 'The page url to be passed to l().',
+          		'type' => 'text',
+          	),
+        ),
+      'primary key' => array('pid'),
+    );
+  return $schema;
+}
+
+function ibphelper_install() {
+	drupal_install_schema('ibphelper');
+}
+
+function ibphelper_uninstall() {
+	drupal_uninstall_schema('ibphelper');
+}

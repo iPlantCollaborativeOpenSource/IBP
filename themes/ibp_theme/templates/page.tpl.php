@@ -172,7 +172,12 @@
 		
 		<div id="main-topper"><div class="section clearfix">
 			<?php if ($title): ?>
-				<h1 class="title"><?php print $title; ?></h1>
+				<h1 class="title">
+					<?php print $title; ?>
+					<?php if ($my_pages_form): ?>
+						<?php print $my_pages_form; ?>
+					<?php endif; ?>
+				</h1>
 			<?php endif; ?>
 			<?php print $breadcrumb; ?>
 			<?php if ($tabs): ?>

@@ -236,6 +236,7 @@ ul.links li {
  * (see the layout.css file.)
  */
 .region-sidebar-first {
+	background-color: #f7f7f7;
 	-moz-box-shadow: 1px 0px 1px #ececec;
 	-webkit-box-shadow: 1px 0px 1px #ececec;
 	box-shadow: 1px 0px 1px #ececec;
@@ -251,12 +252,13 @@ ul.links li {
  * (see the layout.css file.)
  */
 .region-sidebar-second {
-}
-
-.region-sidebar-second .section {
+	background-color: #f7f7f7;
 	-moz-box-shadow: -1px 0px 1px #ececec;
 	-webkit-box-shadow: -1px 0px 1px #ececec;
 	box-shadow: -1px 0px 1px #ececec;
+}
+
+.region-sidebar-second .section {
 }
 
 /*

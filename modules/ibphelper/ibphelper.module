@@ -17,7 +17,33 @@ function ibphelper_menu() {
 			'page arguments' => array('ibphelper_admin_form'),
 			'title' => 'IBP Helper',
 			),
+		'user/my-ibp-pages' => array(
+			'access callback' => 'ibphelper_my_pages_access',
+			'page callback' => 'ibphelper_my_pages',
+			'title' => 'My Saved Pages'
+			),
 		);
+}
+
+function ibphelper_my_pages_access() {
+	global $user;
+	return $user->uid;
+}
+
+function ibphelper_my_pages() {
+	global $user;
+	if ($user->uid) {
+		if ($user->ibp_pages) {
+			$account = $user;
+		} else {
+			$account = user_load($user->uid);
+		}
+		$pages = array();
+		foreach ($account->ibp_pages as $page) {
+			$pages[] = l($page->title, $page->url);
+		}
+		return theme('item_list', $pages, NULL, 'ul', array('class' => 'ibphelper-my-pages'));
+	}
 }
 
 function ibphelper_admin_form() {
@@ -115,3 +141,94 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 		}
 	}
 }
+
+function ibphelper_preprocess_page(&$vars) {
+	global $user;
+	if ($user->uid) {
+		$vars['my_pages_form'] = drupal_get_form('ibphelper_my_pages_form', $user, ibphelper_user_page_by_url($user->uid, $_GET['q']));
+	}
+}
+
+function ibphelper_user_page_by_url($uid, $url) {
+	$sql = "SELECT pid FROM ibphelper_user_pages WHERE uid = %d and url = '%s'";
+	if ($result = db_result(db_query($sql, $uid, $url))) {
+		return $result;
+	}
+	return 0;
+}
+
+function ibphelper_my_pages_form(&$form_state, $user, $pid) {
+	$form = array();
+	$form['pid'] = array(
+		'#type' => 'hidden',
+		'#value' => $pid
+		);
+	$form['title'] = array(
+		'#type' => 'hidden',
+		'#value' => drupal_get_title(),
+		);
+	$form['url'] = array(
+		'#type' => 'hidden',
+		'#value' => $_GET['q'],
+		);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => $pid ? t('Remove from My Pages') : t('Save to My Pages'),
+		'#attributes' => array('class' => $pid ? 'remove' : 'add'),
+		);
+	return $form;
+}
+
+function ibphelper_my_pages_form_submit($form, &$form_state) {
+	global $user;
+	if ($user->uid) {
+		if ($pid = $form_state['values']['pid']) {
+			$page = new stdClass;
+			$page->pid = $pid;
+			$page->deleted = TRUE;
+			$user->ibp_pages[$pid] = $page;
+			user_save($user);
+			drupal_set_message(t('The page !page has been removed from !your_pages.', array('!page' => l($page->title, $page->url), '!your_pages' => l(t('My Saved Pages'), 'user/my-ibp-pages'))));
+		} else {
+			$page = new stdClass;
+			$page->uid = $user->uid;
+			$page->title = $form_state['values']['title'];
+			$page->url = $form_state['values']['url'];
+			$user->ibp_pages[] = $page;
+			user_save($user);
+			drupal_set_message(t('The page !page has been saved to !your_pages.', array('!page' => l($page->title, $page->url), '!your_pages' => l(t('My Saved Pages'), 'user/my-ibp-pages'))));
+		}
+	}
+}
+
+function ibphelper_user($op, &$edit, &$account, $category = NULL) {
+	if ($account->uid) {
+		if ($op == "load") {
+			$account->ibp_pages = array();
+			$sql = "SELECT pid, uid, title, url FROM ibphelper_user_pages WHERE uid = %d";
+			$pages = db_query($sql, $account->uid);
+			while ($page = db_fetch_object($pages)) {
+				$account->ibp_pages[$page->pid] = $page;
+			}
+		} else if ($op == "save" || $op == "update") {
+			if ($account->ibp_pages) {
+				foreach ($account->ibp_pages as $page) {
+					if ($page->pid) {
+						if ($page->deleted) {
+							db_query("DELETE FROM ibphelper_user_pages WHERE pid = %d", $page->pid);
+						} else {
+							drupal_write_record('ibphelper_user_pages', $page, array('pid'));
+						}
+					} else {
+						$page->uid = $account->uid;
+						drupal_write_record('ibphelper_user_pages', $page);
+					}
+				}
+			}
+		} else if ($op == "delete") {
+			$sql = "DELETE FROM ibphelper_user_pages WHERE uid = %d";
+			db_query($sql, $account->uid);
+		}
+	}
+}
+
