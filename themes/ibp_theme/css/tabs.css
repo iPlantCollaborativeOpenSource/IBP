@@ -10,17 +10,19 @@
 
 
 div.tabs {
-  margin: 0 0 5px 0;
+  margin: 0 0 0 0;
 }
 
 ul.primary {
+  background-color: #f7f7f7;
+	border-color: #e3e3e3;
+	border-style: solid;
+	border-width: 1px;
   margin: 0;
-  padding: 0 0 0 10px; /* LTR */
-  border-width: 0;
+  padding: 0; /* LTR */
   list-style: none;
   white-space: nowrap;
   line-height: normal;
-  background: url(../images/tab-bar.png) repeat-x left bottom;
 }
 
 ul.primary li {
@@ -31,15 +33,16 @@ ul.primary li {
 
 ul.primary li a {
   display: block;
-  height: 24px;
-  margin: 0;
-  padding: 0 0 0 5px; /* width of tab-left.png */
-  border-width: 0;
+	height: 36px;
+	margin: 0;
+	padding: 9px 9px 0;
+	border-width: 0;
   font-weight: bold;
   text-decoration: none;
-  color: #777;
   background-color: transparent;
-  background: url(../images/tab-left.png) no-repeat left -38px;
+  border-color: #e3e3e3;
+  border-style: solid;
+  border-width: 0 1px 0 0;
 }
 
 ul.primary li a .tab {
@@ -49,43 +52,43 @@ ul.primary li a .tab {
   padding: 4px 13px 0 6px;
   border-width: 0;
   line-height: 20px;
-  background: url(../images/tab-right.png) no-repeat right -38px;
 }
 
 ul.primary li a:hover,
 ul.primary li a:focus {
-  border-width: 0;
-  background-color: transparent;
-  background: url(../images/tab-left.png) no-repeat left -76px;
+  background-color: #ffffff;
 }
 
 ul.primary li a:hover .tab,
 ul.primary li a:focus .tab {
-  background: url(../images/tab-right.png) no-repeat right -76px;
 }
 
 ul.primary li.active a,
 ul.primary li.active a:hover,
 ul.primary li.active a:focus {
-  border-width: 0;
-  color: #000;
-  background-color: transparent;
-  background: url(../images/tab-left.png) no-repeat left 0;
+  border-color: #e3e3e3 #e3e3e3 #ffffff;
+  border-style: solid;
+  border-width: 0 1px 1px 0;
+  color: #b4b4b4;
+  background-color: #ffffff;
+  margin-bottom: -1px;
 }
 
 ul.primary li.active a .tab,
 ul.primary li.active a:hover .tab,
 ul.primary li.active a:focus .tab {
-  background: url(../images/tab-right.png) no-repeat right 0;
 }
 
 ul.secondary {
+  background-color: #ffffff;
+	border-color: #e3e3e3;
+	border-style: solid;
+	border-width: 0 1px 1px;
   margin: 0;
   padding: 0 0 0 5px; /* LTR */
   border-bottom: 1px solid #c0c0c0;
   list-style: none;
   white-space: nowrap;
-  background: url(../images/tab-secondary-bg.png) repeat-x left bottom;
 }
 
 ul.secondary li {
@@ -96,14 +99,17 @@ ul.secondary li {
 }
 
 ul.secondary a {
+  background-color: #f7f7f7;
   display: block;
   height: 24px;
   margin: 0;
   padding: 0;
-  border: 1px solid #c0c0c0;
+  border: 1px solid #e3e3e3;
   text-decoration: none;
   color: #777;
-  background: url(../images/tab-secondary.png) repeat-x left -56px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 
 ul.secondary a .tab {
@@ -116,13 +122,15 @@ ul.secondary a .tab {
 
 ul.secondary a:hover,
 ul.secondary a:focus {
-  background: url(../images/tab-secondary.png) repeat-x left bottom;
+  border: 1px solid #c0c0c0;
+	color: #3E3E3E;
+  background-color: #ffffff;
 }
 
 ul.secondary a.active,
 ul.secondary a.active:hover,
 ul.secondary a.active:focus {
   border: 1px solid #c0c0c0;
-  color: #000;
-  background: url(../images/tab-secondary.png) repeat-x left top;
+	color: #3E3E3E;
+  background-color: #ffffff;
 }

@@ -5,50 +5,82 @@
 
 function ibphelper_perm() {
 	return array(
-		'admin ibp helper',
+		'admin ibphelper',
 		);
 }
 
-//function ibphelper_link_alter
+function ibphelper_menu() {
+	return array(
+		'admin/settings/ibphelper' => array(
+			'access arguments' => array('admin ibphelper'),
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('ibphelper_admin_form'),
+			'title' => 'IBP Helper',
+			),
+		);
+}
 
-function ibphelper_preprocess_book_navigation(&$vars) {
-	if ($vars['current_depth'] > 1) {
-		// child page; get parent
-		$parent_link = book_link_load($vars['book_link']['plid']);
-		$vars['parent_tree'] = book_children($parent_link);
-		$vars['parent_link'] = $parent_link;
-		$vars['parent_link_url'] = url($parent_link['href']);
-		$vars['parent_link_title'] = check_plain($parent_link['title']);
+function ibphelper_admin_form() {
+	$form = array();
+	
+	$vocs = taxonomy_get_vocabularies();
+	$options = array(t('Choose one'));
+	foreach ($vocs as $voc) {
+		$options[$voc->vid] = $voc->name;
 	}
 	
-	$classes = 'book-navigation';
-	if ($vars['tree'] && $vars['parent_tree']) {
-		$classes .= ' two-col';
-		$vars['two_col'] = TRUE;
-	} else {
-		$classes .= ' one-col';
-		$vars['two_col'] = FALSE;
+	$form['ibphelper_tools_vocabulary'] = array(
+		'#title' => t('IB Tools Vocabulary'),
+		'#description' => t('Select the Vocabulary to use in the IB Tools Navigation Menu block'),
+		'#type' => 'select',
+		'#options' => $options,
+		'#default_value' => variable_get('ibphelper_tools_vocabulary', 0),
+		);
+	
+	return system_settings_form($form);
+}
+
+function ibphelper_block($op = 'list', $delta = 0, $edit = array()) {
+	$block = array();
+	if ($op == 'list') {
+		$block[0] = array(
+			'info' => t('IB Tools Navigation Menu')
+			);
+	} else if ($op == 'view') {
+		switch ($delta) {
+		case 0 :
+			drupal_add_js(drupal_get_path('module', 'ibphelper') . '/js/ibp-nav-menu.js');
+			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
+			$block['subject'] = t('IB Tools');
+			
+			if ($vid = variable_get('ibphelper_tools_vocabulary', 0)) {			
+				$block['content'] = ibphelper_ibtools_nav_menu();
+			}
+			break;
+		}
 	}
-	$vars['classes'] = $classes;
+	return $block;
+}
+
+function ibphelper_ibtools_nav_menu($pid = 0) {
+	$menu = taxonomy_get_tree(variable_get('ibphelper_tools_vocabulary', 0), $pid, 0);
+	$items = array();
+	foreach ($menu as $m) {
+		$item = l($m->name, "taxonomy/term/$m->tid");
+		if ($subitems = ibphelper_ibtools_nav_menu($m->tid)) {
+			$item .= $subitems;
+		}
+		$items[] = array('data' => $item, 'class' => $pid ? 'ibtools_nav_submenu_item' : 'ibtools_nav_menu_item');
+	}
+	return theme('item_list', $items, NULL, 'ul', array('class' => $pid ? 'ibtools_nav_submenu' : 'ibtools_nav_menu'));
 }
 
 function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
-	if ($op == 'view' && !$teaser) {
-		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
-			if ($node->book['plid'] && $node->book['has_children']) {
-				$node->book_navigation_two_col = TRUE;
-			} else {
-				$node->book_navigation_two_col = FALSE;
-			}
-			$node->book_navigation = drupal_render($node->content['book_navigation']);
-			unset($node->content['book_navigation']);
+	if ($op == 'view') {
+		if ($node->type == 'ibp_tool') {
+			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-tool.css');
 		}
 	}
-// 	if ($op == 'alter' && !$teaser) {
-// 		if (!empty($node->book['bid']) && $node->build_mode == NODE_BUILD_NORMAL) {
-// 			$node->body = '<div class="navigation-wrapper">' .$node->book_navigation . '<div class="content-wrapper">' . $node->body . '</div></div>';
-// 		}
-// 	}
 }
 
 function ibphelper_hook_info() {

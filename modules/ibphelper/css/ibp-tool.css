@@ -1,0 +1,34 @@
+h2.title a {
+	color: #3e3e3e;
+}
+
+.node .content {
+	margin-top: 1em;
+}
+
+.field {
+	border-bottom: 1px dotted #141414;
+	padding: 6px 3px;
+}
+
+.field-label {
+	float: left;
+	clear: left;
+	color: #7b7b7b;
+}
+
+.field-items {
+	margin-left: 10em;
+}
+
+.node {
+	border-bottom: 1px solid #cacaca;
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+}
+
+.node:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}

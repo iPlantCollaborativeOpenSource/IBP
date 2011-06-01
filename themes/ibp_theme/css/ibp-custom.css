@@ -14,6 +14,16 @@
 	color: #efefef;
 }
 
+#top-bar ul.loginlinks li:after {
+	content: "|";
+	padding-left: 0.5em;
+	color: #6c6c6c;
+}
+
+#top-bar .item-list ul li.last:after {
+	content: "";
+}
+
 #search-box {
 	background: #ffffff;
 	border: 1px solid #919191;
@@ -38,7 +48,7 @@
 	background: #ffffff;
 	background-image: url(../images/search.png);
 	background-repeat: no-repeat;
-	background-position: 0 3px;
+	background-position: 0 0;
 	width: 20px;
 	height: 20px;
 	color: transparent;
@@ -53,7 +63,7 @@
 #my-links h3 {
 	display: inline-block;
 	font-weight: normal;
-	font-size: 0.875em;
+	font-size: 10pt;
 	color: #00a3f7;
 	cursor: pointer;
 	padding-right: 14px;
@@ -64,15 +74,16 @@
 }
 
 #my-links h3:after {
-	content: url(../images/arrow_down.png);
+	content: url(../images/arrow_down_blue.png);
 }
 
 #my-links .item-list ul {
 	display: none;
-	margin: -0.25em 0 0;
-	padding: 0.5em 0;
+	margin: 0;
+	padding: 0;
 	list-style: none;
 	position: absolute;
+	top: 37px;
 	z-index: 100000;
 	background-color: #5a5a5a;
 	-moz-box-shadow: 1px 1px 1px #000000;
@@ -90,21 +101,23 @@
 
 #my-links .item-list ul li a {
 	display: block;
-	padding: 0.2em 0.5em;
+	padding: 0.25em 1em 0.25em 0.5em;
 }
 
-#my-links .item-list ul li:hover {
+#my-links .item-list ul li a:hover {
 	background-color: #6a6a6a;
 }
 
-#my-links .item-list ul li:after {
+#top-bar ul.loginlinks li ul li:after {
 	content: '';
+	padding-left: 0;
 }
 
+
 #my-links.my-links-visible h3 {
-	background-image: -moz-linear-gradient(#353535, #5a5a5a);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#353535), to(#5a5a5a));
-	background-image: -webkit-linear-gradient(#353535, #5a5a5a, #5a5a5a);
+	background-image: -moz-linear-gradient(#353535, #5a5a5a 60%, #5a5a5a);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#353535), color-stop(0.6, #5a5a5a), to(#5a5a5a));
+	background-image: -webkit-linear-gradient(#353535, #5a5a5a 60%, #5a5a5a);
 	-moz-box-shadow: 1px 1px 1px #000000;
 	-webkit-box-shadow: 1px 1px 1px #000000;
 	box-shadow: 1px 1px 1px #000000;
@@ -117,7 +130,7 @@ a#back-to-top {
 	margin-right: 3px;
 	padding: 6px 24px 6px 12px;
 	background-color: #feeff4;
-  background-image: url(../images/arrow_up.png);
+  background-image: url(../images/arrow_up_blue.png);
   background-repeat: no-repeat;
   background-position: 92% 50%;
 	border-width: 0px 1px 1px;
@@ -131,7 +144,7 @@ a#back-to-top {
 #page-bottom ul.menu,
 #page-bottom ul.menu li {
 	list-style-type: circle;
-	list-style-image: url(../images/arrow_right.png);
+	list-style-image: url(../images/arrow_right_grey.png);
 }
 
 #page-bottom ul.menu li ul {

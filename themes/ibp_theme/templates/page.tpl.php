@@ -168,6 +168,17 @@
 
     </div></div><!-- /.section, /#header -->
 
+		<div id="messages-wrapper"><?php print $messages; ?></div>
+		
+		<div id="main-topper"><div class="section clearfix">
+			<?php if ($title): ?>
+				<h1 class="title"><?php print $title; ?></h1>
+			<?php endif; ?>
+			<?php print $breadcrumb; ?>
+			<?php if ($tabs): ?>
+				<div class="tabs"><?php print $tabs; ?></div>
+			<?php endif; ?>
+		</div></div>
     <div id="main-wrapper"><div id="main" class="clearfix">
 
       <div id="content" class="column"><div class="section">
@@ -178,14 +189,6 @@
 
         <?php print $highlight; ?>
 
-        <?php print $breadcrumb; ?>
-        <?php if ($title): ?>
-          <h1 class="title"><?php print $title; ?></h1>
-        <?php endif; ?>
-        <?php print $messages; ?>
-        <?php if ($tabs): ?>
-          <div class="tabs"><?php print $tabs; ?></div>
-        <?php endif; ?>
         <?php print $help; ?>
 
         <?php print $content_top; ?>

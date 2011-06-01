@@ -126,7 +126,22 @@ div#site-name /* The name of the website */ {
 h1.title, /* The title of the page */
 h2.title, /* Block title or the title of a piece of content when it is given in a list of content */
 h3.title /* Comment title */ {
-  margin: 0;
+	color: #3E3E3E;
+	margin: 0;
+}
+
+h1.title {
+	background-color: #EBEBEB;
+	background-image: -moz-linear-gradient(#FFFFFF, #EBEBEB);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#EBEBEB));
+	background-image: -webkit-linear-gradient(#FFFFFF, #EBEBEB);
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+	font-size: 24pt;
+	min-height: 29px;
+	padding: 14px 20px 13px;
+	border-bottom: 1px solid #ffffff;
 }
 
 tr.even /* Some tables have rows marked even or odd. */ {
@@ -165,6 +180,7 @@ div.tabs /* See also the tabs.css file. */ {
 
 .help /* Help text on a page */ {
   margin: 1em 0;
+  padding: 6px;
 }
 
 .more-help-link /* Link to more help */ {
@@ -220,6 +236,9 @@ ul.links li {
  * (see the layout.css file.)
  */
 .region-sidebar-first {
+	-moz-box-shadow: 1px 0px 1px #ececec;
+	-webkit-box-shadow: 1px 0px 1px #ececec;
+	box-shadow: 1px 0px 1px #ececec;
 }
 
 .region-sidebar-first .section {
@@ -235,6 +254,9 @@ ul.links li {
 }
 
 .region-sidebar-second .section {
+	-moz-box-shadow: -1px 0px 1px #ececec;
+	-webkit-box-shadow: -1px 0px 1px #ececec;
+	box-shadow: -1px 0px 1px #ececec;
 }
 
 /*
