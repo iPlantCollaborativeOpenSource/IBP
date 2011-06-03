@@ -59,12 +59,12 @@ function teaser_comments_admin_form() {
 
 function teaser_comments_preprocess_node(&$variables) {
 // 	error_log(print_r($variables, TRUE));
-	if ($variables['teaser'] && !$variables['preview']) {
-		$tctypes = variable_get('teaser_comments_node_types', array());
-		if (isset($tctypes[$variables['type']]) && $tctypes[$variables['type']]) {
-			$variables['links'] .= theme('teaser_comments_wrapper', $variables['node']);
-		}
-	}
+// 	if ($variables['teaser'] && !$variables['preview']) {
+// 		$tctypes = variable_get('teaser_comments_node_types', array());
+// 		if (isset($tctypes[$variables['type']]) && $tctypes[$variables['type']]) {
+// 			$variables['links'] .= theme('teaser_comments_wrapper', $variables['node']);
+// 		}
+// 	}
 }
 
 function teaser_comments_theme() {

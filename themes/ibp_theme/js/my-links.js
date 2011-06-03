@@ -12,7 +12,7 @@
 			}
 			
 			mylinks_trg.bind('mouseenter', function() {
-				mylinks_trg._t = setTimeout(show_my_links, 500);
+				mylinks_trg._t = setTimeout(show_my_links, 250);
 			});
 			
 			mylinks_trg.bind('mouseleave', function() {

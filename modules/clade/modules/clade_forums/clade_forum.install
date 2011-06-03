@@ -1,0 +1,58 @@
+<?php
+
+function clade_forum_schema() {
+	$schema = array();
+	
+	$schema['clade_forum'] = array(
+		'description' => 'Table to store Clade forum container for each Clade.',
+		'fields' => array(
+			'tid' => array(
+				'description' => "The clade's taxonomy tid.",
+				'type' => 'int',
+				'size' => 'normal',
+				'not null' => TRUE,
+				),
+			'fid' => array(
+				'description' => "The clade's taxonomy tid.",
+				'type' => 'int',
+				'size' => 'normal',
+				'not null' => TRUE,
+				),
+			),
+		'primary key' => array('tid')
+		);
+	
+	return $schema;
+}
+
+function clade_forum_install() {
+	drupal_install_schema('clade_forum');
+	
+	// create containers for existing clades
+	module_load_include('inc', 'forum', 'forum.admin');
+	$forum_vid = variable_get('forum_nav_vocabulary', 0);
+	$clade_vid = variable_get('clade_vocabulary', 0);
+	$clades = taxonomy_get_tree($clade_vid);
+	foreach ($clades as $clade) {
+		$forum_vid = variable_get('forum_nav_vocabulary', 0);
+		$forum_fields = array();
+		$forum_fields['values']['name'] = "$clade->name Forum";
+		$forum_fields['values']['description'] = "$clade->name Forum";
+		$forum_fields['values']['parent'][0] = 0;
+		$forum_fields['values']['weight'] = 0;
+		$forum_fields['values']['vid'] = $forum_vid;
+		$forum = forum_form_forum($forum_fields);
+		forum_form_submit($forum, $forum_fields);
+		
+		$clade_forum = array('tid' => $clade->tid, 'fid' => $forum_fields['values']['tid']);		
+		$sql = "INSERT INTO {clade_forum} VALUES (%d, %d)";
+		db_query($sql, $clade_forum['tid'], $clade_forum['fid']);
+	}
+	
+	$weight = db_result(db_query("SELECT weight FROM {system} WHERE name = 'clade'"));
+	db_query("UPDATE {system} SET weight = %d WHERE name = 'clade_forum'", $weight + 1);
+}
+
+function clade_forum_uninstall() {
+	drupal_uninstall_schema('clade_forum');
+}

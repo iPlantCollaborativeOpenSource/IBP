@@ -86,7 +86,7 @@ function ibp_theme_loginlinks($user) {
 		$items[] = t("<span class='loginstatus'>You are logged in as <strong>@user</strong></span>", array("@user" => $user->name));
 		// TODO My Links
 		$mylinks = array();
-		$mylinks[] = l(t('My Saved Pages'), 'user/my-ibp-pages');
+		$mylinks[] = l(t('My Saved Pages'), "user/$user->uid/my-ibp-pages");
 		$mylinks[] = l(t('My Communities'), 'community');
 		$mylinks[] = l(t('My Issue Tracker'), 'issues');
 		$mylinks[] = l(t('My Account'), 'user');
@@ -198,4 +198,73 @@ function ibp_theme_preprocess_views_view(&$vars){
 			menu_set_item($current_path,$menu_item);
 		}
 	}
+}
+
+function ibp_theme_preprocess_user_profile(&$vars) {
+	global $user;
+	$account = $vars['account'];
+	if ($account->uid == $user->uid) {
+		drupal_set_title(t('My profile'));
+	}
+	else if (module_exists('profile')) {
+		profile_load_profile($account);
+		$name = $account->profile_first_name;
+		if ($account->profile_middle_name) {
+			$name .= ' ' . $account->profile_middle_name;
+		}
+		$name .= ' ' . $account->profile_last_name;
+		drupal_set_title($name);
+	}
+	
+	if (module_exists('clade_subscriptions')) {
+		$view = views_get_view('clade_my_clades');
+		$block = $view->execute_display('block_2', array($account->uid));
+		$vars['community'] = $block;
+	}
+}
+
+function ibp_theme_username($object) {
+	if ($object->uid && $object->name) {
+		if (module_exists('profile')) {
+			profile_load_profile($object);
+			$name = $object->profile_first_name;
+			if ($object->profile_middle_name) {
+				$name .= ' ' . $object->profile_middle_name;
+			}
+			$name .= ' ' . $object->profile_last_name;
+		} else {
+			$name = $object->name;
+		}
+		
+    // Shorten the name when it is too long or it will break many tables.
+    if (drupal_strlen($name) > 20) {
+      $name = drupal_substr($name, 0, 15) . '...';
+    }
+
+    if (user_access('access user profiles')) {
+      $output = l($name, 'user/' . $object->uid, array('title' => t('View user profile.')));
+    }
+    else {
+      $output = check_plain($name);
+    }
+  }
+  else if ($object->name) {
+    // Sometimes modules display content composed by people who are
+    // not registered members of the site (e.g. mailing list or news
+    // aggregator modules). This clause enables modules to display
+    // the true author of the content.
+    if ($object->homepage) {
+      $output = l($object->name, $object->homepage);
+    }
+    else {
+      $output = check_plain($object->name);
+    }
+
+    $output .= ' (' . t('not verified') . ')';
+  }
+  else {
+    $output = variable_get('anonymous', t('Anonymous'));
+  }
+
+  return $output;
 }

@@ -17,10 +17,19 @@ function ibphelper_menu() {
 			'page arguments' => array('ibphelper_admin_form'),
 			'title' => 'IBP Helper',
 			),
-		'user/my-ibp-pages' => array(
+		'user/%user/my-ibp-pages' => array(
 			'access callback' => 'ibphelper_my_pages_access',
 			'page callback' => 'ibphelper_my_pages',
 			'title' => 'My Saved Pages'
+			),
+		);
+}
+
+function ibphelper_theme() {
+	return array(
+		'ibp_my_pages' => array(
+			'arguments' => array('mypages' => NULL),
+			'template' => 'theme/my-pages',
 			),
 		);
 }
@@ -42,7 +51,10 @@ function ibphelper_my_pages() {
 		foreach ($account->ibp_pages as $page) {
 			$pages[] = l($page->title, $page->url);
 		}
-		return theme('item_list', $pages, NULL, 'ul', array('class' => 'ibphelper-my-pages'));
+		if ($pages) {
+			$mypages = theme('item_list', $pages, NULL, 'ul', array('class' => 'ibp-my-pages'));
+		}
+		return theme('ibp_my_pages', $mypages);
 	}
 }
 
@@ -174,7 +186,7 @@ function ibphelper_my_pages_form(&$form_state, $user, $pid) {
 	$form['submit'] = array(
 		'#type' => 'submit',
 		'#value' => $pid ? t('Remove from My Pages') : t('Save to My Pages'),
-		'#attributes' => array('class' => $pid ? 'remove' : 'add'),
+		'#attributes' => array('class' => $pid ? 'ibphelper-my-pages-remove' : 'ibphelper-my-pages-add'),
 		);
 	return $form;
 }
@@ -185,10 +197,12 @@ function ibphelper_my_pages_form_submit($form, &$form_state) {
 		if ($pid = $form_state['values']['pid']) {
 			$page = new stdClass;
 			$page->pid = $pid;
+			$page->title = $form_state['values']['title'];
+			$page->url = $form_state['values']['url'];
 			$page->deleted = TRUE;
 			$user->ibp_pages[$pid] = $page;
 			user_save($user);
-			drupal_set_message(t('The page !page has been removed from !your_pages.', array('!page' => l($page->title, $page->url), '!your_pages' => l(t('My Saved Pages'), 'user/my-ibp-pages'))));
+			drupal_set_message(t('The page !page has been removed from !your_pages.', array('!page' => l($page->title, $page->url), '!your_pages' => l(t('My Saved Pages'), "user/$user->uid/my-ibp-pages"))));
 		} else {
 			$page = new stdClass;
 			$page->uid = $user->uid;
@@ -196,7 +210,7 @@ function ibphelper_my_pages_form_submit($form, &$form_state) {
 			$page->url = $form_state['values']['url'];
 			$user->ibp_pages[] = $page;
 			user_save($user);
-			drupal_set_message(t('The page !page has been saved to !your_pages.', array('!page' => l($page->title, $page->url), '!your_pages' => l(t('My Saved Pages'), 'user/my-ibp-pages'))));
+			drupal_set_message(t('The page !page has been saved to !your_pages.', array('!page' => l($page->title, $page->url), '!your_pages' => l(t('My Saved Pages'), "user/$user->uid/my-ibp-pages"))));
 		}
 	}
 }

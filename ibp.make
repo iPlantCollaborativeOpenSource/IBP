@@ -15,12 +15,12 @@ projects[] = admin_menu
 projects[] = advanced_help
 projects[] = backup_migrate
 projects[] = ctools
-projects[] = BookMadeSimple 
 projects[] = cck
 projects[] = ed_readmore
 projects[] = filefield
 projects[] = imageapi
 projects[] = imagecache
+projects[] = imagecache_profiles
 projects[] = imagefield
 projects[] = jquery_ui
 projects[] = jquery_update
@@ -36,6 +36,7 @@ projects[] = panels
 projects[] = pathauto
 projects[] = stringoverrides
 projects[] = subpath_alias
+projects[] = taxonomy_menu
 projects[] = token
 projects[] = url_alter
 projects[] = user_relationships
@@ -53,6 +54,12 @@ projects[clade][download][type] = git
 projects[clade][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
 projects[clade][download][subtree] = modules/clade
 projects[clade][type] = module
+
+; teaser_comments
+projects[ibphelper][download][type] = git
+projects[ibphelper][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+projects[ibphelper][download][subtree] = modules/ibphelper
+projects[ibphelper][type] = module
 
 ; jit
 projects[jit][download][type] = git

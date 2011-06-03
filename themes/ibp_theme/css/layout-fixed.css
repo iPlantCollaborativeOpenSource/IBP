@@ -86,8 +86,8 @@ body.admin-menu {
   border-color: #edebe6;
   border-style: solid;
   border-width: 0 1px 1px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
+  -moz-border-radius: 0 0 3px 3px;
+  -webkit-border-radius: 0 0 3px 3px;
   border-radius: 0 0 3px 3px;
 	padding: 0px;
 	margin: 0px;
@@ -298,14 +298,19 @@ body.admin-menu {
 .region-sidebar-second {
   float: left; /* LTR */
   width: 240px;
-  margin-left: 740px; /* LTR */ /* Width of content + sidebar-first. */
-  margin-right: -980px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
+  margin-left: 752px; /* LTR */ /* Width of content + sidebar-first. (also take into account main's border) */
+  margin-right: -994px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
   padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
 }
 
 .region-sidebar-second .section {
   margin: 0; /* LTR */
   padding: 0;
+}
+
+.region-sidebar-second .section .block h2.title,
+.region-sidebar-second .section .block div.content {
+	margin-left: 15px;
 }
 
 /*

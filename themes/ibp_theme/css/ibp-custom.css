@@ -156,7 +156,7 @@ form#ibphelper-my-pages-form {
 	margin-top: -10px;
 }
 
-form#ibphelper-my-pages-form input.add {
+input.ibphelper-my-pages-add {
 	background-color: #ffffff;
 	border: none;
 	background-image: url(../images/add.png);
@@ -175,7 +175,7 @@ form#ibphelper-my-pages-form input.add {
 	cursor: pointer;
 }
 
-form#ibphelper-my-pages-form input.remove {
+input.ibphelper-my-pages-remove {
 	background-color: #ffffff;
 	border: none;
 	background-image: url(../images/remove.png);
@@ -192,6 +192,12 @@ form#ibphelper-my-pages-form input.remove {
 	color: #00a3f7;
 	font-size: 11px;
 	cursor: pointer;
+}
+
+ul.ibp-my-pages,
+ul.ibp-my-pages li {
+	list-style-type: circle;
+	list-style-image: url(../images/arrow_right_grey.png);
 }
 
 h2.clade-page-mini-form-title {

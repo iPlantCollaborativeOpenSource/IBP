@@ -1,0 +1,7 @@
+; $Id$
+name = Clade Forum
+description = "Provides forumsn for clades."
+dependencies[] = clade
+dependencies[] = forum
+package = "Clade"
+core = 6.x

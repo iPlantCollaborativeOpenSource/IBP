@@ -1,0 +1,98 @@
+<?php
+
+function clade_forum_menu() {
+	$items = array();
+	$items['clade/%clade/forums'] = array(
+    'title' => 'Forums',
+    'page callback' => 'clade_forum_clade_forum',   
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+		);
+	return $items;
+}
+
+function clade_forum_clade_forum($clade) {
+	drupal_set_title($clade->name . " Community Forum");
+	module_load_include('inc', 'forum', 'forum.pages');
+	return forum_page($clade->forum);
+}
+
+function clade_forum_clade_forum_title($clade) {
+	return "$clade->name Community Forum";
+}
+
+function clade_forum_clade($op, $clade) {
+	if ($op == 'clade load') {
+		$sql = "SELECT fid FROM {clade_forum} WHERE tid = %d";
+		$clade->forum = db_result(db_query($sql, $clade->tid));
+	}
+	else if ($op == 'clade insert') {
+		$forum_vid = variable_get('forum_nav_vocabulary', 0);
+		$forum_fields = array();
+		$forum_fields['values']['name'] = "$clade->name Forum";
+		$forum_fields['values']['description'] = "$clade->name Forum";
+		$forum_fields['values']['parent'][0] = 0;
+		$forum_fields['values']['weight'] = 0;
+		$forum_fields['values']['vid'] = $forum_vid;
+		$forum = forum_form_forum($forum_fields);
+		forum_form_submit($forum, $forum_fields);
+		
+		$clade_forum = array('tid' => $clade->tid, 'fid' => $forum_fields['values']['tid']);
+		drupal_write_record('clade_forum', $clade_forum);
+	}
+	else if ($op == 'clade delete') {
+		$sql = "DELETE FROM {clade_forum} WHERE tid = %d";
+		db_query($sql, $clade->tid);
+	}
+}
+
+function clade_forum_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == "forum_node_form") {
+		$form['taxonomy']['#type'] = '';
+		
+		$vid = variable_get('forum_nav_vocabulary', 0);
+		$form['taxonomy'][$vid]['#type'] = 'value';
+		$form['taxonomy'][$vid]['#value'] = $form['taxonomy'][$vid]['#default_value'];
+		unset($form['taxonomy'][$vid]['#theme']);
+		unset($form['taxonomy'][$vid]['#options']);
+		unset($form['taxonomy'][$vid]['#default_value']);
+		unset($form['taxonomy'][$vid]['#title']);
+		unset($form['taxonomy'][$vid]['#description']);
+		unset($form['taxonomy'][$vid]['#multiple']);
+		unset($form['taxonomy'][$vid]['#size']);
+		
+		
+		$clade_tid = clade_forum_clade_from_forum($form['taxonomy'][$vid]['#value']);
+		$vid = variable_get('clade_vocabulary', 0);
+		$form['taxonomy'][$vid]['#type'] = 'value';
+		$clade = clade_get_context();
+		$form['taxonomy'][$vid]['#value'] = array($clade_tid);
+		unset($form['taxonomy'][$vid]['#theme']);
+		unset($form['taxonomy'][$vid]['#options']);
+		unset($form['taxonomy'][$vid]['#default_value']);
+		unset($form['taxonomy'][$vid]['#title']);
+		unset($form['taxonomy'][$vid]['#description']);
+		unset($form['taxonomy'][$vid]['#multiple']);
+		unset($form['taxonomy'][$vid]['#size']);
+	
+		drupal_set_message(print_r($form['taxonomy'], TRUE));
+	}
+}
+
+function clade_forum_clade_from_forum($forum_id) {
+	$sql = "SELECT tid FROM {clade_forum} WHERE fid = %d";
+	$tid = db_result(db_query($sql, $forum_id));
+	return $tid;
+}
+
+function clade_forum_link_alter(&$links, $node, $comment = NULL) {
+	foreach ($links as &$link) {
+		if (strpos($link['href'], 'forum/') === 0) {
+			$parts = explode('/', $link['href']);
+			$clade_tid = clade_forum_clade_from_forum($parts[1]);
+			$link['href'] = "clade/$clade_tid/forums";
+		}
+	}
+}

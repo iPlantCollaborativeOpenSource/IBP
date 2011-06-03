@@ -2,5 +2,22 @@
  * @file
  * Views Styling
  */
+/* fix for views inline user_picture */
+.view-clade-online-members .views-field-picture {
+	display: inline-block;
+	vertical-align: middle;
+}
 
+.view-clade-online-members .views-field-name {
+	display: inline-block;
+	vertical-align: middle;
+}
 
+.view .more-link {
+	padding: 0 12px 0 0;
+	font-size: 10pt;
+}
+
+.view .more-link a:after {
+	content: "→";
+}
