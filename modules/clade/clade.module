@@ -86,6 +86,9 @@ function clade_hook_info() {
 				'clade delete' => array(
 					'runs when' => t('Deleting a clade.'),
 					),
+				'determine context' => array(
+					'runs when' => t('Determining the clade context.'),
+					),
 				),
 			),
 		);
@@ -94,11 +97,6 @@ function clade_hook_info() {
 function clade_taxonomy($op, $type, $array = NULL) {
 	if ($type == "term" && $array['vid'] == variable_get('clade_vocabulary', 0)) {
 		switch ($op) {
-			case "delete":
-				// delete from clade table
-				$sql = 'DELETE FROM {clade} WHERE tid = %d';
-				db_query(sprintf($sql, $array['tid']));
-				break;
 			case "insert":
 				// insert into clade table
 				$clade = array(
@@ -107,6 +105,7 @@ function clade_taxonomy($op, $type, $array = NULL) {
 					'welcome' => $array['description']
 					);
 				drupal_write_record('clade', $clade);
+				module_invoke_all('clade', 'clade insert', clade_load($array['tid']));
 				break;
 			case "update":
 				$clade = array(
@@ -115,7 +114,14 @@ function clade_taxonomy($op, $type, $array = NULL) {
 					'welcome' => $array['description']
 					);
 				drupal_write_record('clade', $clade, array('tid'));
+				module_invoke_all('clade', 'clade update', clade_load($array['tid']));
 				break;
+			case "delete":
+				// delete from clade table
+				$sql = 'DELETE FROM {clade} WHERE tid = %d';
+				db_query(sprintf($sql, $array['tid']));
+				module_invoke_all('clade', 'clade delete', clade_load($array['tid']));
+				break;	
 		}
 	}
 }
@@ -145,6 +151,14 @@ function clade_determine_context() {
 			}
 		}
 	}
+	
+	if ($context == NULL) {
+		$contexts = module_invoke_all('clade', 'determine context', NULL);
+		if (count($contexts) > 0) {
+			$context = $contexts[0];
+		}
+	}
+	
 	return $context;
 }
 
@@ -541,6 +555,10 @@ function clade_theme() {
 					'arguments' => array('clade' => NULL),
 					'template' => 'theme/clade-help'
 				),
+			'clade_join' => array(
+					'arguments' => array('clade' => NULL),
+					'template' => 'theme/clade-join'
+				),
 		);
 }
 
@@ -602,6 +620,7 @@ function clade_block($op='list', $delta=0) {
 			$block[2]["info"] = t('Clade pending submissions (Clade)');
 			$block[3]["info"] = t('Clade pending approved additions (Clade)');
 			$block[4]["info"] = t('Clade details (Clade)');
+			$block[5]['info'] = t('Clade join block (Clade)');
 			break;
 	
 		case "view":
@@ -625,6 +644,9 @@ function clade_block($op='list', $delta=0) {
 					break;
 				case 4:
 					$block = clade_details_block();
+					break;
+				case 5:
+					$block = clade_join_block();
 					break;
 			}			
 			break;
@@ -774,6 +796,16 @@ function clade_pending_approved_additions_block() {
 			$rows[] = $row;
 		}
 		$block['content'] = theme('table', $header, $rows);
+	}
+	return $block;
+}
+
+function clade_join_block() {
+	$clade = clade_get_context();
+	if ($clade) {
+		$block = array();
+		$block['subject'] = l($clade->name, sprintf('clade/%d', $clade->tid));
+		$block['content'] = theme('clade_join', $clade);
 	}
 	return $block;
 }
@@ -2042,4 +2074,15 @@ function clade_ctools_plugin_directory($module, $plugin) {
   {
     return "ctools_plugins/$plugin";
   }
+}
+
+function clade_preprocess_clade_join(&$vars) {
+	$clade = $vars['clade'];
+	global $user;
+	if ($user->uid) {
+		if (empty($user->clades) || !array_key_exists($clade->tid, $user->clades)) {
+			$vars['message'] = t('Become a member of this community to contribute and stay updated.');
+			$vars['link'] = l(t('Enroll in this community'), "clade/$clade->tid/members/join", array('attributes' => array('class' => 'clade-join-link')));
+		}
+	}
 }

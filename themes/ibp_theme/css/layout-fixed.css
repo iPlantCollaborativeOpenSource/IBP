@@ -82,13 +82,6 @@ body.admin-menu {
 }
 
 #main {
-	background-color: #ffffff;
-  border-color: #edebe6;
-  border-style: solid;
-  border-width: 0 1px 1px;
-  -moz-border-radius: 0 0 3px 3px;
-  -webkit-border-radius: 0 0 3px 3px;
-  border-radius: 0 0 3px 3px;
 	padding: 0px;
 	margin: 0px;
 }
@@ -157,7 +150,7 @@ body.admin-menu {
   float: left; /* LTR */
   height: 46px;
   padding: 0; /* LTR */
-  margin: 0;
+  margin: 0 3px 0 0;
   list-style: none;
 }
 
@@ -165,7 +158,7 @@ body.admin-menu {
 #navigation #block-menu-primary-links li.active-trail.expanded ul li a {
 	color: #00a3f7;
 	display: block;
-  padding: 12px 12px; /* LTR */
+  padding: 12px; /* LTR */
 	font-weight: bold;
 	text-decoration: none;
 	font-family: Arial, sans-serif;
@@ -177,7 +170,8 @@ body.admin-menu {
 	display: none;
 }
 
-#navigation #block-menu-primary-links li.active-trail {
+#navigation #block-menu-primary-links li.active-trail,
+#navigation #block-menu-primary-links li:hover {
 	text-align: center;
 	background-color: #3c3c3c;
 	-moz-border-radius: 3px 3px 0 0;
@@ -212,13 +206,17 @@ body.admin-menu {
   padding: 6px 12px; /* LTR */
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a {
-	color: #919191;
-	text-shadow: none;
+#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a,
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a:hover {
 	background: #545454;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+}
+
+#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a {
+	text-shadow: none;
+	color: #919191;
 }
 
 #navigation #block-menu-primary-links li.active-trail.expanded ul li ul {

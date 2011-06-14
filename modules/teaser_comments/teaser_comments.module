@@ -57,16 +57,6 @@ function teaser_comments_admin_form() {
   return system_settings_form($form);
 }
 
-function teaser_comments_preprocess_node(&$variables) {
-// 	error_log(print_r($variables, TRUE));
-// 	if ($variables['teaser'] && !$variables['preview']) {
-// 		$tctypes = variable_get('teaser_comments_node_types', array());
-// 		if (isset($tctypes[$variables['type']]) && $tctypes[$variables['type']]) {
-// 			$variables['links'] .= theme('teaser_comments_wrapper', $variables['node']);
-// 		}
-// 	}
-}
-
 function teaser_comments_theme() {
 	return array(
 			'teaser_comments_wrapper' => array(
@@ -99,30 +89,32 @@ function teaser_comments_theme() {
 }
 
 function teaser_comments_theme_registry_alter(&$registry) {
-	if (variable_get('teaser_comments_node_page', 0)) {
-		$registry['comment_wrapper']['template'] = 'teaser_comments_teaser_comments_wrapper';
-		$registry['comment_wrapper']['path'] = drupal_get_path('module', 'teaser_comments');
-
-		$registry['comment']['template'] = 'teaser_comments_teaser_comment';
-		$registry['comment']['path'] = drupal_get_path('module', 'teaser_comments');
-	}
+	array_unshift($registry['comment_wrapper']['theme paths'], drupal_get_path('module', 'teaser_comments'));
+	array_unshift($registry['comment']['theme paths'], drupal_get_path('module', 'teaser_comments'));
 }
 
 function teaser_comments_preprocess_comment_wrapper(&$variables) {
-	if (variable_get('teaser_comments_node_page', 0)) {
-		teaser_comments_preprocess_teaser_comments_wrapper($variables);
+	$tcnt = variable_get('teaser_comments_node_types', array());
+	$node = $variables['node'];
+	if ($tcnt[$node->type]) {
+		if (variable_get('teaser_comments_node_page', 0)) {
+			teaser_comments_preprocess_teaser_comments_wrapper($variables);
+		}
 	}
 }
 
 function teaser_comments_preprocess_comment(&$variables) {
-	if (variable_get('teaser_comments_node_page', 0)) {
-		teaser_comments_preprocess_teaser_comment($variables);
+	$tcnt = variable_get('teaser_comments_node_types', array());
+	$node = $variables['node'];
+	if ($tcnt[$node->type]) {
+		if (variable_get('teaser_comments_node_page', 0)) {
+			teaser_comments_preprocess_teaser_comment($variables);
+		}
 	}
 }
 
 function teaser_comments_preprocess_teaser_comments_wrapper(&$variables) {
 	global $user;
-	
 	$node = $variables['node'];
 
 	$comments = teaser_comments_node_comments($node);
@@ -136,17 +128,36 @@ function teaser_comments_preprocess_teaser_comments_wrapper(&$variables) {
 			$variables['show_all'] = l(t('Show @hidden older comments', array('@hidden' => $num_comments - 2)), "teaser_comments/js/comments/{$node->nid}", array('attributes' => array('class' => 'teaser-comment-show-hidden')));
 		}
 	}
+	
+	$mode = _comment_get_display_setting('mode', $node);
+	$divs = 0;
 	for (; $i <$num_comments; $i++) {
 		$comment = $comments[$i];
+		if ($mode == COMMENT_MODE_THREADED_COLLAPSED || $mode == COMMENT_MODE_THREADED_EXPANDED) {
+			if ($comment->depth > $divs) {
+				$comment_content .= '<div class="indented">';
+				$divs++;
+			} else {
+				while ($comment->depth < $divs) {
+					$divs--;
+					$comment_content .= '</div>';
+				}
+			}
+		}
 		$comment_content .= theme('teaser_comment', $comment, 'teaser-comment');
 	}
-	
+	while ($divs-- > 0) {
+		$comment_content .= '</div>';
+	}
+
 	$variables['content'] = $comment_content;
 	$variables['num_comments'] = $num_comments;
 	
 	if ($user->uid) {
 		$variables['comment_form'] = l(t('Write new comment'), "comment/reply/{$node->nid}", array('attributes'=>array('class'=>'teaser-comment-write-comment'))) . drupal_get_form('teaser_comments_comment_form_' . $node->nid, $node->nid);
 	}
+	
+	$variables['template_files'] = array('teaser_comments_teaser_comments_wrapper');
 }
 
 function teaser_comments_preprocess_teaser_comment(&$variables) {
@@ -179,6 +190,8 @@ function teaser_comments_preprocess_teaser_comment(&$variables) {
 	}
 	
 	$variables['status'] .= ' teaser-comment';
+	
+	$variables['template_files'] = array('teaser_comments_teaser_comment');
 }
 
 function teaser_comments_node_comments($node) {
@@ -194,6 +207,7 @@ function teaser_comments_node_comments($node) {
 		$args[] = $cid;
 		$results = db_query($query, $args);
 		if ($r = db_fetch_object($results)) {
+			$r->depth = count(explode('.', $r->thread)) - 1;
 			return $r;
 		}
 	} else {
@@ -216,6 +230,7 @@ function teaser_comments_node_comments($node) {
 		$comments = array();
 		$results = db_query($query, $args);
 		while ($r = db_fetch_object($results)) {
+			$r->depth = count(explode('.', $r->thread)) - 1;
 			$comments[] = $r;
 		}
 		return $comments;

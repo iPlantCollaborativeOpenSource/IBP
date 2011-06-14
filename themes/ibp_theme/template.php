@@ -142,10 +142,7 @@ function ibp_theme_preprocess_page(&$vars, $hook) {
  * @param $hook
  *   The name of the template being rendered ("node" in this case.)
  */
-/* -- Delete this line if you want to use this function
 function ibp_theme_preprocess_node(&$vars, $hook) {
-  $vars['sample_variable'] = t('Lorem ipsum.');
-
   // Optionally, run node-type-specific preprocess functions, like
   // ibp_theme_preprocess_node_page() or ibp_theme_preprocess_node_story().
   $function = __FUNCTION__ . '_' . $vars['node']->type;

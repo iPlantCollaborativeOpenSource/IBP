@@ -115,8 +115,14 @@ function ibphelper_ibtools_nav_menu($pid = 0) {
 
 function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
 	if ($op == 'view') {
+		
 		if ($node->type == 'ibp_tool') {
 			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-tool.css');
+		}
+		// remove forum navigation stuff
+		else if ($node->type == 'forum' && isset($node->content['forum_navigation'])) {
+			$node->forum_navigation = $node->content['forum_navigation'];
+			unset($node->content['forum_navigation']);
 		}
 	}
 }
@@ -246,3 +252,16 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 	}
 }
 
+function ibphelper_clade($op, $clade) {
+	if ($op == 'clade insert') {
+		$clade_menu = menu_get_item("clade/$clade_tid");
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/forums',
+			'link_path' => "clade/$clade->tid/forums",
+			'link_title' => $clade->name . ' forum',
+			);
+		menu_link_save($menu);
+	}
+}

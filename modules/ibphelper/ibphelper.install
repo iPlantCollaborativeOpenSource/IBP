@@ -31,6 +31,9 @@ function ibphelper_schema() {
 
 function ibphelper_install() {
 	drupal_install_schema('ibphelper');
+	
+	// set weight high so preprocess, theme, api calls happen later
+	db_query("UPDATE {system} SET weight = 100 WHERE name = 'ibphelper'");
 }
 
 function ibphelper_uninstall() {

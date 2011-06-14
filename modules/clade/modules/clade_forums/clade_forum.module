@@ -13,6 +13,20 @@ function clade_forum_menu() {
 	return $items;
 }
 
+function clade_forum_menu_alter(&$callbacks) {
+  $callbacks['forum']['access arguments'] = array('access content');
+  $callbacks['forum']['page callback'] = 'clade_forum_redirect';
+}
+
+function clade_forum_redirect($tid = 0) {
+	if ($tid) {
+		if ($clade_id = clade_forum_clade_from_forum($tid)) {
+			drupal_goto("clade/$clade_id/forums");
+		}
+	}
+	return forum_page($tid);
+}
+
 function clade_forum_clade_forum($clade) {
 	drupal_set_title($clade->name . " Community Forum");
 	module_load_include('inc', 'forum', 'forum.pages');
@@ -36,6 +50,8 @@ function clade_forum_clade($op, $clade) {
 		$forum_fields['values']['parent'][0] = 0;
 		$forum_fields['values']['weight'] = 0;
 		$forum_fields['values']['vid'] = $forum_vid;
+		
+		module_load_include('inc', 'forum', 'forum.admin');
 		$forum = forum_form_forum($forum_fields);
 		forum_form_submit($forum, $forum_fields);
 		
@@ -45,6 +61,20 @@ function clade_forum_clade($op, $clade) {
 	else if ($op == 'clade delete') {
 		$sql = "DELETE FROM {clade_forum} WHERE tid = %d";
 		db_query($sql, $clade->tid);
+	}
+	else if ($op == 'determine context') {
+		$path = $_GET['q'];
+		$original_map = arg(NULL, $path);
+		$parts = array_slice($original_map, 0, MENU_MAX_PARTS);
+		list($ancestors, $placeholders) = menu_get_ancestors($parts);
+		if ($router_item = db_fetch_array(db_query_range('SELECT * FROM {menu_router} WHERE path IN (' . implode(',', $placeholders) . ') ORDER BY fit DESC', $ancestors, 0, 1))) {
+			$path = $router_item['path'];
+			if (strpos($path, 'node/add/forum') === 0) {
+				if ($clade = clade_load(clade_forum_clade_from_forum(arg(3)))) {
+					return $clade;
+				}
+			}
+		}
 	}
 }
 
@@ -77,7 +107,6 @@ function clade_forum_form_alter(&$form, &$form_state, $form_id) {
 		unset($form['taxonomy'][$vid]['#multiple']);
 		unset($form['taxonomy'][$vid]['#size']);
 	
-		drupal_set_message(print_r($form['taxonomy'], TRUE));
 	}
 }
 
@@ -85,6 +114,12 @@ function clade_forum_clade_from_forum($forum_id) {
 	$sql = "SELECT tid FROM {clade_forum} WHERE fid = %d";
 	$tid = db_result(db_query($sql, $forum_id));
 	return $tid;
+}
+
+function clade_forum_get_forum($clade_id) {
+	$sql = "SELECT fid FROM {clade_forum} WHERE tid = %d";
+	$fid = db_result(db_query($sql, $clade_id));
+	return $fid;
 }
 
 function clade_forum_link_alter(&$links, $node, $comment = NULL) {

@@ -12,12 +12,13 @@
 			}
 			
 			mylinks_trg.bind('mouseenter', function() {
+				clearTimeout(mylinks_trg._t);
 				mylinks_trg._t = setTimeout(show_my_links, 250);
 			});
 			
 			mylinks_trg.bind('mouseleave', function() {
 				clearTimeout(mylinks_trg._t);
-				hide_my_links();
+				mylinks_trg._t = setTimeout(hide_my_links, 500);
 			});
 		}
 	);

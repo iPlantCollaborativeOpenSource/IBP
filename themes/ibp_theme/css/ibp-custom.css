@@ -152,8 +152,9 @@ a#back-to-top {
 }
 
 form#ibphelper-my-pages-form {
-	float: right;
-	margin-top: -10px;
+	position: absolute;
+	top: -8px;
+	right: 18px;
 }
 
 input.ibphelper-my-pages-add {
@@ -206,4 +207,34 @@ h2.clade-page-mini-form-title {
 
 #block-clade-4 li h3 {
 	margin: 0;
+}
+
+.clade-join-wrapper {
+	text-align: center;
+}
+
+.clade-join {
+	display: inline-block;
+	padding: 6px 18px;
+	color: #8e8e8e;
+	background-color: #ececec;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.clade-join-link {
+	display: inline-block;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #3e3e3e;
+	font-weight: bold;
+	padding:6px 18px;
+	margin: 0 0 0 18px;
+	background-color: #3199f2;
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
