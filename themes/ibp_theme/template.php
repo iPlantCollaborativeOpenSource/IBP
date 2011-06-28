@@ -229,7 +229,10 @@ function ibp_theme_username($object) {
 				$name .= ' ' . $object->profile_middle_name;
 			}
 			$name .= ' ' . $object->profile_last_name;
-		} else {
+			$name = trim($name);
+		}
+		
+		if (empty($name)) {
 			$name = $object->name;
 		}
 		
