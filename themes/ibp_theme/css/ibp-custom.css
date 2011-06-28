@@ -45,14 +45,15 @@
 
 #search-box input[type=submit] {
 	border: 0;
-	background: #ffffff;
-	background-image: url(../images/search.png);
+	background: white;
+	background-image: url(/sites/all/themes/ibp_theme/images/search.png);
 	background-repeat: no-repeat;
 	background-position: 0 0;
 	width: 20px;
-	height: 20px;
 	color: transparent;
-	
+	font-size: 0px;
+	line-height: 11px;
+	text-indent: -9999em;
 }
 
 #my-links .item-list {

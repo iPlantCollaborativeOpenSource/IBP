@@ -268,3 +268,61 @@ function ibphelper_clade($op, $clade) {
 		menu_link_save($menu);
 	}
 }
+
+function ibphelper_imagecache_default_presets() {
+	$presets = array();
+	$presets['profile_normal'] = array (
+		'presetname' => 'profile_normal',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale',
+				'data' => 
+				array (
+					'width' => '200',
+					'height' => '200',
+					'upscale' => 0,
+				),
+			),
+		),
+	);
+	$presets['profile_small'] = array (
+		'presetname' => 'profile_small',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale_and_crop',
+				'data' => 
+				array (
+					'width' => '30',
+					'height' => '30',
+				),
+			),
+		),
+	);
+	$presets['profile_tiny'] = array (
+		'presetname' => 'profile_tiny',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale_and_crop',
+				'data' => 
+				array (
+					'width' => '24',
+					'height' => '24',
+				),
+			),
+		),
+	);
+	
+	return $presets;
+}
