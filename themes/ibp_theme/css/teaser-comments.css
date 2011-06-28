@@ -3,12 +3,9 @@
 	padding: 0;
 }
 
-.teaser-comments {
-}
-
 .teaser-comment,
 a.teaser-comment-show-hidden,
-div.teaser-comment-form {
+div.teaser-comment-form-wrapper {
 	border-width: 1px;
 	border-color: #e3e3e3;
 	border-style: solid;
@@ -28,105 +25,14 @@ div.teaser-comment-form {
 	padding: 0.5em 0.25em 1em 0.5em;
 }
 
-/*
-.teaser-comment:last-child {
-	border-width: 1px;
-}
-
 .teaser-comments div.indented {
-	border-width: 1px 0 0;
-	border-color: #e3e3e3;
-	border-style: solid;
-	margin: 0;
-	padding-left: 1em;
+	margin-left: 1em;
 }
-
-.teaser-comments div.indented .teaser-comment:first-child
-{
-	border-width: 0 1px;
-}
-
-.teaser-comments div.indented .teaser-comment:last-child
-{
-	border-width: 1px 1px 0;
-}
-*/
 
 a.teaser-comment-show-hidden,
 div.teaser-comment-form {
 	margin: 0.25em 0;
 	border-width: 1px;
-}
-
-a.teaser-comment-show-hidden {
-	display: block;
-	text-align: center;
-}
-
-span.busy {
-	background-position: 0 -20px;
-	position: absolute;
-	top: 50%;
-	right: 7px;
-	width: 15px;
-	height: 15px;
-	margin-top: -7px;
-}
-
-div.teaser-comment-form form,
-div.teaser-comment-reply-form form,
-div.teaser-comment-edit-form form {
-	text-align: center;
-}
-
-div.teaser-comment-form form .resizable-textarea,
-div.teaser-comment-reply-form form .resizable-textarea,
-div.teaser-comment-edit-form form .resizable-textarea {
-	width: 95%;
-	margin: 0 2.5%;
-}
-
-div.teaser-comment-form form div.buttons,
-div.teaser-comment-reply-form form div.buttons,
-div.teaser-comment-edit-form form div.buttons {
-	text-align: right;
-	margin: 0 2.5%;
-}
-
-div.teaser-comment-form a.teaser-comment-write-comment {
-	display: block;
-	text-align: center;
-}
-
-div.teaser-comment-form form,
-div.teaser-comment-reply-form,
-div.teaser-comment-edit-form {
-	display: none;
-}
-
-.teaser-comment a.teaser-comment-delete,
-.teaser-comment a.teaser-comment-edit,
-.teaser-comment a.teaser-comment-reply {
-	display: none;
-}
-
-.teaser-comment:hover a.teaser-comment-delete,
-.teaser-comment:hover a.teaser-comment-edit,
-.teaser-comment:hover a.teaser-comment-reply {
-	display: block;
-}
-
-.teaser-comment div.author {
-}
-
-.teaser-comment div.author a,
-.teaser-comment div.author img,
-.teaser-comment div.author span {
-	vertical-align: middle;
-}
-
-.teaser-comment p {
-	margin: 0.5em 0.1em;
 }
 
 .teaser-comment div.meta {
@@ -136,37 +42,61 @@ div.teaser-comment-edit-form {
 	top: 0.5em;
 }
 
-.teaser-comment-form textarea,
-.teaser-comment-reply-form textarea {
-	font-size: 0.9em;
-	line-height: 1.2em;
-	border: 1px solid #cccccc;
+.teaser-comment .links {
+	margin-right: 1em;
 }
 
-.teaser-comment .actions {
-	position: absolute;
-	bottom: 0px;
-	right: 0px;
+.teaser-comment .comment_delete,
+.teaser-comment .comment_edit,
+.teaser-comment .comment_reply {
+	padding: 0;
+	margin: 0;
 }
 
-.teaser-comment .actions a {
-	opacity: 0.50;
+.teaser-comment .comment_delete a,
+.teaser-comment .comment_edit a,
+.teaser-comment .comment_reply a {
+	color: transparent;
+	background-repeat: no-repeat;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
 }
 
-.teaser-comment .actions a:hover {
-	opacity: 1;
+.teaser-comment .comment_delete a {
+	background-image: url(../images/delete.png );
 }
 
-.teaser-comment .actions ul {
-	list-style: none;
+.teaser-comment .comment_edit a {
+	background-image: url(../images/edit.png );
 }
 
-.teaser-comment .actions ul li {
-	float: right;
-	margin-right: 0.2em;
+.teaser-comment .comment_reply a {
+	background-image: url(../images/reply.png );
 }
 
-.teaser-comment.replying .actions,
-.teaser-comment.editing .actions {
+.teaser-comments-container .box h2 {
 	display: none;
+}
+
+a.teaser-comment-write-comment-cancel,
+a.teaser-comment-edit-comment-cancel {
+	display: inline-block;
+	font-size: 11px;
+	line-height: 17px;
+	text-align: center;
+	border: none;
+	padding: 6px 9px;
+	font-weight: bold;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #3e3e3e;
+	background-color: #3199f2;
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	cursor: default;
+	white-space: pre;
 }

@@ -192,19 +192,20 @@ function clade_subscriptions_clade_details_items($clade) {
 				);
 		}
 	}
-			
-	$items = array(
-		'members' => array(
+	$items = array();
+	if ($count) {
+		$items['members'] = array(
 			'data' => l(t('@num members', array('@num' => $count)), "clade/$clade->tid/members"),
 			'data-sort' => 10,
 			'class' => 'clade-details-item',
-			),
-		'admins' => array(
+			);
+	}
+	if ($admins) {
+		$items['admins'] = array(
 			'data' => theme('item_list', $admins, t('Clade Managers'), 'ul', array('class' => 'clade-details-admins')),
 			'data-sort' => 12
-			),
-		);
-	
+			);
+	}
 	if ($user->uid) {
 		if (! array_key_exists($clade->tid, $user->clades)) {
 			$items['membership'] = array(

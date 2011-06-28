@@ -174,6 +174,7 @@ input.ibphelper-my-pages-add {
 	color: #00a3f7;
 	font-size: 11px;
 	cursor: pointer;
+	text-shadow: none;
 }
 
 input.ibphelper-my-pages-remove {
@@ -193,6 +194,7 @@ input.ibphelper-my-pages-remove {
 	color: #00a3f7;
 	font-size: 11px;
 	cursor: pointer;
+	text-shadow: none;
 }
 
 ul.ibp-my-pages,
@@ -209,27 +211,29 @@ h2.clade-page-mini-form-title {
 	margin: 0;
 }
 
-.clade-join-wrapper {
-	text-align: center;
-}
-
 .clade-join {
-	display: inline-block;
-	padding: 6px 18px;
 	color: #8e8e8e;
 	background-color: #ececec;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+	word-spacing: -1px;
+}
+
+.clade-join-message {
+	line-height: 46px;
+	margin: 0px 0px 0px 12px;
+	float: left;
 }
 
 .clade-join-link {
-	display: inline-block;
+	float: right;
+	line-height: 32px;
+	padding: 0px 12px;
+	font-weight: bold;
 	color: #ffffff;
 	text-shadow: -1px -1px 1px #3e3e3e;
-	font-weight: bold;
-	padding:6px 18px;
-	margin: 0 0 0 18px;
+	margin: 8px 12px 8px 0px;
 	background-color: #3199f2;
 	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
@@ -237,4 +241,11 @@ h2.clade-page-mini-form-title {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+}
+
+ul.nostyle,
+ul.nostyle li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }

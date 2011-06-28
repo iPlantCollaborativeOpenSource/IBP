@@ -8,7 +8,7 @@
 
 .teaser-comment,
 a.teaser-comment-show-hidden,
-div.teaser-comment-form {
+div.teaser-comment-form-wrapper {
 	border-width: 1px;
 	border-color: #bebebe;
 	border-style: solid;
@@ -38,32 +38,23 @@ span.busy {
 	margin-top: -7px;
 }
 
-div.teaser-comment-form form,
-div.teaser-comment-reply-form form,
-div.teaser-comment-edit-form form {
-	text-align: center;
+div.teaser-comment-form-wrapper div.teaser-comment-form {
+	padding: 0 2.5%;
 }
 
-div.teaser-comment-form form .resizable-textarea,
-div.teaser-comment-reply-form form .resizable-textarea,
-div.teaser-comment-edit-form form .resizable-textarea {
-	width: 95%;
-	margin: 0 2.5%;
-}
-
-div.teaser-comment-form form div.buttons,
+div.teaser-comment-form-wrapper div.teaser-comment-form div.buttons,
 div.teaser-comment-reply-form form div.buttons,
 div.teaser-comment-edit-form form div.buttons {
 	text-align: right;
 	margin: 0 2.5%;
 }
 
-div.teaser-comment-form a.teaser-comment-write-comment {
+div.teaser-comment-form-wrapper a.teaser-comment-write-comment {
 	display: block;
 	text-align: center;
 }
 
-div.teaser-comment-form form,
+div.teaser-comment-form-wrapper div.teaser-comment-form,
 div.teaser-comment-reply-form,
 div.teaser-comment-edit-form {
 	display: none;
@@ -100,35 +91,41 @@ div.teaser-comment-edit-form {
 
 .teaser-comment-form textarea,
 .teaser-comment-reply-form textarea {
-	font-size: 0.9em;
 	line-height: 1.2em;
 	border: 1px solid #cccccc;
 }
 
-.teaser-comment .actions {
+.teaser-comment .links {
+	margin: 0;
 	position: absolute;
 	bottom: 0px;
 	right: 0px;
+	opacity: 0;
+	-moz-transition: opacity 250ms ease-in-out 50ms;
+	-webkit-transition: opacity 250ms ease-in-out 50ms;
+	-o-transition: opacity 250ms ease-in-out 50ms;
 }
 
-.teaser-comment .actions a {
-	opacity: 0.50;
-}
-
-.teaser-comment .actions a:hover {
+.teaser-comment:hover .links {
 	opacity: 1;
 }
 
-.teaser-comment .actions ul {
-	list-style: none;
+.teaser-comment .links a {
+	opacity: 0.50;
+	-moz-transition: opacity 250ms ease-in-out 0ms;
+	-webkit-transition: opacity 250ms ease-in-out 0ms;
+	-o-transition: opacity 250ms ease-in-out 0ms;
 }
 
-.teaser-comment .actions ul li {
-	float: right;
-	margin-right: 0.2em;
+.teaser-comment .links a:hover {
+	opacity: 1;
 }
 
-.teaser-comment.replying .actions,
-.teaser-comment.editing .actions {
+.teaser-comment.replying .links,
+.teaser-comment.editing .links {
+	display: none;
+}
+
+.teaser-comment.hidden {
 	display: none;
 }

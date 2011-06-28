@@ -14,9 +14,7 @@
 	<div class="meta">
 		<?php echo $submitted; ?>
 	</div>
-	<div class="actions">
-		<?php echo $actions; ?>
-	</div>
+	<?php print $links; ?>
 	<?php if (isset($reply_form)) : ?>
 		<div class="teaser-comment-reply-form">
 			<?php echo $reply_form; ?>

@@ -1760,7 +1760,11 @@ SQL;
 	}
 	$output = '';
 	while ($r = db_fetch_object($results)) {
-		$output .= node_view(node_load($r->nid), TRUE, FALSE);
+		$node = node_load($r->nid);
+		$output .= node_view($node, TRUE, FALSE);
+		if (function_exists('comment_render') && $node->comment) {
+			$output .= comment_render($node);
+		}
 	}
 	return $output;
 }

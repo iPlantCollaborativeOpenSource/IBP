@@ -296,3 +296,21 @@ fieldset {
   margin: 1em 0;
   padding: 0.5em;
 }
+
+input[type=submit],
+input[type=button],
+input[type=reset],
+button {
+	border: none;
+	padding: 6px 9px;
+	font-weight: bold;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #3e3e3e;
+	background-color: #3199f2;
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
