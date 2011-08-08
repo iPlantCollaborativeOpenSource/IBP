@@ -398,18 +398,6 @@ function ibphelper_taxonomy($op, $type, $array = NULL) {
 					// create path alias
 					$alias = 'training/'.pathauto_cleanstring($array['name']);
 					path_set_alias('training/'.$array['tid'],$alias);
-					
-					// create menu
-					$parent = menu_get_item('training');
-					$menu = array(
-						'menu_name' => 'primary-links',
-						'plid' => $parent['mlid'],
-						'router_path' => 'training/%',
-						'link_path' => 'training/'.$array['tid'],
-						'link_title' => $array['name'],
-						'weight' => $array['weight'],
-						);
-					menu_link_save($menu);
 					break;
 				
 				case "update":
@@ -417,14 +405,11 @@ function ibphelper_taxonomy($op, $type, $array = NULL) {
 					path_set_alias('training/'.$array['tid']); // delete old path
 					$alias = 'training/'.pathauto_cleanstring($array['name']);
 					path_set_alias('training/'.$array['tid'], $alias);
-					db_query("UPDATE {menu_links} SET link_title = '%s', weight = %d WHERE link_path = '%s'", $array['name'], $array['weight'], 'training/'.$array['tid']);
-					menu_cache_clear('primary-links');
 					break;
 					
 				case "delete":
 					// delete path alias
 					path_set_alias('training/'.$array['tid']);
-					menu_link_delete(NULL, 'training/'.$array['tid']);
 					break;	
 			}
 		}
