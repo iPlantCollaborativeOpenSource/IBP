@@ -270,6 +270,10 @@ ul.nostyle li {
 	line-height: 32px;
 }
 
+span.read-more a:after {
+	content: " \2192";
+}
+
 .clade-community-feed-item,
 .view-training .views-row,
 .view-clade-posts .views-row {
@@ -289,12 +293,6 @@ ul.nostyle li {
 
 .teaser-comments-container {
 	margin: 1em 0 0 0 !important;
-/*
-	padding: 1em 0 0 0 !important;
-	border-color: #cacaca;
-	border-style: solid;
-	border-width: 1px 0 0 0;
-*/
 }
 
 ul.links.inline li {

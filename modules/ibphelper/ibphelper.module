@@ -156,7 +156,7 @@ function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
 	} else if ($op == 'insert' || $op == 'update') {
 		if ($node->type == 'training_page') {
 			// create path alias
-			module_load_include('pathauto','pathauto','inc');
+			module_load_include('inc', 'pathauto', 'pathauto');
 			$path = "node/$node->nid";
 			$path_parts = array('training');
 			foreach ($node->taxonomy as $vid => $term) {

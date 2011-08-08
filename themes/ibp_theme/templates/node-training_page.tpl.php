@@ -116,7 +116,13 @@
 				</ul>
 			</div>
   		<div class="subsection-content">
-  			<?php print $node->content['body']['#value']; ?>
+  			<?php
+  				if ($readmore) {
+  					print ed_readmore_link_place($node->content['body']['#value'], $node, variable_get('ed_readmore_placement', ED_READMORE_PLACEMENT_DEFAULT));
+  				} else {
+  					print $node->content['body']['#value'];
+  				}
+  			?>
   		</div>
   	</div>
   	
