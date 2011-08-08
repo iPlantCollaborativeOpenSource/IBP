@@ -392,7 +392,7 @@ function ibphelper_taxonomy($op, $type, $array = NULL) {
 	if ($type == "term") {
 		$vocabulary = taxonomy_vocabulary_load($array['vid']);
 		if ($vocabulary->name == 'Training types') {
-			module_load_include('pathauto', 'pathauto', 'inc');
+			module_load_include('inc', 'pathauto', 'pathauto');
 			switch ($op) {
 				case "insert":
 					// create path alias
