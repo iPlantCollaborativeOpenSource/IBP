@@ -37,7 +37,7 @@ function teaser_comments_admin_form() {
 	$form['teaser_comments_node_teaser'] = array(
 		'#type' => 'checkbox',
 		'#title' => t('Show teaser-comments-styled comments on node teasers'),
-		'#description' => t('Selecting this option removes the "<em>N</em> comments" link and renders comments in the teaser.'),
+		'#description' => t('Selecting this option removes the various comments links from the node\'s <code>$links</code> and adds a variable <code>$teaser_comments</code> to the <code>$variables</code> array that can be rendered.  You must add <code>&lt;?php print $teaser_comments; ?&gt;</code> to your template file(s) to print out the comments.'),
     '#default_value' => variable_get('teaser_comments_node_teaser', 1),
 	);
 	
@@ -104,6 +104,15 @@ function teaser_comments_theme_registry_alter(&$registry) {
 	array_unshift($registry['comment']['theme paths'], drupal_get_path('module', 'teaser_comments'));
 }
 
+function teaser_comments_preprocess_node(&$variables) {
+	if ($variables['teaser'] && variable_get('teaser_comments_node_teaser', 1)) {
+		$tcnt = variable_get('teaser_comments_node_types', array());
+		if ($tcnt[$variables['node']->type]) {
+			$variables['teaser_comments'] = comment_render($variables['node']);
+		}
+	}
+}
+
 function teaser_comments_preprocess_comment_wrapper(&$variables) {
 	$tcnt = variable_get('teaser_comments_node_types', array());
 	$node = $variables['node'];
@@ -125,10 +134,12 @@ function teaser_comments_preprocess_comment(&$variables) {
 	if ($tcnt[$node->type]) {
 		if ($node->teaser) {
 			if (variable_get('teaser_comments_node_teaser', 1)) {
+				$variables['teaser'] = TRUE;
 				teaser_comments_preprocess_teaser_comment($variables);
 			}
 		}
 		else if (variable_get('teaser_comments_node_page', 0)) {
+			$variables['teaser'] = FALSE;
 			teaser_comments_preprocess_teaser_comment($variables);
 		}
 	}
@@ -158,7 +169,7 @@ function teaser_comments_preprocess_teaser_comment(&$variables) {
 		while ($r = db_result($result)) {
 			$shown[] = $r;
 		}
-		if (count($shown) > 3) {
+		if ($variables['teaser'] && count($shown) > 3) {
 			$node_comments_shown[$comment->nid] = array_slice($shown, 0, 2);
 		} else {
 			$node_comments_shown[$comment->nid] = $shown;
@@ -323,15 +334,19 @@ function teaser_comments_edit_form(&$form_state, $cid) {
 		'#title' => t('Comment'),
 		'#default_value' => $comment->comment,
 		);
-	$form['submit'] = array(
+	$form['buttons'] = array(
+		'#prefix' => '<div class="buttons">',
+		'#suffix' => '</div>',
+	);
+	$form['buttons']['submit'] = array(
 		'#type' => 'submit',
 		'#value' => t('Save'),
-		'#prefix' => '<div class="buttons">',
 		);
-	$form['cancel'] = array(
-		'#type' => 'markup',
-		'#value' => l(t('Cancel'), "node/{$comment->nid}", array('attributes'=>array('class'=>'teaser-comment-edit-comment-cancel'))),
-		'#suffix' => '</div>',
+	$form['buttons']['cancel'] = array(
+		'#type' => 'button',
+		'#value' => t('Cancel'),
+		'#attributes' => array('class'=>'teaser-comment-edit-comment-cancel'),
+		'#weight' => 100,
 		);
 	$form['#validate'] = array('teaser_comments_edit_form_validate');
 	$form['#submit'] = array('teaser_comments_edit_form_submit');
@@ -406,8 +421,10 @@ function teaser_comments_comment_form(&$form_state, $nid, $pid = NULL) {
 		'#value' => $pid ? t('Post Reply') : t('Post Comment'),
 		);
 	$form['buttons']['cancel'] = array(
-		'#type' => 'markup',
-		'#value' => l(t('Cancel'), "node/$nid", array('attributes'=>array('class'=>'teaser-comment-write-comment-cancel'))),
+		'#type' => 'button',
+		'#value' => t('Cancel'),
+		'#attributes' => array('class'=>'teaser-comment-write-comment-cancel'),
+		'#weight' => 100,
 		);
 	$form['#validate'] = array('teaser_comments_comment_form_validate');
 	$form['#submit'] = array('teaser_comments_comment_form_submit');
@@ -495,8 +512,9 @@ function theme_teaser_comments_new_comment_form($form) {
 	$form['buttons']['submit'] = $form['submit'];
 	$form['buttons']['submit']['#value'] = t('Post Comment');
 	$form['buttons']['cancel'] = array(
-		'#type' => 'markup',
-		'#value' => l(t('Cancel'), "node/$nid", array('attributes'=>array('class'=>'teaser-comment-write-comment-cancel'))),
+		'#type' => 'button',
+		'#value' => t('Cancel'),
+		'#attributes' => array('class'=>'teaser-comment-write-comment-cancel'),
 		'#weight' => 100,
 		);
 	
@@ -517,23 +535,3 @@ function theme_teaser_comments_new_comment_form($form) {
 	
 	return $output;
 }
-
-// function teaser_comments_db_rewrite_sql($query, $primary_table, $primary_field, $args) {
-// 	if (($primary_table == '{comments}' || $primary_table == 'c') && $primary_field == 'cid') {
-// 		$tctypes = array();
-// 		$node_types = variable_get('teaser_comments_node_types', array());
-// 		foreach ($node_types as $type => $active) {
-// 			if ($active) {
-// 				$tctypes[] = $type;
-// 			}
-// 		}
-// 		
-// 		drupal_set_message(print_r($tctypes,TRUE));
-// 		
-// 		$rewrite = array();
-// 		
-// // 		$mode = _comment_get_display_setting('mode', $node);
-// // 		$order = _comment_get_display_setting('sort', $node);
-// // 		$query = 'SELECT c.cid as cid, c.pid, c.nid, c.subject, c.comment, c.format, c.timestamp, c.name, c.mail, c.homepage, u.uid, u.name AS registered_name, u.signature, u.signature_format, u.picture, u.data, c.thread, c.status FROM {comments} c INNER JOIN {users} u ON c.uid = u.uid WHERE c.nid = %d';
-// 	}
-// }

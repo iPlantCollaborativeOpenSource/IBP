@@ -41,11 +41,16 @@
  */
 ?>
 <div class="profile">
-  <?php print $user_profile; ?>
-</div>
-<?php if ($community) : ?>
-	<div class="profile community">
-		<h3><?php print $community['subject'] ?></h3>
-		<?php print $community['content']; ?>
+	<?php print $profile['user_picture']; ?>
+	<div class="profile-item profile-name">
+		<?php print $account->profile_first_name . ' ' . $account->profile_last_name; ?>
 	</div>
-<?php endif; ?>
+	<div class="profile-item profile-affiliation">
+		TODO print country, institution
+	</div>
+	<?php if ($communities) : ?>
+	<div class="profile-item profile-communities">
+		<?php print $communities; ?>
+	</div>
+	<?php endif; ?>
+</div>

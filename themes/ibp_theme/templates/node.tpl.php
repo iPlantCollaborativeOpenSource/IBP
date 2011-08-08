@@ -82,18 +82,10 @@
     <div class="unpublished"><?php print t('Unpublished'); ?></div>
   <?php endif; ?>
 
-  <?php if ($display_submitted || $terms): ?>
-    <div class="meta">
-      <?php if ($display_submitted): ?>
-        <span class="submitted">
-          <?php print $submitted; ?>
-        </span>
-      <?php endif; ?>
-
-      <?php if ($terms): ?>
-        <div class="terms terms-inline"><?php print $terms; ?></div>
-      <?php endif; ?>
-    </div>
+  <?php if ($display_submitted): ?>
+    <div class="meta"><span class="submitted">
+			<?php print $submitted; ?>
+    </span></div>
   <?php endif; ?>
 
   <div class="content">
@@ -101,4 +93,5 @@
   </div>
 
   <?php print $links; ?>
+  <?php print $terms; ?>
 </div><!-- /.node -->

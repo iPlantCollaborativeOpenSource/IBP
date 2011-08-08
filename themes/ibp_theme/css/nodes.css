@@ -71,6 +71,7 @@
 }
 
 .node .content /* Node's content wrapper */ {
+	margin: 1em 0;
 }
 
 .node ul.links /* Node links. See also the ul.links declaration in the pages.css. */ {

@@ -77,13 +77,104 @@ body.admin-menu {
  * Main (container for everything else)
  */
 #main-wrapper {
-	position: relative;
+	position: relative;	/* This fixes the IE7 overflow hidden bug */
+	clear: both;
+	width: 992px;			/* width of whole page */
+	overflow: hidden;		/* This chops off any overhanging divs */
 	top: -8px;
 }
 
-#main {
-	padding: 0px;
-	margin: 0px;
+#main,
+#columns {
+	float: left;
+	width: 992px;
+	position: relative;
+}
+
+#content-wrapper,
+.region-sidebar-first,
+.region-sidebar-second {
+	float: left;
+	position: relative;
+	overflow: hidden;
+}
+
+/*
+ * First sidebar
+ */
+.region-sidebar-first {
+	width: 234px;
+}
+
+.region-sidebar-first .section {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Second sidebar
+ */
+.region-sidebar-second {
+  width: 240px;
+}
+
+.region-sidebar-second .section {
+  margin: 0;
+  padding: 0;
+}
+
+.two-sidebars #main,
+.sidebar-second #main {
+	right: 240px;
+}
+
+.two-sidebars #columns {
+	right: 512px;
+}
+
+.two-sidebars #content-wrapper {
+	left: 992px;
+	width: 512px;
+}
+
+.two-sidebars .region-sidebar-first {
+	width: 512px;
+	left: 240px;
+}
+
+.two-sidebars .region-sidebar-second,
+.sidebar-second .region-sidebar-second{
+	width: 240px;
+	left: 992px;
+}
+
+.sidebar-first #columns,
+.sidebar-second #columns {
+	right: 752px;
+}
+
+.sidebar-first #content-wrapper,
+.sidebar-second #content-wrapper {
+	left: 992px;
+	width: 752px;
+}
+
+.no-sidebars #columns {
+	right: 992px;
+}
+
+.no-sidebars #content-wrapper {
+	left: 992px;
+	width: 992px;
+}
+
+#content {
+	overflow: hidden;
+}
+
+#content .section {
+	overflow: hidden;
+	padding: 6px;
 }
 
 /*
@@ -91,34 +182,41 @@ body.admin-menu {
  */
 #content,
 .no-sidebars #content {
-  float: left; /* LTR */
-  width: 994px;
-  margin-left: 0; /* LTR */
-  margin-right: -994px; /* LTR */ /* Negative value of #content's width + left margin. */
-  padding: 0; /* DO NOT CHANGE. Add padding or margin to #content .section. */
+/*
+  float: left;
+  position: relative;
+  width: 992px;
+  margin-left: 0;
+  padding: 0;
+*/
 }
 
 .sidebar-first #content {
-  width: 754px;
-  margin-left: 240px; /* LTR */ /* The width of .region-sidebar-first. */
-  margin-right: -994px; /* LTR */ /* Negative value of #content's width + left margin. */
+/*
+  width: 752px;
+  margin-left: -240px;
+*/
 }
 
 .sidebar-second #content {
-  width: 754px;
-  margin-left: 0; /* LTR */
-  margin-right: -754px; /* LTR */ /* Negative value of #content's width + left margin. */
+/*
+  width: 752px;
+  margin-left: 0;
+  margin-right: -754px;
+*/
 }
 
 .two-sidebars #content {
-  width: 514px;
-  margin-left: 240px; /* LTR */ /* The width of .region-sidebar-first */
-  margin-right: -754px; /* LTR */ /* Negative value of #content's width + left margin. */
+/*
+  width: 512px;
+  margin-left: 240px;
+  margin-right: -754px;
+*/
 }
 
-#content .section {
-	margin: 0;
-	padding: 6px;
+.region-sidebar-second .section .block h2.title,
+.region-sidebar-second .section .block div.content {
+	margin-left: 15px;
 }
 
 /*
@@ -150,7 +248,7 @@ body.admin-menu {
   float: left; /* LTR */
   height: 46px;
   padding: 0; /* LTR */
-  margin: 0 3px 0 0;
+  margin: 0 1px 0 0;
   list-style: none;
 }
 
@@ -162,7 +260,8 @@ body.admin-menu {
 	font-weight: bold;
 	text-decoration: none;
 	font-family: Arial, sans-serif;
-	font-size: 12pt;
+	font-size: 14px;
+	word-spacing: -1px;
 	text-shadow: -1px -1px 1px #333333;
 }
 
@@ -203,7 +302,7 @@ body.admin-menu {
 }
 
 #navigation #block-menu-primary-links li.active-trail.expanded ul li a {
-  padding: 6px 12px; /* LTR */
+  padding: 6px 8px; /* LTR */
 }
 
 #navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a,
@@ -275,43 +374,6 @@ body.admin-menu {
 }
 
 /*
- * First sidebar
- */
-.region-sidebar-first {
-  float: left; /* LTR */
-  width: 240px;
-  margin-left: 0; /* LTR */
-  margin-right: -240px; /* LTR */ /* Negative value of .region-sidebar-first's width + left margin. */
-  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-first .section. */
-}
-
-.region-sidebar-first .section {
-  margin: 0; /* LTR */
-  padding: 0;
-}
-
-/*
- * Second sidebar
- */
-.region-sidebar-second {
-  float: left; /* LTR */
-  width: 240px;
-  margin-left: 752px; /* LTR */ /* Width of content + sidebar-first. (also take into account main's border) */
-  margin-right: -994px; /* LTR */ /* Negative value of .region-sidebar-second's width + left margin. */
-  padding: 0; /* DO NOT CHANGE. Add padding or margin to .region-sidebar-second .section. */
-}
-
-.region-sidebar-second .section {
-  margin: 0; /* LTR */
-  padding: 0;
-}
-
-.region-sidebar-second .section .block h2.title,
-.region-sidebar-second .section .block div.content {
-	margin-left: 15px;
-}
-
-/*
  * Footer
  */
 #footer {
@@ -345,7 +407,6 @@ body.admin-menu {
 .region-sidebar-second,
 #footer,
 .region-page-closure {
-  overflow: visible;
   word-wrap: break-word; /* A very nice CSS3 property */
 }
 

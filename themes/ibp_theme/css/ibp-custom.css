@@ -30,7 +30,7 @@
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
-	vertical-align: middle;
+	margin-top: -2px;
 }
 
 #search-box .form-item {
@@ -41,19 +41,24 @@
 #search-box input[type=text] {
 	border: 0;
 	background: #ffffff;
+	float: left;
+	font-size: 16px;
+	height: 24px;
+	line-height: 24px;
 }
 
 #search-box input[type=submit] {
 	border: 0;
 	background: white;
-	background-image: url(/sites/all/themes/ibp_theme/images/search.png);
+	background-image: url(../images/search.png);
 	background-repeat: no-repeat;
-	background-position: 0 0;
+	background-position: 50% 50%;
 	width: 20px;
+	height: 26px;
 	color: transparent;
 	font-size: 0px;
-	line-height: 11px;
 	text-indent: -9999em;
+	float: right;
 }
 
 #my-links .item-list {
@@ -249,4 +254,65 @@ ul.nostyle li {
 	margin: 0;
 	padding: 0;
 	list-style: none;
+}
+
+.filefield-file {
+	padding: 8px 0;
+	border-bottom: 1px dashed #141414;
+	margin-bottom: 0.25em;
+}
+
+.filefield-file img {
+	float: left;
+}
+
+.filefield-file a {
+	line-height: 32px;
+}
+
+.clade-community-feed-item,
+.view-training .views-row,
+.view-clade-posts .views-row {
+	margin: 0 0 1.5em 0;
+	padding: 0 0 1.5em 0;
+	border-color: #cacaca;
+	border-style: solid;
+	border-width: 0 0 1px 0;
+}
+
+.clade-community-feed-item:last-child,
+.view-training .views-row:last-child,
+.view-clade-posts .views-row:last-child {
+	padding: 0;
+	border-width: 0px;
+}
+
+.teaser-comments-container {
+	margin: 1em 0 0 0 !important;
+/*
+	padding: 1em 0 0 0 !important;
+	border-color: #cacaca;
+	border-style: solid;
+	border-width: 1px 0 0 0;
+*/
+}
+
+ul.links.inline li {
+	padding: 0;
+}
+
+ul.links.inline li:after {
+	content: "| ";
+	color: #cacaca;
+}
+
+ul.links.inline li a {
+	padding: 0 6px 0 0;
+}
+
+ul.terms.links li {
+	padding: 0 0 0 16px;
+	background-image: url(../images/tag.png);
+	background-repeat: no-repeat;
+	background-position: left center;
 }

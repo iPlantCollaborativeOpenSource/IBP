@@ -97,8 +97,8 @@ function ibp_theme_loginlinks($user) {
 		drupal_add_js(drupal_get_path('theme', 'ibp_theme') . 'js/my-links.js', 'theme');
 		$items[] = l(t('Log out'), 'logout');
 	} else {
-		$items[] = l(t('Register for an account'), 'user/register');
-		$items[] = l(t('Log in'), 'user/login');
+		$items[] = l(t('Register for an account'), 'user/register', array('attributes'=>array('target'=>'_blank')));
+		$items[] = l(t('Log in'), 'user/login', array('query' => drupal_get_destination()));
 	}
 	return theme('item_list', $items, NULL, 'ul', array('class' => 'loginlinks'));
 }
@@ -143,12 +143,54 @@ function ibp_theme_preprocess_page(&$vars, $hook) {
  *   The name of the template being rendered ("node" in this case.)
  */
 function ibp_theme_preprocess_node(&$vars, $hook) {
+	$node = $vars['node'];
+	
   // Optionally, run node-type-specific preprocess functions, like
   // ibp_theme_preprocess_node_page() or ibp_theme_preprocess_node_story().
-  $function = __FUNCTION__ . '_' . $vars['node']->type;
+  $function = __FUNCTION__ . '_' . $node->type;
   if (function_exists($function)) {
     $function($vars, $hook);
   }
+  
+  // add css per node type
+  drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css');
+
+	if ($node->type == 'training_page') {
+		// don't show training types in taxonomy links
+		$vocabs = taxonomy_get_vocabularies();
+		$training_vocab = 0;
+		$clade_vocab = variable_get('clade_vocabulary',0);
+		foreach ($vocabs as $v) {
+			if ($v->name == 'Training types') {
+				$training_vocab = $v->vid;
+			}
+		}
+		$training_terms = array_keys(taxonomy_node_get_terms_by_vocabulary($node, $training_vocab));
+		error_log(print_r($training_terms,1));
+		$links = array();
+		foreach ($node->taxonomy as $tid => &$term) {
+			if ($term->vid == $training_vocab) {
+				continue;
+			} else if ($term->vid == $clade_vocab) {
+				$links[] = array(
+						'title' => $term->name,
+						'href' => 'training/' . $training_terms[0] . '/' . $term->tid,
+						'attributes' => array(
+							'rel' => 'tag', 
+							'title' => strip_tags($term->description),
+						));
+			} else {
+				$links[] = array(
+						'title' => $term->name,
+						'href' => taxonomy_term_path($term),
+						'attributes' => array(
+							'rel' => 'tag', 
+							'title' => strip_tags($term->description),
+						));
+			}
+		}
+		$vars['terms'] = theme('links', $links, array('class' => 'links inline terms'));
+	}
 }
 // */
 
@@ -177,6 +219,19 @@ function ibp_theme_preprocess_comment(&$vars, $hook) {
 /* -- Delete this line if you want to use this function
 function ibp_theme_preprocess_block(&$vars, $hook) {
   $vars['sample_variable'] = t('Lorem ipsum.');
+}
+// */
+
+function ibp_theme_links($links, $attributes = array('class' => 'links'), $heading = '') {
+	if ($links['node_read_more']) {
+		$links['node_read_more']['title'] = t('Continue reading');
+	}
+	
+	if (strpos(array_shift(array_keys($links)), 'taxonomy_term') === 0) {
+		$attributes['class'] .= ' terms';
+	}
+	
+	return theme_links($links, $attributes, $heading);
 }
 // */
 
@@ -210,14 +265,25 @@ function ibp_theme_preprocess_user_profile(&$vars) {
 			$name .= ' ' . $account->profile_middle_name;
 		}
 		$name .= ' ' . $account->profile_last_name;
-		drupal_set_title($name);
+		drupal_set_title($name .'\'s Profile');
 	}
 	
 	if (module_exists('clade_subscriptions')) {
-		$view = views_get_view('clade_my_clades');
-		$block = $view->execute_display('block_2', array($account->uid));
-		$vars['community'] = $block;
+		$vars['communities'] = implode(', ',
+				array_map(
+					function($c) {
+						$tid = $c['tid'];
+						$clade = l($c['name'], "clade/$tid");
+						if ($c['is_admin']) {
+							$clade .= '*';
+						}
+						return $clade;
+					},
+				$account->clades)
+			);
 	}
+	
+	drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/user_profile.css', 'theme');
 }
 
 function ibp_theme_username($object) {
@@ -267,4 +333,64 @@ function ibp_theme_username($object) {
   }
 
   return $output;
+}
+
+function ibp_theme_preprocess_faq_category_questions_top(&$variables) {
+	static $added = FALSE;
+	if (! $added) {
+		$added = TRUE;
+		drupal_add_css(drupal_get_path('theme', 'ibp_theme') . '/css/ibp_faq.css', 'theme');
+		drupal_add_js(drupal_get_path('theme', 'ibp_theme') . '/js/ibp_faq.js', 'theme');
+	}
+}
+
+function ibp_theme_filefield_icon($file) {
+	global $base_url;
+
+  if (is_object($file)) {
+    $file = (array) $file;
+  }
+  $mime = check_plain($file['filemime']);
+  $dashed_mime = strtr($mime, array('/' => '-', '+' => '-'));
+  
+  if ($icon_path = _ibp_theme_filefield_icon_path($file)) {
+  	$icon_url = $base_url . '/' . $icon_path;
+    return '<img class="filefield-icon field-icon-'. $dashed_mime .'"  alt="'. t('@mime icon', array('@mime' => $mime)) .'" src="'. $icon_url .'" />';
+  } else {
+  	return theme_filefield_icon($file);
+  }
+}
+
+function _ibp_theme_filefield_icon_path($file) {
+	$dir = drupal_get_path('theme', 'ibp_theme') . '/images/filefield/';
+	$dashed_mime = strtr($file['filemime'], array('/' => '-'));
+	
+	$path = $dir.$dashed_mime.'.png';
+	if (file_exists($path)) {
+		return $path;
+	}
+	
+	if ($generic_name = _filefield_generic_icon_map($file)) {
+		$path = $dir.$generic_name.'.png';
+		if (file_exists($path)) {
+			return $path;
+		}
+	}
+	
+	foreach (array('audio', 'image', 'text', 'video') as $category) {
+		if (strpos($file['filemime'], $category .'/') === 0) {
+			$path = $dir.$category.'-x-generic'.'.png';
+			if (file_exists($path)) {
+				return $path;
+			}
+		}
+	}
+	
+	// Try application-octet-stream as last fallback.
+	$path = $dir.'application-octet-stream'.'.png';
+	if (file_exists($path)) {
+		return $path;
+	}
+	
+	return NULL;
 }

@@ -129,3 +129,7 @@ div.teaser-comment-edit-form {
 .teaser-comment.hidden {
 	display: none;
 }
+
+.teaser-comments .box .content {
+	margin: 0;
+}

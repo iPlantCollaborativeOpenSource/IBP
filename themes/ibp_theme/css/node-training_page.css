@@ -1,0 +1,92 @@
+.header {
+	margin: 0.5em 0;
+}
+
+.header h3,
+ul.jump-menu {
+	margin: 0;
+	padding: 0 0 8px 0;
+	background-image: url(../images/shadow-bottom.png);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.header h3 {
+	line-height: 32px;
+	font-size: 16px;
+}
+
+ul.jump-menu li a {
+	line-height: 32px;
+	font-size: 12px;
+	padding: 6px 12px;
+}
+
+.header h3 {
+	float: left;
+	width: 50%;
+}
+
+ul.jump-menu,
+ul.jump-menu li {
+	list-style: none;
+}
+
+ul.jump-menu {
+	float: right;
+	width: 50%;
+}
+
+ul.jump-menu li {
+	float: left;
+}
+
+ul.jump-menu li {
+	border-right: 1px solid #c9c9c9;
+}
+
+ul.jump-menu li:last-child {
+	border-right: none;
+}
+
+ul.jump-menu li.here a {
+	background-image: url(../images/horiz-selected.png);
+	background-position: bottom center;
+	background-repeat: no-repeat;
+	padding-bottom: 19px;
+	color: #838383;
+}
+
+div.objective {
+	position: relative;
+	overflow: hidden;
+	margin-bottom: 1em;
+}
+
+div.objective div.index {
+	position: absolute;
+	top: 50%;
+	margin-top: -16px;
+	height: 32px;
+	width: 32px; 
+	background-image: url(../images/circle-bullet.png);
+	background-repeat: no-repeat;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+	line-height: 32px;	
+}
+
+div.objective div.obj {
+	margin-left: 48px;
+	min-height: 32px;
+}
+
+div.objective div.obj span {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.subsection {
+	margin-bottom: 1em;
+}

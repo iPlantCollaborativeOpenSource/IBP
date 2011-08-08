@@ -544,6 +544,13 @@ function clade_theme() {
 					),
 					'template' => 'theme/clade-community-feed'
 				),
+			'clade_community_feed_item' => array(
+					'arguments' => array(
+						'content' => NULL,
+						'node' => NULL,
+					),
+					'template' => 'theme/clade-community-feed-item'
+				),
 			'clade_page_mini_form_block' => array(
 					'arguments' => array(
 						'title' => NULL,
@@ -1740,33 +1747,35 @@ function clade_feed($clade, $bubble = 1, $offset = 0, $limit = 10) {
 
 function clade_community_feed($offset = 0, $limit = 10) {
 	global $user;
+	drupal_add_css(drupal_get_path('module','clade').'/clade-community-feed.css');
 	$clade_vid = variable_get('clade_vocabulary', 0);
 	
 	if ($user->uid && module_exists('clade_subscriptions') && $user->clades) {
 		$sql = <<<SQL
 SELECT DISTINCT n.nid, greatest(n.changed, ncs.last_comment_timestamp) as modified
 FROM {node} n, {node_comment_statistics} ncs, {term_node} tn, {clade_uid} c
-WHERE n.nid = ncs.nid AND tn.nid = n.nid AND c.tid = tn.tid AND c.uid = %d
+WHERE n.nid = ncs.nid AND tn.nid = n.nid AND c.tid = tn.tid AND c.uid = %d AND n.type in ('clade_page','forum')
 ORDER BY modified desc LIMIT %d OFFSET %d
 SQL;
 		$results = db_query($sql, array($user->uid, $limit, $offset));
 	} else {
 		$sql = <<<SQL
 SELECT DISTINCT n.nid, greatest(n.changed, ncs.last_comment_timestamp) as modified FROM {node} n, {node_comment_statistics} ncs, {term_node} tn, {clade} c
-WHERE n.nid = ncs.nid AND tn.nid = n.nid AND c.tid = tn.tid
+WHERE n.nid = ncs.nid AND tn.nid = n.nid AND c.tid = tn.tid AND n.type in ('clade_page','forum')
 ORDER BY  modified desc LIMIT %d OFFSET %d
 SQL;
 		$results = db_query($sql, array($limit, $offset));
 	}
-	$output = '';
+	$feed = '';
 	while ($r = db_fetch_object($results)) {
 		$node = node_load($r->nid);
-		$output .= node_view($node, TRUE, FALSE);
-		if (function_exists('comment_render') && $node->comment) {
-			$output .= comment_render($node);
-		}
+		$output = node_view($node, TRUE, FALSE);
+// 		if (function_exists('comment_render') && $node->comment) {
+// 			$output .= comment_render($node);
+// 		}
+		$feed .= theme('clade_community_feed_item', $output, $node);
 	}
-	return $output;
+	return $feed;
 }
 
 function clade_community_feed_ajax($offest = 10, $limit = 10) {

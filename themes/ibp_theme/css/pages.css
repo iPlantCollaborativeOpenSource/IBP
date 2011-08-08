@@ -99,16 +99,35 @@ div#site-name /* The name of the website */ {
  * Main (container for everything else)
  */
 #main-wrapper {
-}
-
-#main {
-	background-color: #ffffff;
+	background-color: #f7f7f7;
   border-color: #edebe6;
   border-style: solid;
   border-width: 0 1px 1px;
   -moz-border-radius: 0 0 3px 3px;
   -webkit-border-radius: 0 0 3px 3px;
   border-radius: 0 0 3px 3px;
+}
+
+#main {
+	background-color: #ffffff;
+}
+
+.two-sidebars #main,
+.sidebar-second #main {
+	background-image: url(../images/sidebar-shadow-right.png);
+	background-repeat: repeat-y;
+	background-position: top right;
+}
+
+.two-sidebars #columns,
+.sidebar-first #columns {
+	background-image: url(../images/sidebar-shadow-left.png);
+	background-repeat: repeat-y;
+	background-position: top right;
+}
+
+#columns {
+	background-color: #f7f7f7;
 }
 
 /*
@@ -199,6 +218,9 @@ div.tabs /* See also the tabs.css file. */ {
   text-align: right;
 }
 
+.sidebar-first #content {
+}
+
 #content-area /* Wrapper for the actual page content */ {
 }
 
@@ -248,9 +270,6 @@ ul.links li {
  */
 .region-sidebar-first {
 	background-color: #f7f7f7;
-	-moz-box-shadow: 1px 0px 1px #ececec;
-	-webkit-box-shadow: 1px 0px 1px #ececec;
-	box-shadow: 1px 0px 1px #ececec;
 }
 
 .region-sidebar-first .section {
@@ -264,9 +283,10 @@ ul.links li {
  */
 .region-sidebar-second {
 	background-color: #f7f7f7;
-	-moz-box-shadow: inset 1px 0px 3px #ececec;
-	-webkit-box-shadow: inset 1px 0px 3px #ececec;
-	box-shadow: inset 1px 0px 3px #ececec;
+/*
+	background-image: url(../images/sidebar-shadow-left.png);
+	background-repeat: repeat-y;
+*/
 }
 
 .region-sidebar-second .section {

@@ -184,37 +184,40 @@
 				<div class="tabs"><?php print $tabs; ?></div>
 			<?php endif; ?>
 		</div></div>
-    <div id="main-wrapper"><div id="main" class="clearfix">
-
-      <div id="content" class="column"><div class="section">
-
-        <?php if ($mission): ?>
-          <div id="mission"><?php print $mission; ?></div>
-        <?php endif; ?>
-
-        <?php print $highlight; ?>
-
-        <?php print $help; ?>
-
-        <?php print $content_top; ?>
-
-        <div id="content-area">
-          <?php print $content; ?>
-        </div>
-
-        <?php print $content_bottom; ?>
-
-        <?php if ($feed_icons): ?>
-          <div class="feed-icons"><?php print $feed_icons; ?></div>
-        <?php endif; ?>
-
-      </div></div><!-- /.section, /#content -->
-
-      <?php print $sidebar_first; ?>
-
-      <?php print $sidebar_second; ?>
-
-    </div></div><!-- /#main, /#main-wrapper -->
+		
+    <div id="main-wrapper">
+    	<div id="main">
+				<div id="columns">
+					<div id="content-wrapper">
+						<div id="content">
+							<div class="section">
+								<?php if ($mission): ?>
+									<div id="mission"><?php print $mission; ?></div>
+								<?php endif; ?>
+				
+								<?php print $highlight; ?>
+				
+								<?php print $help; ?>
+				
+								<?php print $content_top; ?>
+				
+								<div id="content-area">
+									<?php print $content; ?>
+								</div>
+				
+								<?php print $content_bottom; ?>
+				
+								<?php if ($feed_icons): ?>
+									<div class="feed-icons"><?php print $feed_icons; ?></div>
+								<?php endif; ?>
+							</div>
+						</div>
+					</div>
+					<?php print $sidebar_first; ?>
+					<?php print $sidebar_second; ?>
+				</div><!-- /.section, /#content -->
+    	</div>
+    </div><!-- /#main, /#main-wrapper -->
 
 		<?php if ($page_bottom): ?>
 			<div id="page-bottom"><div class="section">

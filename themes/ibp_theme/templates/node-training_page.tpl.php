@@ -72,36 +72,74 @@
  */
 ?>
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix">
-  <?php print $user_picture; ?>
-
-  <?php if (!$page && $title): ?>
-    <h2 class="title"><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
-  <?php endif; ?>
 
   <?php if ($unpublished): ?>
     <div class="unpublished"><?php print t('Unpublished'); ?></div>
   <?php endif; ?>
 
-<!-- 
-  <?php if ($display_submitted || $terms): ?>
-    <div class="meta">
-      <?php if ($display_submitted): ?>
-        <span class="submitted">
-          <?php print $submitted; ?>
-        </span>
-      <?php endif; ?>
-
-      <?php if ($terms): ?>
-        <div class="terms terms-inline"><?php print $terms; ?></div>
-      <?php endif; ?>
-    </div>
+  <?php if (!$page && $title): ?>
+    <h2 class="title"><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
   <?php endif; ?>
- -->
-
+  
+	<?php
+		$has_materials = ! empty($node->field_materials[0]['view']);
+	?>
   <div class="content">
-    <?php print $content; ?>
+  	<div class="subsection">
+  		<a name="<?php print $node->nid; ?>-objective"></a>
+  		<div class="header clearfix">
+				<h3>Objective</h3>
+				<ul class="jump-menu">
+					<li class="here"><a href="#<?php print $node->nid; ?>-objective">Objective</a></li>
+					<li><a href="#<?php print $node->nid; ?>-agenda">Agenda</a></li>
+					<?php if ($has_materials) : ?><li><a href="#<?php print $node->nid; ?>-materials">Materials</a></li><?php endif; ?>
+				</ul>
+			</div>
+  		<div class="subsection-content">
+				<?php foreach ($node->field_objectives as $i => $obj) : ?>
+					<div class="objective clearfix">
+						<div class="index"><?php print $i + 1; ?></div>
+						<div class="obj"><span><?php print $obj['view']; ?></span></div>
+					</div>
+				<?php endforeach; ?>
+  		</div>
+  	</div>
+  	
+  	<div class="subsection">
+  		<a name="<?php print $node->nid; ?>-agenda"></a>
+  		<div class="header clearfix">
+				<h3>Agenda</h3>
+				<ul class="jump-menu">
+					<li><a href="#<?php print $node->nid; ?>-objective">Objective</a></li>
+					<li class="here"><a href="#<?php print $node->nid; ?>-agenda">Agenda</a></li>
+					<?php if ($has_materials) : ?><li><a href="#<?php print $node->nid; ?>-materials">Materials</a></li><?php endif; ?>
+				</ul>
+			</div>
+  		<div class="subsection-content">
+  			<?php print $node->content['body']['#value']; ?>
+  		</div>
+  	</div>
+  	
+  	<?php if ($has_materials) : ?>
+			<div class="subsection">
+				<a name="<?php print $node->nid; ?>-materials"></a>
+				<div class="header clearfix">
+					<h3>Materials</h3>
+					<ul class="jump-menu">
+						<li><a href="#<?php print $node->nid; ?>-objective">Objective</a></li>
+						<li><a href="#<?php print $node->nid; ?>-agenda">Agenda</a></li>
+						<li class="here"><a href="#<?php print $node->nid; ?>-materials">Materials</a></li>
+					</ul>
+				</div>
+				<div class="subsection-content">
+					<?php foreach ($node->field_materials as $material) : ?>
+						<?php print $material['view']; ?>
+					<?php endforeach; ?>
+				</div>
+			</div>
+		<?php endif; ?>
   </div>
-
+  
   <?php print $links; ?>
   <?php print $terms; ?>
 </div><!-- /.node -->

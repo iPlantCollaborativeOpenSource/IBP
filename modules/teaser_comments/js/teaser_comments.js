@@ -55,7 +55,7 @@ Drupal.behaviors.teaser_comments = function(context) {
 									});
 								return false;
 							}).end()
-						.find('a.teaser-comment-write-comment-cancel').bind('click',
+						.find('.teaser-comment-write-comment-cancel').bind('click',
 							function() {
 								tcrf.slideUp('fast', function() { tc.removeClass('replying'); });
 								return false;
@@ -77,6 +77,16 @@ Drupal.behaviors.teaser_comments = function(context) {
 						tc.addClass('editing');
 						return false;
 						});
+					tcef.find('.teaser-comment-edit-comment-cancel').bind('click',
+							function(e) {
+								e.stopPropagation();
+								comment.show();
+								tcef.hide();
+								tc.removeClass('editing');
+								tcef.find('form')[0].reset();
+								return false;
+							}
+						);
 					tcef.find('form').bind('submit',
 							function() {
 								var form = $(this);
@@ -103,14 +113,6 @@ Drupal.behaviors.teaser_comments = function(context) {
 										}
 									});
 									
-								return false;
-							}
-						).find('a.teaser-comment-edit-comment-cancel').bind('click',
-							function() {
-								comment.show();
-								tcef.hide();
-								tc.removeClass('editing');
-								tcef.find('form')[0].reset();
 								return false;
 							}
 						);
@@ -141,7 +143,7 @@ Drupal.behaviors.teaser_comments = function(context) {
 				$(this).hide().next('div.teaser-comment-form').slideDown('fast').find('textarea').focus();
 				return false;
 			});
-		$('div.teaser-comment-form a.teaser-comment-write-comment-cancel', context).bind('click',
+		$('div.teaser-comment-form .teaser-comment-write-comment-cancel', context).bind('click',
 			function() {
 				$(this).parents('div.teaser-comment-form').slideUp('fast').prev().fadeIn('fast');
 				return false;
