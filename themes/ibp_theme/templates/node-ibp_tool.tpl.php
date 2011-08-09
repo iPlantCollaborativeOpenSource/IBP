@@ -75,7 +75,14 @@
   <?php print $user_picture; ?>
 
   <?php if (!$page && $title): ?>
-    <h2 class="title"><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
+    <h2 class="title">
+    	<a href="<?php print $node_url; ?>"><?php print $title; ?></a>
+    </h2>
+		<?php
+			if (user_access('edit any ibp_tool content')):
+				print l(t('Edit'), "node/{$node->nid}/edit", array('attributes'=>array('class'=>'edit-link')));
+			endif;
+		?>
   <?php endif; ?>
 
   <?php if ($unpublished): ?>

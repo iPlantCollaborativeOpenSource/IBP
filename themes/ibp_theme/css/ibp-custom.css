@@ -329,3 +329,14 @@ ul.terms.links li {
 	background-repeat: no-repeat;
 	background-position: left center;
 }
+
+a.edit-link {
+	font-weight: normal;
+	font-style: italic;
+	font-size: 12px;
+	color: #888888;
+}
+
+a.edit-link:hover {
+	color: #00a3f7;
+}
