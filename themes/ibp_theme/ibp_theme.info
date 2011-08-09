@@ -44,6 +44,7 @@ stylesheets[print][] = css/print.css
 stylesheets[all][]   = css/ibp-custom.css
 stylesheets[all][]   = css/teaser-comments.css
 stylesheets[all][]   = css/forums.css
+stylesheets[all][]   = css/columns.css
 
   ; Set the conditional stylesheets that are processed by IE.
 conditional-stylesheets[if IE][all][]       = css/ie.css

@@ -339,8 +339,11 @@ body.admin-menu {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  padding: 6px;
   margin-top: 3px;
+}
+
+#page-bottom .section {
+	padding: 25px;
 }
 
 #top-bar {

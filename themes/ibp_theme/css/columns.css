@@ -1,0 +1,45 @@
+.column {
+	float: left;
+	position: relative;
+}
+
+.column.ten {
+	width: 10%;
+}
+
+.column.twenty {
+	width: 20%;
+}
+
+.column.thirty {
+	width: 30%;
+}
+
+.column.forty {
+	width: 40%;
+}
+
+.column.fifty {
+	width: 50%;
+}
+
+.column.sixty {
+	width: 60%;
+}
+
+.column.seventy {
+	width: 70%;
+}
+
+.column.eighty {
+	width: 80%;
+}
+
+.column.ninety {
+	width: 90%;
+}
+
+.column.full {
+	width: 100%;
+}
+

@@ -147,10 +147,18 @@ a#back-to-top {
   border-radius: 0 0 3px 3px;
 }
 
+.item-list ul,
+.item-list ul li,
 #page-bottom ul.menu,
 #page-bottom ul.menu li {
+	padding: 0 0 0 16px;
 	list-style-type: circle;
 	list-style-image: url(../images/arrow_right_grey.png);
+}
+
+.item-list ul li,
+#page-bottom ul.menu li {
+	padding: 0;
 }
 
 #page-bottom ul.menu li ul {

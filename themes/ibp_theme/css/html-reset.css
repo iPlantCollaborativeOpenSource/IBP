@@ -300,7 +300,8 @@ fieldset {
 input[type=submit],
 input[type=button],
 input[type=reset],
-button {
+button,
+a.button {
 	border: none;
 	padding: 6px 9px;
 	font-weight: bold;
@@ -313,4 +314,15 @@ button {
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+}
+
+input[type=submit]:hover,
+input[type=button]:hover,
+input[type=reset]:hover,
+button:hover,
+a.button:hover {
+	background-color: #61b1f5;
+	background-image: -moz-linear-gradient(#68b8fd, #1880d8);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#68b8fd), to(#1880d8));
+	background-image: -webkit-linear-gradient(#68b8fd, #1880d8);
 }
