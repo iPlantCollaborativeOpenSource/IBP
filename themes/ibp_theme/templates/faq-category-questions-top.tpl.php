@@ -128,6 +128,9 @@ else {
     <?php foreach ($question_list as $i => $question_link): ?>
       <li>
       <?php print $question_link; ?>
+      <?php if (user_access('edit faq')): ?>
+      	<?php print l(t('Edit'), "node/{$data[$i]->nid}/edit", array('attributes' => array('class' => 'edit-link'))); ?>
+      <?php endif; ?>
       </li>
     <?php endforeach; ?>
     </<?php print $question_list_style; ?>>

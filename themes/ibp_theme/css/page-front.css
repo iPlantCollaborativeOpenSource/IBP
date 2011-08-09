@@ -164,3 +164,7 @@ a.go:after {
 	margin: 2%;
 	width: 46%;
 }
+
+#front-wrapper .item-list ul li {
+	padding: 4px 0;
+}

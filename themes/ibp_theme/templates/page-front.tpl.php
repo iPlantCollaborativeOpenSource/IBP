@@ -164,7 +164,7 @@
         <div id="navigation">
           <?php print $navigation; ?>
           <div class="subnavigation">
-						<h3><?php print t('Providing resources and research communities for crop scientists in developing countries.'); ?></h3>
+						<h3><?php print t('Providing resources and research communities for crop scientists in developing countries'); ?></h3>
           </div>
         </div><!-- /#navigation -->
       <?php endif; ?>
@@ -206,7 +206,7 @@
     			<div class="column-inner">
     				<div class="column-header">
 							<h3>Education</h3>
-							<h4>Learn more about our focus crops.</h4>
+							<h4>Learn more about our focus crops</h4>
 						</div>
 						<?php
 							$viewname = "crop_info_pages";
@@ -218,7 +218,7 @@
     			<div class="column-inner">
 						<div class="column-header">
 							<h3>Tools & Services</h3>
-							<h4>Learn more about our features.</h4>
+							<h4>Learn more about our features</h4>
 						</div>
 						<div class="column-section">
 							<p>
@@ -242,7 +242,7 @@
     			<div class="column-inner">
 						<div class="column-header">
 							<h3>Communities</h3>
-							<h4>See what's going on in your field.</h4>
+							<h4>See what's going on in your field</h4>
 						</div>
 						<?php
 							$viewname = "clade_all_clades";

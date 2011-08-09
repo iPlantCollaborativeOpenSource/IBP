@@ -171,10 +171,10 @@ form#ibphelper-my-pages-form {
 	right: 18px;
 }
 
-input.ibphelper-my-pages-add {
+input.ibphelper-my-pages-add,
+input.ibphelper-my-pages-remove {
 	background-color: #ffffff;
 	border: none;
-	background-image: url(../images/add.png);
 	background-repeat: no-repeat;
 	background-position: 3px 60%;
 	padding: 3px 3px 3px 15px;
@@ -191,24 +191,16 @@ input.ibphelper-my-pages-add {
 	text-shadow: none;
 }
 
-input.ibphelper-my-pages-remove {
+input.ibphelper-my-pages-add,
+input.ibphelper-my-pages-add:hover {
 	background-color: #ffffff;
-	border: none;
+	background-image: url(../images/add.png);
+}
+
+input.ibphelper-my-pages-remove,
+input.ibphelper-my-pages-remove:hover {
+	background-color: #ffffff;
 	background-image: url(../images/remove.png);
-	background-repeat: no-repeat;
-	background-position: 3px 60%;
-	padding: 3px 3px 3px 15px;
-	-moz-box-shadow: inset 1px 1px 2px #d7d7d7;
-	-webkit-box-shadow: inset 1px 1px 2px #d7d7d7;
-	box-shadow: inset 1px 1px 2px #d7d7d7;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	font-weight: bold;
-	color: #00a3f7;
-	font-size: 11px;
-	cursor: pointer;
-	text-shadow: none;
 }
 
 ul.ibp-my-pages,
@@ -221,8 +213,23 @@ h2.clade-page-mini-form-title {
 	color: #3e3e3e;
 }
 
+.block h2.title {
+	color: #888888;
+}
+
+#block-clade-4 h2,
+#block-clade-4 h2 a {
+	color: #888888;
+}
+
 #block-clade-4 li h3 {
-	margin: 0;
+	font-weight: normal;
+	margin: 0 0 1px 0;
+	color: #888888;
+}
+
+#block-clade-4 .item-list {
+
 }
 
 .clade-join {

@@ -462,7 +462,9 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 					);
 				
 				$form['buttons']['cancel'] = array(
-					'#value' => l(t('Cancel'), "clade/$clade->tid", array('attributes' => array('class' => 'mini-form-cancel'))),
+					'#type' => 'button',
+					'#value' => t('Cancel'),
+					'#attributes' => array('class' => "mini-form-cancel"),
 					);
 				
 				$form['#after_build'][] = 'clade_mini_form_after_build';
@@ -1770,9 +1772,6 @@ SQL;
 	while ($r = db_fetch_object($results)) {
 		$node = node_load($r->nid);
 		$output = node_view($node, TRUE, FALSE);
-// 		if (function_exists('comment_render') && $node->comment) {
-// 			$output .= comment_render($node);
-// 		}
 		$feed .= theme('clade_community_feed_item', $output, $node);
 	}
 	return $feed;

@@ -166,7 +166,6 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
 			}
 		}
 		$training_terms = array_keys(taxonomy_node_get_terms_by_vocabulary($node, $training_vocab));
-		error_log(print_r($training_terms,1));
 		$links = array();
 		foreach ($node->taxonomy as $tid => &$term) {
 			if ($term->vid == $training_vocab) {

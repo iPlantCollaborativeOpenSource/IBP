@@ -297,6 +297,8 @@ fieldset {
   padding: 0.5em;
 }
 
+.clade-page-mini-form-wrapper input.mini-form-submit,
+.clade-page-mini-form-wrapper input.mini-form-cancel,
 input[type=submit],
 input[type=button],
 input[type=reset],
@@ -316,6 +318,14 @@ a.button {
 	border-radius: 3px;
 }
 
+.clade-page-mini-form-wrapper input.mini-form-submit,
+.clade-page-mini-form-wrapper input.mini-form-cancel {
+	width: auto;
+	margin: 0 6px 0 0;
+}
+
+.clade-page-mini-form-wrapper input.mini-form-submit:hover,
+.clade-page-mini-form-wrapper input.mini-form-cancel:hover,
 input[type=submit]:hover,
 input[type=button]:hover,
 input[type=reset]:hover,

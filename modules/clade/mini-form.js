@@ -32,17 +32,17 @@ Drupal.behaviors.clade_mini_form = function(context) {
 					form.find('fieldset.group-file-info').hide();
 				}
 			} else {
-				form.find('div.form-item:not(#edit-body-wrapper), #edit-body-wrapper label, input.mini-form-submit, a.mini-form-cancel, img.image-button, span.button-value, fieldset.group-image-info, fieldset.group-file-info').hide();
+				form.find('div.form-item:not(#edit-body-wrapper), #edit-body-wrapper label, input.mini-form-submit, .mini-form-cancel, img.image-button, span.button-value, fieldset.group-image-info, fieldset.group-file-info').hide();
 			}
 			
 			$('#edit-body-wrapper textarea', form).bind('focus', function() {
-					form.find('div.form-item, #edit-body-wrapper label, input.mini-form-submit, a.mini-form-cancel, img.image-button, span.button-value').fadeIn();
+					form.find('div.form-item, #edit-body-wrapper label, input.mini-form-submit, .mini-form-cancel, img.image-button, span.button-value').fadeIn();
 					$(this).attr('rows', 4);
 					if (form.height() + form.offset().top > $(window).height()) {
 						$("html,body").animate({scrollTop: form.offset().top - 250}, 'slow');
 					}
 				});
-			form.find('a.mini-form-cancel').bind('click', function() {
+			form.find('.mini-form-cancel').bind('click', function() {
 					form.find('.image-button').each(function() {
 						var $this = $(this);
 						if ($this.next('fieldset').is(':visible')) {
@@ -50,7 +50,7 @@ Drupal.behaviors.clade_mini_form = function(context) {
 						}
 					});
 					form.find('#edit-title-wrapper input, #edit-body-wrapper textarea').val('');
-					form.find('div.form-item:not(#edit-body-wrapper), #edit-body-wrapper label, input.mini-form-submit, a.mini-form-cancel, img.image-button, span.button-value').fadeOut('fast');
+					form.find('div.form-item:not(#edit-body-wrapper), #edit-body-wrapper label, input.mini-form-submit, .mini-form-cancel, img.image-button, span.button-value').fadeOut('fast');
 					form.find('#edit-body-wrapper textarea', form).attr('rows',1);
 					form.parents('.clade-page-mini-form-wrapper').find('.messages').fadeOut(function() {$(this).remove()});
 					form.find('.error').removeClass('error');

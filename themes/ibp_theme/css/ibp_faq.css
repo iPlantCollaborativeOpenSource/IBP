@@ -56,7 +56,7 @@
 .faq-category-page ul,
 .faq-category-page li {
 	margin: 0;
-	padding: 0;
+	padding: 0 16px;
 	list-style: none;
 }
 
@@ -89,4 +89,13 @@ a.top-link {
 	float: right;
 	padding: 0 16px 0 0;
 	margin-bottom: 1em;
+}
+
+a.edit-link {
+	font-style: italic;
+	color: #888888;
+}
+
+a.edit-link:hover {
+	color: #00a3f7;
 }

@@ -23,6 +23,7 @@ h2.clade-page-mini-form-title {
 	clear: both;
 }
 
+.clade-page-mini-form-wrapper .mini-form-cancel,
 .clade-page-mini-form-wrapper input.mini-form-submit {
 	background-color: #4FADC1;
 	background-image: -moz-linear-gradient(#75bfce, #2899a8);
@@ -41,15 +42,15 @@ h2.clade-page-mini-form-title {
 	cursor: pointer;
 }
 
+.clade-page-mini-form-wrapper .mini-form-cancel:hover,
 .clade-page-mini-form-wrapper input.mini-form-submit:hover {
 	background-color: #68b9ca;
 	background-image: -moz-linear-gradient(#8ecad7, #2fb2c3);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#8ecad7), to(#2fb2c3));
 }
 
-.clade-page-mini-form-wrapper a.mini-form-cancel {
+.clade-page-mini-form-wrapper .mini-form-cancel {
 	margin-right: 3em;
-	float: right;
 }
 
 .ahah-progress {

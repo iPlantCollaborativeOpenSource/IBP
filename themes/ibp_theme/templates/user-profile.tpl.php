@@ -46,7 +46,8 @@
 		<?php print $account->profile_first_name . ' ' . $account->profile_last_name; ?>
 	</div>
 	<div class="profile-item profile-affiliation">
-		TODO print country, institution
+		<span class="country"><?php print $account->profile_country; ?></span>
+		<span class="institution"><?php print $account->profile_institution; ?></span>
 	</div>
 	<?php if ($communities) : ?>
 	<div class="profile-item profile-communities">
