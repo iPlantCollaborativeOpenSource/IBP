@@ -12,8 +12,15 @@
  * Body
  */
 body {
-  margin: 0;
-  padding: 0;
+	background-image: url(../images/background.png);
+	background-color: #fbf9f3;
+	background-attachment: scroll;
+	background-position: 50% 0;
+	background-repeat: no-repeat;
+}
+
+body.admin-menu {
+	background-position: 50% 21px;
 }
 
 #page-wrapper {

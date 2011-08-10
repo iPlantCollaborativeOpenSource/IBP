@@ -77,6 +77,10 @@ function ibp_theme_theme(&$existing, $type, $theme, $path) {
 			'user' => NULL,
 			),
   	);
+  $hooks['user_login'] = array(
+    'template' => 'templates/user_login',
+    'arguments' => array('form' => NULL),
+		);
   return $hooks;
 }
 
@@ -392,4 +396,9 @@ function _ibp_theme_filefield_icon_path($file) {
 	}
 	
 	return NULL;
+}
+
+function ibp_theme_preprocess_user_login(&$vars) {
+	$vars['form'] = drupal_render($vars['form']);
+	$vars['pass_reset_url'] = 'https://auth.iplantcollaborative.org/account_management/request_reset.py';
 }

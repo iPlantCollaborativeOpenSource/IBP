@@ -138,7 +138,7 @@ function ibphelper_ibtools_nav_menu($pid = 0) {
 		if ($subitems = ibphelper_ibtools_nav_menu($m->tid)) {
 			$item .= $subitems;
 		}
-		$items[] = array('data' => $item, 'class' => $pid ? 'ibtools_nav_submenu_item' : 'ibtools_nav_menu_item');
+		$items[] = array('data' => $item, 'class' => $pid ? 'ibtools_nav_submenu_item' : 'ibtools_nav_menu_item', 'title' => $m->description);
 	}
 	return theme('item_list', $items, NULL, 'ul', array('class' => $pid ? 'ibtools_nav_submenu' : 'ibtools_nav_menu'));
 }

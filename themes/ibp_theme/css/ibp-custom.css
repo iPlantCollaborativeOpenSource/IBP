@@ -340,3 +340,8 @@ a.edit-link {
 a.edit-link:hover {
 	color: #00a3f7;
 }
+
+body.cke_show_borders,
+body.cke_panel_frame {
+	background-image: none;
+}
