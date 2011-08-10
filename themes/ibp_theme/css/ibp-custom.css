@@ -344,4 +344,5 @@ a.edit-link:hover {
 body.cke_show_borders,
 body.cke_panel_frame {
 	background-image: none;
+	background-color: #ffffff;
 }
