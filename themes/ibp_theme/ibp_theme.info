@@ -45,6 +45,8 @@ stylesheets[all][]   = css/ibp-custom.css
 stylesheets[all][]   = css/teaser-comments.css
 stylesheets[all][]   = css/forums.css
 stylesheets[all][]   = css/columns.css
+stylesheets[all][]   = css/flags.css
+stylesheets[all][]   = js/fancybox/jquery.fancybox-1.3.4.css
 
   ; Set the conditional stylesheets that are processed by IE.
 conditional-stylesheets[if IE][all][]       = css/ie.css
@@ -53,6 +55,7 @@ conditional-stylesheets[if lte IE 6][all][] = css/ie6.css
   ; Optionally add some JavaScripts to your theme.
 scripts[] = js/my-links.js
 scripts[] = js/messages.js
+scripts[] = js/fancybox/jquery.fancybox-1.3.4.js
 
   ; The regions defined in Zen's default page.tpl.php file.  The name in
   ; brackets is the name of the variable in the page.tpl.php file, (e.g.

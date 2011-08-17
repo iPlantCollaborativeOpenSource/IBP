@@ -45,10 +45,17 @@
 	<div class="profile-item profile-name">
 		<?php print $account->profile_first_name . ' ' . $account->profile_last_name; ?>
 	</div>
+	<?php if ($account->profile_country || $account->profile_institution): ?>
 	<div class="profile-item profile-affiliation">
-		<span class="country"><?php print $account->profile_country; ?></span>
-		<span class="institution"><?php print $account->profile_institution; ?></span>
+		<?php if ($account->profile_country): ?>
+			<?php print theme('user_flag', $account); ?>
+			<span class="country"><?php print $account->profile_country; ?></span>
+		<?php endif; ?>
+		<?php if ($account->profile_institution): ?>
+			<span class="institution"><?php print $account->profile_institution; ?></span>
+		<?php endif; ?>
 	</div>
+	<?php endif; ?>
 	<?php if ($communities) : ?>
 	<div class="profile-item profile-communities">
 		<?php print $communities; ?>

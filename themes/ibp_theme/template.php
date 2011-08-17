@@ -81,6 +81,12 @@ function ibp_theme_theme(&$existing, $type, $theme, $path) {
     'template' => 'templates/user_login',
     'arguments' => array('form' => NULL),
 		);
+  $hooks['flag'] = array(
+    'arguments' => array('code' => NULL),
+		);
+  $hooks['user_flag'] = array(
+    'arguments' => array('account' => NULL),
+		);
   return $hooks;
 }
 
@@ -193,6 +199,8 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
 			}
 		}
 		$vars['terms'] = theme('links', $links, array('class' => 'links inline terms'));
+	} else if ($node->type == 'ibp_tool') {
+		drupal_add_js(drupal_get_path('theme','ibp_theme').'/js/ibp_tool.js');
 	}
 }
 // */
@@ -289,6 +297,21 @@ function ibp_theme_preprocess_user_profile(&$vars) {
 	drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/user_profile.css', 'theme');
 }
 
+function ibp_theme_user_flag($account) {
+	if (module_exists('profile') && module_exists('countries_api')) {
+		profile_load_profile($object);
+		$countries = $countries = countries_api_get_array('printable_name', 'iso2');
+		if ($countries[$account->profile_country]) {
+			$flag = theme('flag', $countries[$account->profile_country]);
+		}
+	}
+	return $flag;
+}
+
+function ibp_theme_flag($code) {
+	return '<span class="flag '.strtolower($code).'"></span>';
+}
+
 function ibp_theme_username($object) {
 	if ($object->uid && $object->name) {
 		if (module_exists('profile')) {
@@ -299,6 +322,13 @@ function ibp_theme_username($object) {
 			}
 			$name .= ' ' . $object->profile_last_name;
 			$name = trim($name);
+			
+			if (module_exists('countries_api')) {
+				$countries = $countries = countries_api_get_array('printable_name', 'iso2');
+				if ($countries[$object->profile_country]) {
+					$flag = theme('flag', $countries[$object->profile_country]);
+				}
+			}
 		}
 		
 		if (empty($name)) {
@@ -311,11 +341,13 @@ function ibp_theme_username($object) {
     }
 
     if (user_access('access user profiles')) {
-      $output = l($name, 'user/' . $object->uid, array('title' => t('View user profile.')));
+      $name = l($name, 'user/' . $object->uid, array('title' => t('View user profile.')));
     }
     else {
-      $output = check_plain($name);
+      $name = check_plain($name);
     }
+    
+    $output = $flag.$name;
   }
   else if ($object->name) {
     // Sometimes modules display content composed by people who are

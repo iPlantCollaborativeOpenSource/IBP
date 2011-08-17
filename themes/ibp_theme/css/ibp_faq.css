@@ -18,15 +18,23 @@
 	padding: 0;
 }
 
+.faq-qa-header:hover {
+	background-color: #f2f2f2;
+	background-image: -moz-linear-gradient(#fbfbfb, #e7e7e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbfbfb), to(#e7e7e7));
+	background-image: -webkit-linear-gradient(#fbfbfb, #e7e7e7);
+}
+
 .faq-header {
 	color: #319af3;
-	margin: 0;
-	padding: 3px 18px;
-	min-height: 35px;
-	line-height: 35px;
+	margin: 0 3px 0 0;
+	padding: 12px;
 	background-image: url(../../../themes/ibp_theme/images/arrow_right_blue.png);
 	background-repeat: no-repeat;
-	background-position: 95% 50%;
+	background-position: 100% 50%;
+	font-size: inherit;
+	font-weight: normal;
+	cursor: pointer;
 }
 
 .faq-qa-header.selected {

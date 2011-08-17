@@ -271,20 +271,6 @@ ul.nostyle li {
 	list-style: none;
 }
 
-.filefield-file {
-	padding: 8px 0;
-	border-bottom: 1px dashed #141414;
-	margin-bottom: 0.25em;
-}
-
-.filefield-file img {
-	float: left;
-}
-
-.filefield-file a {
-	line-height: 32px;
-}
-
 span.read-more a:after {
 	content: " \2192";
 }
@@ -345,4 +331,28 @@ body.cke_show_borders,
 body.cke_panel_frame {
 	background-image: none;
 	background-color: #ffffff;
+}
+
+.item-list ul li.clade-manager {
+	line-height: 24px;
+	margin: 0 0 3px 0;
+}
+
+.clade-manager img,
+.clade-manager a,
+.clade-manager span {
+	margin: 0 3px 0 0;
+	padding: 0;
+	vertical-align: middle;
+}
+
+a.external-link {
+	background-image: url(../images/external-link.png);
+	background-repeat: no-repeat;
+	background-position: 100% 50%;
+	padding: 0 16px 0 0;
+}
+
+#fancybox-title.fancybox-title-inside {
+	font-size: 18px;
 }

@@ -90,3 +90,17 @@ div.objective div.obj span {
 .subsection {
 	margin-bottom: 1em;
 }
+
+.filefield-file {
+	padding: 8px 0;
+	border-bottom: 1px dashed #141414;
+	margin-bottom: 0.25em;
+}
+
+.filefield-file img {
+	float: left;
+}
+
+.filefield-file a {
+	line-height: 32px;
+}

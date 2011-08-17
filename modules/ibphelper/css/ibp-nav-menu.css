@@ -1,3 +1,5 @@
+/** tools menu **/
+
 ul.ibtools_nav_menu,
 .block ul.ibtools_nav_menu,
 .item-list ul.ibtools_nav_menu {
@@ -18,12 +20,21 @@ li.ibtools_nav_menu_item,
 	padding: 0;
 }
 
+li.ibtools_nav_menu_item:hover,
+.block li.ibtools_nav_menu_item:hover,
+.item-list li.ibtools_nav_menu_item:hover {
+	background-color: #f2f2f2;
+	background-image: -moz-linear-gradient(#fbfbfb, #e7e7e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fbfbfb), to(#e7e7e7));
+	background-image: -webkit-linear-gradient(#fbfbfb, #e7e7e7);
+}
+
 li.ibtools_nav_menu_item a,
 .block li.ibtools_nav_menu_item a,
 .item-list li.ibtools_nav_menu_item a {
 	display: block;
-	padding: 3px 18px;
-	min-height: 35px;
+	padding: 12px;
+	margin-right: 3px;
 	background-image: url(../../../themes/ibp_theme/images/arrow_right_blue.png);
 	background-repeat: no-repeat;
 	background-position: 100% 50%;
@@ -66,8 +77,19 @@ li.ibtools_nav_submenu_item,
 .block li.ibtools_nav_submenu_item,
 .item-list li.ibtools_nav_submenu_item {
 	list-style: none;
+	background-color: transparent;
+	background-image: none;
 	margin: 0;
 	padding: 0;
+}
+
+li.ibtools_nav_submenu_item:hover,
+.block li.ibtools_nav_submenu_item:hover,
+.item-list li.ibtools_nav_submenu_item:hover {
+	background-color: #eaeaea;
+	background-image: -moz-linear-gradient(#fafafa, #eaeaea);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#eaeaea));
+	background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
 }
 
 li.ibtools_nav_submenu_item a,
@@ -75,9 +97,9 @@ li.ibtools_nav_submenu_item a,
 .item-list li.ibtools_nav_submenu_item a {
 	display: block;
 	background-color: transparent;
-	background-image: none !important;
-	padding: 3px 18px;
-	min-height: 35px;
+	background-image: none;
+	padding: 12px 15px 12px 9px;
+	margin-right: 3px;
 }
 
 li.ibtools_nav_submenu_item,
@@ -85,25 +107,33 @@ li.ibtools_nav_submenu_item,
 .item-list li.ibtools_nav_submenu_item {
 	background-color: transparent;
 	background-image: none;
+	border-top: 1px solid #ffffff;
 }
 
-li.ibtools_nav_submenu_item a,
-.block li.ibtools_nav_submenu_item a,
-.item-list li.ibtools_nav_submenu_item a {
-	color: #00A3F7 !important;
+.ibtools_nav_menu_item li.ibtools_nav_submenu_item a,
+.ibtools_nav_menu_item .block li.ibtools_nav_submenu_item a,
+.ibtools_nav_menu_item .item-list li.ibtools_nav_submenu_item a {
+	color: #00A3F7;
+	background-image: url(../../../themes/ibp_theme/images/arrow_right_grey.png);
 }
 
-li.ibtools_nav_submenu_item a.active,
-.block li.ibtools_nav_submenu_item a.active,
-.item-list li.ibtools_nav_submenu_item a.active {
+li.ibtools_nav_submenu_item.expanded,
+.block li.ibtools_nav_submenu_item.expanded,
+.item-list li.ibtools_nav_submenu_item.expanded {
 	background-color: #319af3;
 	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
 	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
-	color: #ffffff !important;
-	border-top: none;
-	border-bottom: none;
 }
+
+li.ibtools_nav_submenu_item.expanded a,
+.block li.ibtools_nav_submenu_item.expanded a,
+.item-list li.ibtools_nav_submenu_item.expanded a {
+	color: #ffffff;
+	background-image: url(../../../themes/ibp_theme/images/arrow_right_white.png);
+}
+
+/** training menu **/
 
 ul.ibp_training_menu,
 .block ul.ibp_training_menu,
@@ -130,10 +160,8 @@ ul.ibp_training_menu li:hover {
 
 ul.ibp_training_menu li a {
 	display: block;
-	height: 38px;
-	line-height: 38px;
-	padding: 0 0 0 20px;
-	margin: 0 20px 0 0;
+	padding: 12px;
+	margin-right: 3px;
 	background-image: url(../../../themes/ibp_theme/images/arrow_right_blue.png);
 	background-repeat: no-repeat;
 	background-position: 100% 50%;

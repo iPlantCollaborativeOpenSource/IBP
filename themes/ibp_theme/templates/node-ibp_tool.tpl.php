@@ -89,26 +89,33 @@
     <div class="unpublished"><?php print t('Unpublished'); ?></div>
   <?php endif; ?>
 
-<!-- 
-  <?php if ($display_submitted || $terms): ?>
-    <div class="meta">
-      <?php if ($display_submitted): ?>
-        <span class="submitted">
-          <?php print $submitted; ?>
-        </span>
-      <?php endif; ?>
-
-      <?php if ($terms): ?>
-        <div class="terms terms-inline"><?php print $terms; ?></div>
-      <?php endif; ?>
-    </div>
-  <?php endif; ?>
- -->
-
   <div class="content">
-    <?php print $content; ?>
+  	<div class="tool-properties">
+			<?php print $field_tool_category_rendered; ?>
+			<?php print $field_tool_usability_rendered; ?>
+			<?php print $field_tool_platform_rendered; ?>
+			<?php print $field_tool_version_rendered; ?>
+			<?php print $field_tool_dl_link_rendered; ?>
+		</div>
+		<div class="tool-screenshots">
+			<?php print $field_tool_screenshot_rendered; ?>
+		</div>
+    <div class="tool-body">
+			<?php
+				if ($teaser) {
+					print ed_readmore_link_place($node->content['body']['#value'], $node, variable_get('ed_readmore_placement', ED_READMORE_PLACEMENT_DEFAULT));
+				} else {
+					print $node->content['body']['#value'];
+				}
+			?>
+    </div>
+    
+    <?php print $field_tool_file_rendered; ?>
+    
   </div>
-
+	
+	<div class="clearfix"></div>
+	
   <?php print $links; ?>
   <?php print $terms; ?>
 </div><!-- /.node -->

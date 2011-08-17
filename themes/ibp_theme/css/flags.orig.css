@@ -1,8 +1,10 @@
 .flag {
+	display: inline-block;
 	width: 16px;
 	height: 11px;
 	line-height: 11px;
-	background: url(flags_sprite.png) no-repeat;
+	background: url(../images/flags_sprite.png) no-repeat;
+	margin-right: 3px;
 }
 .flag.ad {
 	background-position: 0 0;

@@ -26,9 +26,9 @@
  */
 ?>
 <?php if (!$field_empty) : ?>
-<div class="field field-type-<?php print $field_type_css ?> field-<?php print $field_name_css ?> clearfix">
+<div class="field field-type-<?php print $field_type_css ?> field-<?php print $field_name_css ?>">
   <?php if ($label_display == 'above') : ?>
-    <div class="field-label"><?php print t($label) ?>&nbsp;</div>
+    <div class="field-label"><?php print t($label) ?></div>
   <?php endif;?>
   <div class="field-items">
     <?php $count = 1;
@@ -37,27 +37,27 @@
         <div class="field-item <?php print ($count % 2 ? 'odd' : 'even') ?>">
           <?php if ($label_display == 'inline') { ?>
             <div class="field-label-inline<?php print($delta ? '' : '-first')?>">
-              <?php print t($label) ?>&nbsp;</div>
+              <?php print t($label) ?></div>
           <?php } ?>
           <?php
           	switch ($item['view']) {
           	case 'Mac':
-          		$imgsrc = drupal_get_path('theme', 'ibp_theme').'/images/platform-mac.png';
+          		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-mac.png';
           		break;
           	case 'Windows':
-          		$imgsrc = drupal_get_path('theme', 'ibp_theme').'/images/platform-windows.png';
+          		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-windows.png';
           		break;
           	case 'Linux':
-          		$imgsrc = drupal_get_path('theme', 'ibp_theme').'/images/platform-linux.png';
+          		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-linux.png';
           		break;
           	case 'Solaris':
-          		$imgsrc = drupal_get_path('theme', 'ibp_theme').'/images/platform-solaris.png';
+          		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-solaris.png';
           		break;
           	default: // Web tool
-          		$imgsrc = drupal_get_path('theme', 'ibp_theme').'/images/platform-web.png';
+          		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-web.png';
           	}
+          	print theme('image', $path, $item['view'], $item['view']);
           ?>
-          <img src="<?php print url($imgsrc) ?>" title="<?php print $item['view'] ?>" alt="<?php print $item['view'] ?>" />
         </div>
       <?php $count++;
       endif;

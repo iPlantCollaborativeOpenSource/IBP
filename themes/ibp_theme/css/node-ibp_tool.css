@@ -1,0 +1,160 @@
+h2.title a {
+	color: #3e3e3e;
+}
+
+.node .content {
+	margin-top: 1em;
+}
+
+.tool-properties {
+	float: left;
+	width: 405px;
+	margin: 0 10px 10px 0;
+}
+
+.tool-screenshots {
+	float: right;
+	width: 303px;
+	margin: 0 0 10px 10px;
+}
+
+.tool-body {
+	margin: 10px 0 0 0;
+}
+
+.field-field-tool-category,
+.field-field-tool-usability,
+.field-field-tool-platform,
+.field-field-tool-version,
+.field-field-tool-dl-link {
+	border-bottom: 1px dashed #141414;
+	padding: 6px 3px;
+}
+
+.field-field-tool-screenshot {
+	float: right;
+}
+
+.field-label {
+	color: #7b7b7b;
+}
+
+.field-field-tool-category .field-label,
+.field-field-tool-usability .field-label,
+.field-field-tool-platform .field-label,
+.field-field-tool-version .field-label,
+.field-field-tool-dl-link .field-label,
+.field-field-tool-file .field-label {
+	float: left;
+}
+
+.field-field-tool-platform .field-label,
+.field-field-tool-file .field-label {
+	line-height: 32px;
+}
+
+.field-field-tool-file .field-label:after {
+	content: ":";
+}
+
+.field-field-tool-category .field-items,
+.field-field-tool-usability .field-items,
+.field-field-tool-platform .field-items,
+.field-field-tool-version .field-items,
+.field-field-tool-dl-link .field-items,
+.field-field-tool-file .field-items {
+	margin: 0 0 0 10em;
+}
+
+.field-field-tool-file .field-items {
+	margin: 0 0 0 7em;
+}
+
+.field-field-tool-file {
+	margin-bottom: 5px;
+}
+
+.field-field-tool-platform .field-items:after,
+.field-field-tool-file:after,
+.field-field-tool-file .field-items:after {
+	clear: both;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
+}
+
+.field-field-tool-platform .field-item,
+.field-field-tool-file .field-item {
+	float: left;
+	margin: 0 10px 0 0;
+}
+
+.field-field-tool-file .field-item {
+	margin: 0 5px 5px 0;
+}
+
+.field-field-tool-file a {
+	display: inline-block;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #3e3e3e;
+	font-weight: bold;
+	padding: 0 18px;
+	line-height: 32px;
+	background-color: #3199f2;
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.field-field-tool-file a:hover {
+	background-color: #51a9f4;
+	background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
+	background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
+}
+
+.field-field-tool-file img {
+	display: none;
+}
+
+.field-field-tool-file {
+	float: right;
+	clear: right;
+}
+
+.views-row {
+	border-bottom: 1px solid #cacaca;
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+}
+
+.views-row:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+}
+
+.screenshots {
+	margin-top: 1px;
+}
+
+.screenshots a {
+	margin: 0 1px 0 0;
+}
+
+.rollovers {
+	position: relative;
+	width: 300px;
+	height: 200px;
+}
+
+img.rollover {
+	position: absolute;
+	top: 0;
+	left: 1px;
+	width: 300px;
+	height: 200px;
+}

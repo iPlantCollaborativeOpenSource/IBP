@@ -18,3 +18,17 @@
 	font-size: 1.5em;
 	font-weight: bold;
 }
+
+.country,
+.institution {
+	font-weight: bold;
+	padding: 0 3px;
+}
+
+.country {
+	color: #888888;
+}
+
+.country:after {
+	content: ":";
+}
