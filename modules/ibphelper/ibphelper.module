@@ -351,6 +351,23 @@ function ibphelper_imagecache_default_presets() {
 			),
 		),
 	);
+	$presets['profile_medium'] = array (
+		'presetname' => 'profile_medium',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale_and_crop',
+				'data' => 
+				array (
+					'width' => '64',
+					'height' => '64',
+				),
+			),
+		),
+	);
 	$presets['profile_small'] = array (
 		'presetname' => 'profile_small',
 		'actions' => 
@@ -381,6 +398,59 @@ function ibphelper_imagecache_default_presets() {
 				array (
 					'width' => '24',
 					'height' => '24',
+				),
+			),
+		),
+	);
+	
+	$presets['tool_screenshot_small'] = array (
+		'presetname' => 'tool_screenshot_small',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale_and_crop',
+				'data' => 
+				array (
+					'width' => '100',
+					'height' => '66',
+				),
+			),
+		),
+	);
+	$presets['tool_screenshot_preview'] = array (
+		'presetname' => 'tool_screenshot_preview',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale_and_crop',
+				'data' => 
+				array (
+					'width' => '300',
+					'height' => '200',
+				),
+			),
+		),
+	);
+	$presets['tool_screenshot_zoom'] = array (
+		'presetname' => 'tool_screenshot_zoom',
+		'actions' => 
+		array (
+			0 => 
+			array (
+				'weight' => '0',
+				'module' => 'imagecache',
+				'action' => 'imagecache_scale',
+				'data' => 
+				array (
+					'width' => '1024',
+					'height' => '768',
+					'upscale' => 0,
 				),
 			),
 		),
