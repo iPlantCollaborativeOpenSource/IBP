@@ -20,6 +20,7 @@ h2.title a {
 
 .tool-body {
 	margin: 10px 0 0 0;
+	clear: left;
 }
 
 .field-field-tool-category,
