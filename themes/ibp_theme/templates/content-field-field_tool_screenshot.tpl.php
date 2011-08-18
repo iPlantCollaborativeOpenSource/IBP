@@ -26,31 +26,38 @@
  */
 ?>
 <?php if (!$field_empty) : ?>
-<div class="field field-type-<?php print $field_type_css ?> field-<?php print $field_name_css ?>">
-	<?php if ($items[0]['default']) { ?>
-		<?php print $items[0]['view'] ?>
-	<?php } else { ?>
-		<?php
-			foreach ($items as $delta => $item) {
-				if (!$item['empty']) {
-					$zoomurl = imagecache_create_url('tool_screenshot_zoom', $item['filepath']);
-					$rollclass = "rollover rollover-$delta";
-					$rollovers .= "<a href=\"$zoomurl\" rel=\"rollovers-{$node->nid}\" title=\"{$item['data']['description']}\">";
-					$rollovers .= theme('imagecache', 'tool_screenshot_preview', $item['filepath'], NULL, NULL, array('class' => $rollclass));
-					$rollovers .= "</a>";
-					
-					$screenshots .= "<a href=\"$zoomurl\" rel=\"screenshots-{$node->nid}\" title=\"{$item['data']['description']}\">";
-					$screenshots .= theme('imagecache', 'tool_screenshot_small', $item['filepath']);
-					$screenshots .= "</a>";
+	<?php
+		$count = array_reduce($items, function($v, $item) {if(! $item['empty']) { return $v+1; } return $v;}, 0);
+	?>
+	<div class="field field-type-<?php print $field_type_css ?> field-<?php print $field_name_css ?>">
+		<?php if ($items[0]['default']) { ?>
+			<span class="default"><?php print $items[0]['view'] ?></span>
+		<?php } else { ?>
+			<?php
+				foreach ($items as $delta => $item) {
+					if (!$item['empty']) {
+						$zoomurl = imagecache_create_url('tool_screenshot_zoom', $item['filepath']);
+						$rollclass = "rollover rollover-$delta";
+						$rollovers .= "<a href=\"$zoomurl\" rel=\"rollovers-{$node->nid}\" title=\"{$item['data']['description']}\">";
+						$rollovers .= theme('imagecache', 'tool_screenshot_preview', $item['filepath'], NULL, NULL, array('class' => $rollclass));
+						$rollovers .= "</a>";
+						
+						if ($count > 1) {
+							$screenshots .= "<a href=\"$zoomurl\" rel=\"screenshots-{$node->nid}\" title=\"{$item['data']['description']}\">";
+							$screenshots .= theme('imagecache', 'tool_screenshot_small', $item['filepath']);
+							$screenshots .= "</a>";
+						}
+					}
 				}
-			}
-		?>
-		<div class="rollovers">
-			<?php print $rollovers; ?>
-		</div>
-		<div class="screenshots clearfix">
-			<?php print $screenshots; ?>
-		</div>
-	<?php } ?>
-</div>
+			?>
+			<div class="rollovers">
+				<?php print $rollovers; ?>
+			</div>
+			<?php if ($screenshots) : ?>
+				<div class="screenshots clearfix">
+					<?php print $screenshots; ?>
+				</div>
+			<?php endif; ?>
+		<?php } ?>
+	</div>
 <?php endif; ?>

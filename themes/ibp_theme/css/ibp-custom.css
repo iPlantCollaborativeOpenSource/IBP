@@ -353,6 +353,12 @@ a.external-link {
 	padding: 0 16px 0 0;
 }
 
-#fancybox-title.fancybox-title-inside {
+#fancybox-title.fancybox-title-inside,
+#fancybox-title.fancybox-title-float,
+#fancybox-title.fancybox-title-over {
 	font-size: 18px;
+}
+
+#fancybox-title.fancybox-title-over {
+	text-shadow: 1px 1px 0px #000000;
 }

@@ -8,13 +8,13 @@ h2.title a {
 
 .tool-properties {
 	float: left;
-	width: 405px;
+	width: 380px;
 	margin: 0 10px 10px 0;
 }
 
 .tool-screenshots {
 	float: right;
-	width: 303px;
+	width: 330px;
 	margin: 0 0 10px 10px;
 }
 
@@ -64,11 +64,11 @@ h2.title a {
 .field-field-tool-version .field-items,
 .field-field-tool-dl-link .field-items,
 .field-field-tool-file .field-items {
-	margin: 0 0 0 10em;
+	margin: 0 0 0 120px;
 }
 
 .field-field-tool-file .field-items {
-	margin: 0 0 0 7em;
+	margin: 0 0 0 100px;
 }
 
 .field-field-tool-file {
@@ -138,24 +138,38 @@ h2.title a {
 	padding-bottom: 0;
 }
 
+.tool-screenshots img {
+	-moz-box-shadow: 1px 1px 5px #333;
+	-webkit-box-shadow: 1px 1px 5px #333;
+	box-shadow: 1px 1px 5px #333;
+}
+
+.tool-screenshots .default img {
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
 .screenshots {
-	margin-top: 1px;
+	text-align: center;
+	margin: 10px 0 0;
 }
 
 .screenshots a {
-	margin: 0 1px 0 0;
+	margin: 0 5px;
 }
 
 .rollovers {
 	position: relative;
-	width: 300px;
+	width: 330px;
 	height: 200px;
 }
 
 img.rollover {
 	position: absolute;
 	top: 0;
-	left: 1px;
+	left: 50%;
+	margin-left: -150px;
 	width: 300px;
 	height: 200px;
 }
