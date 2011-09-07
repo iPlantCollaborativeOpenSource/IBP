@@ -78,6 +78,16 @@ function clade_forum_clade($op, $clade) {
 	}
 }
 
+function clade_forum_clade_details_items($clade) {
+	return array(
+		'forum_page' => array(
+			'data' => l(t('Forums'), sprintf('clade/%d/forums', $clade->tid)),
+			'data-sort' => 2,
+			'class' => 'clade-details-item',
+			),
+		);
+}
+
 function clade_forum_form_alter(&$form, &$form_state, $form_id) {
 	if ($form_id == "forum_node_form") {
 		$form['taxonomy']['#type'] = '';
@@ -116,3 +126,22 @@ function clade_forum_link_alter(&$links, $node, $comment = NULL) {
 		}
 	}
 }
+
+function clade_forum_views_api() {
+  return array('api' => 2.0);
+}
+
+/**
+ * Implementation of hook_node_info().
+ */
+function clade_forum_node_info() {
+  return array(
+    'forum' => array(
+      'name' => t('Forum topic'),
+      'module' => 'clade_forum',
+      'description' => t('A <em>forum topic</em> is the initial post to a new discussion thread within a forum.'),
+      'title_label' => t('Subject'),
+    )
+  );
+}
+

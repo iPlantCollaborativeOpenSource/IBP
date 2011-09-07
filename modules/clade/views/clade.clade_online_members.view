@@ -1,9 +1,8 @@
 <?php
-// $Id$
 
 $view = new view;
-$view->name = 'clade_members_faces';
-$view->description = 'List of Clade Members and their avatar';
+$view->name = 'clade_online_members';
+$view->description = 'View of Clade members currently online';
 $view->tag = 'clade';
 $view->view_php = '';
 $view->base_table = 'users';
@@ -11,6 +10,16 @@ $view->is_cacheable = FALSE;
 $view->api_version = 2;
 $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 $handler = $view->new_display('default', 'Defaults', 'default');
+$handler->override_option('relationships', array(
+  'tid' => array(
+    'label' => 'Clade (subscriber)',
+    'required' => 1,
+    'id' => 'tid',
+    'table' => 'clade_uid',
+    'field' => 'tid',
+    'relationship' => 'none',
+  ),
+));
 $handler->override_option('fields', array(
   'picture' => array(
     'label' => '',
@@ -35,7 +44,7 @@ $handler->override_option('fields', array(
     'empty' => '',
     'hide_empty' => 0,
     'empty_zero' => 0,
-    'imagecache_preset' => 'profile_medium',
+    'imagecache_preset' => 'profile_small',
     'exclude' => 0,
     'id' => 'picture',
     'table' => 'users',
@@ -74,113 +83,93 @@ $handler->override_option('fields', array(
     'field' => 'name',
     'relationship' => 'none',
   ),
-  'is_admin' => array(
-    'label' => '',
-    'alter' => array(
-      'alter_text' => 0,
-      'text' => '',
-      'make_link' => 0,
-      'path' => '',
-      'link_class' => '',
-      'alt' => '',
-      'prefix' => '',
-      'suffix' => '',
-      'target' => '',
-      'help' => '',
-      'trim' => 0,
-      'max_length' => '',
-      'word_boundary' => 1,
-      'ellipsis' => 1,
-      'html' => 0,
-      'strip_tags' => 0,
-    ),
-    'empty' => '',
-    'hide_empty' => 0,
-    'empty_zero' => 0,
-    'exclude' => 0,
-    'id' => 'is_admin',
-    'table' => 'clade_uid',
-    'field' => 'is_admin',
-    'relationship' => 'none',
-  ),
 ));
 $handler->override_option('sorts', array(
-  'is_admin' => array(
+  'access' => array(
     'order' => 'DESC',
-    'id' => 'is_admin',
-    'table' => 'clade_uid',
-    'field' => 'is_admin',
-    'relationship' => 'none',
-  ),
-  'random' => array(
-    'order' => 'ASC',
-    'id' => 'random',
-    'table' => 'views',
-    'field' => 'random',
+    'granularity' => 'second',
+    'id' => 'access',
+    'table' => 'users',
+    'field' => 'access',
     'relationship' => 'none',
   ),
 ));
 $handler->override_option('arguments', array(
   'tid' => array(
-    'default_action' => 'not found',
+    'default_action' => 'default',
     'style_plugin' => 'default_summary',
     'style_options' => array(),
     'wildcard' => 'all',
     'wildcard_substitution' => 'All',
-    'title' => 'Members of %1',
+    'title' => '',
     'breadcrumb' => '',
-    'default_argument_type' => 'fixed',
+    'default_argument_type' => 'clade',
     'default_argument' => '',
-    'validate_type' => 'taxonomy_term',
+    'validate_type' => 'none',
     'validate_fail' => 'not found',
     'break_phrase' => 0,
     'not' => 0,
     'id' => 'tid',
-    'table' => 'clade_uid',
+    'table' => 'term_data',
     'field' => 'tid',
+    'relationship' => 'tid',
     'validate_user_argument_type' => 'uid',
     'validate_user_roles' => array(
       '2' => 0,
-      '3' => 0,
+      '6' => 0,
       '5' => 0,
       '4' => 0,
-      '7' => 0,
-      '8' => 0,
-      '9' => 0,
-      '6' => 0,
+      '3' => 0,
     ),
-    'relationship' => 'none',
     'default_options_div_prefix' => '',
     'default_argument_fixed' => '',
     'default_argument_user' => 0,
     'default_argument_php' => '',
     'validate_argument_node_type' => array(
-      'webform' => 0,
-      'poll' => 0,
-      'faq' => 0,
-      'forum' => 0,
-      'clade' => 0,
       'clade_page' => 0,
-      'clade_file' => 0,
-      'clade_image' => 0,
+      'book' => 0,
+      'ibp_tool' => 0,
       'page' => 0,
-      'profile' => 0,
       'story' => 0,
-      'uprofile' => 0,
+      'webform' => 0,
     ),
     'validate_argument_node_access' => 0,
     'validate_argument_nid_type' => 'nid',
     'validate_argument_vocabulary' => array(
-      variable_get('clade_vocabulary', 0) => variable_get('clade_vocabulary', 0),
+      '1' => 0,
+      '3' => 0,
+      '2' => 0,
     ),
     'validate_argument_type' => 'tid',
     'validate_argument_transform' => 0,
     'validate_user_restrict_roles' => 0,
-    'validate_argument_is_member' => 'OG_VIEWS_DO_NOT_VALIDATE_MEMBERSHIP',
-    'validate_argument_group_node_type' => array(
-      'clade' => 0,
-    ),
     'validate_argument_php' => '',
+  ),
+));
+$handler->override_option('filters', array(
+  'access' => array(
+    'operator' => '>',
+    'value' => array(
+      'type' => 'offset',
+      'value' => '-5 minutes',
+      'min' => '',
+      'max' => '',
+    ),
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => 'access_op',
+      'label' => 'User: Last access',
+      'use_operator' => FALSE,
+      'identifier' => 'access',
+      'remember' => FALSE,
+      'single' => TRUE,
+      'optional' => TRUE,
+    ),
+    'id' => 'access',
+    'table' => 'users',
+    'field' => 'access',
+    'relationship' => 'none',
   ),
 ));
 $handler->override_option('access', array(
@@ -189,31 +178,32 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
-$handler->override_option('use_ajax', TRUE);
-$handler->override_option('items_per_page', 15);
-$handler->override_option('use_pager', 'mini');
+$handler->override_option('title', 'Online members');
+$handler->override_option('items_per_page', 5);
+$handler->override_option('use_more', 1);
+$handler->override_option('use_more_always', 1);
+$handler->override_option('use_more_text', 'View all');
 $handler->override_option('row_options', array(
-  'inline' => array(
-    'name' => 'name',
-    'is_admin' => 'is_admin',
-  ),
+  'inline' => array(),
   'separator' => '',
   'hide_empty' => 0,
 ));
+$handler = $view->new_display('block', 'Block', 'block_1');
+$handler->override_option('block_description', '');
+$handler->override_option('block_caching', -1);
 $handler = $view->new_display('page', 'Page', 'page_1');
-$handler->override_option('items_per_page', 50);
-$handler->override_option('path', 'clade/%/members/faces');
+$handler->override_option('path', 'clade/%/online-members');
 $handler->override_option('menu', array(
-  'type' => 'default tab',
-  'title' => 'Faces',
+  'type' => 'none',
+  'title' => '',
   'description' => '',
-  'weight' => '0',
+  'weight' => 0,
   'name' => 'navigation',
 ));
 $handler->override_option('tab_options', array(
-  'type' => 'normal',
-  'title' => 'Clade members',
+  'type' => 'none',
+  'title' => '',
   'description' => '',
-  'weight' => '0',
+  'weight' => 0,
   'name' => 'navigation',
 ));

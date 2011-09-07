@@ -138,7 +138,9 @@ li.ibtools_nav_submenu_item.expanded a,
 ul.ibp_training_menu,
 .block ul.ibp_training_menu,
 .item-list ul.ibp_training_menu,
-ul.ibp_training_menu li {
+ul.ibp_training_menu li,
+.block ul.ibp_training_menu li,
+.item-list ul.ibp_training_menu li {
 	list-style: none;
 	padding: 0;
 	margin: 0;

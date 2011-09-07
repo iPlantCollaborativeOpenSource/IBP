@@ -63,9 +63,6 @@ function clade_access($op, $node, $account) {
 				}
 				break;
 		}
-		if (module_exists('clade_subscriptions')) {
-			clade_subscriptions_grant_roles($account);
-		}
 		return user_access($permission, $account);
 	}
 }
@@ -217,6 +214,7 @@ function clade_menu() {
 			'title' => 'Edit',
 			'page callback' => 'drupal_get_form',
 			'page arguments' => array('clade_edit_form', 1),
+			'access callback' => 'user_access',
 			'access arguments' => array('edit own clade'),
 			'type' => MENU_LOCAL_TASK,
 			'weight' => '2'
@@ -226,6 +224,7 @@ function clade_menu() {
 			'title' => 'Help',
 			'type' => MENU_LOCAL_TASK,
 			'page callback' => 'clade_manager_help',
+			'access callback' => 'user_access',
 			'access arguments' => array('edit own clade'),
 			'weight' => 100,
 		);
@@ -234,6 +233,7 @@ function clade_menu() {
 			'title' => 'Create new posting',
 			'page callback' => 'clade_add_clade_page',
 			'page arguments' => array(1),
+			'access callback' => 'user_access',
 			'access arguments' => array('create clade page'),
 			'type' => MENU_CALLBACK,
 		);
@@ -333,6 +333,7 @@ function clade_menu() {
 			'title' => 'Clade settings',
 			'description' => 'Clade admin settings page',
 			'page callback' => 'clade_admin_page',
+			'access callback' => 'user_access',
 			'access arguments' => array('edit any clade'),
 		);
 	
@@ -348,6 +349,7 @@ function clade_menu() {
 			'title' => 'Clade relationships',
 			'description' => 'Manage relationships between Clades',
 			'page callback' => 'clade_admin_relationships',
+			'access callback' => 'user_access',
 			'access arguments' => array('edit any clade'),
 		);
 			
@@ -831,6 +833,7 @@ function clade_details_block() {
 
 function clade_details_block_content($clade) {
 	$items = module_invoke_all('clade_details_items', $clade);
+	drupal_alter('clade_details_items', $items);
 	array_walk($items, '_clade_clade_details_items_dedupe');
 	usort($items, '_clade_clade_details_items_sort');
 	return theme('item_list', $items, NULL, 'ul', array('class' => 'nostyle'));

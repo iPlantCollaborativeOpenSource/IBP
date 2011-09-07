@@ -2,8 +2,8 @@ Drupal.behaviors.teaser_comments = function(context) {
 		function bindTeaserReply(elems) {
 			$.each(elems, function() {
 				var tc = $(this);
-				if (! tc.hasClass("tcreply-processed")) {
-					var tcrf = tc.find('.teaser-comment-reply-form');
+				var tcrf = tc.find('.teaser-comment-reply-form');
+				if (! tcrf.hasClass("tc-processed")) {
 					tc.find('li.comment_reply a').bind('click',
 							function() {
 								tc.addClass('replying');
@@ -11,31 +11,35 @@ Drupal.behaviors.teaser_comments = function(context) {
 								return false;
 							}
 						);
-					tcrf.find('form').submit(
+					tcrf.find('form input.teaser-comment-comment-submit').bind('click',
 							function() {
-								var form = $(this);
+								var form = $(this).closest('form');
+								var formdata = form.serializeArray();
+								formdata.push({"name":this.name,"value":this.value});
 								$('.error', form).removeClass('error').find('.error-message').remove();
 								$.ajax({
 									url: form.attr('action'),
 									type: 'post',
-									data: form.serialize(),
+									data: formdata,
 									dataType: 'json',
 									success: function(data, status, xmlReq){
 											if (data.success) {
 												var reply = $("<div>").html(data.body);
 												if (data.mode === 'flat') {
 													var replies = form.parents('.teaser-comments');
-													reply.hide().fadeIn();
 												} else { // threaded
 													var replies = form.parents('.teaser-comment').next('div.indented');
 													if (replies.length == 0) {
 														replies = $('<div class="indented">');
 														form.parents('.teaser-comment').after(replies.hide().fadeIn());
-													} else {
-														reply.hide().fadeIn();
 													}
 												}
-												replies.append(reply.html());
+												reply.hide().fadeIn();
+												if (data.sort == 'oldest') {
+													replies.append(reply.html());
+												} else {
+													replies.prepend(reply.html());
+												}
 												Drupal.attachBehaviors(replies);
 												var w = $(window);
 												var offtop = reply.offset().top
@@ -60,7 +64,7 @@ Drupal.behaviors.teaser_comments = function(context) {
 								tcrf.slideUp('fast', function() { tc.removeClass('replying'); });
 								return false;
 							});
-					tc.addClass("tcreply-processed");
+					tcrf.addClass("tc-processed");
 				}
 			});
 		}
@@ -68,9 +72,9 @@ Drupal.behaviors.teaser_comments = function(context) {
 		function bindTeaserEdit(elems) {
 			$.each(elems, function(i,o) {
 				var tc = $(o);
-				if (! tc.hasClass("tcedit-processed")) {
+				var tcef = tc.find('.teaser-comment-edit-form');
+				if (! tcef.hasClass("tc-processed")) {
 					var comment = tc.find('.comment-content');
-					var tcef = tc.find('.teaser-comment-edit-form');
 					tc.find('li.comment_edit a').bind('click', function() {
 						comment.hide();
 						tcef.show().find('textarea').focus();
@@ -87,15 +91,17 @@ Drupal.behaviors.teaser_comments = function(context) {
 								return false;
 							}
 						);
-					tcef.find('form').bind('submit',
+					tcef.find('form input.teaser-comment-comment-submit').bind('click',
 							function() {
-								var form = $(this);
+								var form = $(this).closest('form');
+								var formdata = form.serializeArray();
+								formdata.push({"name":this.name,"value":this.value});
 								$('.error', form).removeClass('error').find('.error-message').remove();
 								
 								$.ajax({
 									url: form.attr('action'),
 									type: 'post',
-									data: form.serialize(),
+									data: formdata,
 									dataType: 'json',
 									success: function(data, status, xmlReq) {
 										if (data.success) {
@@ -116,13 +122,13 @@ Drupal.behaviors.teaser_comments = function(context) {
 								return false;
 							}
 						);
-					tc.addClass("tcedit-processed");
+					tcef.addClass("tc-processed");
 				}
 			});
 		}
 		bindTeaserEdit($('.teaser-comment', context));
 		
-		$('a.teaser-comment-show-hidden', context).bind('click',
+		$('a.teaser-comment-show-hidden:not(.tc-processed)', context).bind('click',
 			function() {
 				var comments = $(this).fadeOut().next('.teaser-comments');
 				comments.find('.teaser-comment.hidden').slideDown();
@@ -136,48 +142,56 @@ Drupal.behaviors.teaser_comments = function(context) {
 						}
 					},400);
 				return false;
-			});
+			}).addClass('tc-processed');
 		
-		$('a.teaser-comment-write-comment', context).bind('click',
+		$('a.teaser-comment-write-comment:not(.tc-processed)', context).bind('click',
 			function() {
 				$(this).hide().next('div.teaser-comment-form').slideDown('fast').find('textarea').focus();
 				return false;
-			});
-		$('div.teaser-comment-form .teaser-comment-write-comment-cancel', context).bind('click',
+			}).addClass('tc-processed');
+		$('div.teaser-comment-form .teaser-comment-write-comment-cancel:not(.tc-processed)', context).bind('click',
 			function() {
 				$(this).parents('div.teaser-comment-form').slideUp('fast').prev().fadeIn('fast');
 				return false;
-			});
-		$('form[id^=comment-form]', context).bind('submit',
+			}).addClass('tc-processed');
+		$('div.teaser-comment-form input.teaser-comment-comment-submit:not(.tc-processed)', context).bind('click',
 			function() {
-				var form = $(this);
+				var form = $(this).closest('form');
+				var formdata = form.serializeArray();
+				formdata.push({"name":this.name,"value":this.value});
 				$('.error', form).removeClass('error').find('.error-message').remove();
+				console.log(form.serialize());
 				$.ajax({
 					url: form.attr('action'),
 					type: 'post',
-					data: form.serialize(),
+					data: formdata,
 					dataType: 'json',
 					success: function(data, status, xmlReq){
-							if (data.success) {
-								var comment = $("<div>").html(data.body);
-								var comments = form.parents('.teaser-comments-container').find('.teaser-comments');
-								if (comments.length == 0) {
-									comments = $('<div class="teaser-comments">').hide().fadeIn().prependTo(form.parents('.teaser-comments-container'));
-								} else {
-									comment.hide().fadeIn();
-								}
-								comments.append(comment.html());
-								Drupal.attachBehaviors(comments);
-								form.find('textarea').val('').end().slideUp('fast').prev().fadeIn('fast');
+						if (data.success) {
+							var comment = $("<div>").html(data.body);
+							var comments = form.parents('.teaser-comments-container').find('.teaser-comments');
+							if (comments.length == 0) {
+								comments = $('<div class="teaser-comments">').hide().fadeIn().prependTo(form.parents('.teaser-comments-container'));
 							} else {
-								form.find('textarea').parent().addClass('error').append('<div class="error-message">' + data.body + '</div>');
+								comment.hide().fadeIn();
 							}
-						},
-					error: function(xmlReq, status, error){
-						},
-					complete:function(xmlReq, status){
+							if (data.sort == 'oldest') {
+								form.closest('.box').before(comment.html());
+							} else {
+								comments.prepend(comment.html());
+								$('body,html').animate({'scrollTop':$('#new').offset().top});
+							}
+							Drupal.attachBehaviors(comments);
+							form.find('textarea').val('').parents('div.teaser-comment-form').slideUp('fast').prev().fadeIn('fast');
+						} else {
+							form.find('textarea').parent().addClass('error').append('<div class="error-message">' + data.body + '</div>');
 						}
-					});
+					},
+					error: function(xmlReq, status, error){
+					},
+					complete:function(xmlReq, status){
+					}
+				});
 				return false;
-			});
+			}).addClass('tc-processed');
 	};

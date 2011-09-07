@@ -28,6 +28,12 @@ function teaser_comments_menu() {
 		'page arguments' => array(3),
 		);
 		
+	$items['teaser_comments/js'] = array(
+		'access arguments' => array('post comments'),
+		'page callback' => 'teaser_comments_js',
+		'title' => 'Teaser Comments Ajax Endpoint',
+	);
+		
 	return $items;
 }
 
@@ -132,7 +138,7 @@ function teaser_comments_preprocess_comment(&$variables) {
 	$tcnt = variable_get('teaser_comments_node_types', array());
 	$node = $variables['node'];
 	if ($tcnt[$node->type]) {
-		if ($node->teaser) {
+		if ($node->teaser && empty($node->body)) {
 			if (variable_get('teaser_comments_node_teaser', 1)) {
 				$variables['teaser'] = TRUE;
 				teaser_comments_preprocess_teaser_comment($variables);
@@ -149,7 +155,7 @@ function teaser_comments_preprocess_teaser_comments_wrapper(&$variables) {
 	global $user;
 	$node = $variables['node'];
 	$num_comments = comment_num_all($node->nid);
-	if ($node->teaser) {
+	if ($node->teaser && empty($node->body)) {
 		if ($num_comments > 3) {
 			$variables['show_all'] = l(t('Show @hidden older comments', array('@hidden' => $num_comments - 2)), "teaser_comments/js/comments/{$node->nid}", array('attributes' => array('class' => 'teaser-comment-show-hidden')));
 		}
@@ -175,9 +181,8 @@ function teaser_comments_preprocess_teaser_comment(&$variables) {
 			$node_comments_shown[$comment->nid] = $shown;
 		}
 	}
-	
 	$variables['classes'] = 'teaser-comment';
-	if (! in_array($comment->cid, $node_comments_shown[$comment->nid])) {
+	if ($variables['teaser'] && ! in_array($comment->cid, $node_comments_shown[$comment->nid])) {
 		$variables['classes'] .= ' hidden';
 	}
 	$variables['content'] = check_markup($comment->comment, $comment->format, FALSE);	
@@ -286,7 +291,33 @@ function teaser_comments_form_alter(&$form, &$form_state, $form_id) {
 		$tcnt = variable_get('teaser_comments_node_types', array());
 		if ($tcnt[$node->type]) {
 			if (empty($form['cid']['#value']) && empty($form['pid']['#value'])) {
-				$form['#theme'] = 'teaser_comments_new_comment_form';
+				$form['comment_filter']['comment']['#rows'] = 3;
+				$form['comment'] = $form['comment_filter']['comment'];
+				unset($form['comment_filter']);
+				$form['buttons'] = array(
+					'#prefix' => '<div class="buttons">',
+					'#suffix' => '</div>',
+					'#weight' => 100,
+					);
+				$form['buttons']['submit'] = $form['submit'];
+				$form['buttons']['submit']['#value'] = t('Post Comment');
+				$form['buttons']['submit']['#attributes'] = array('class'=>'teaser-comment-comment-submit');
+				$form['buttons']['cancel'] = array(
+					'#type' => 'button',
+					'#value' => t('Cancel'),
+					'#attributes' => array('class'=>'teaser-comment-write-comment-cancel'),
+					'#weight' => 100,
+					);
+				unset($form['_author']);
+				unset($form['preview']);
+				unset($form['submit']);
+				unset($form['#action']);
+				
+				$form['#prefix'] = '<div class="teaser-comment-form-wrapper">' . l(t('Write new comment'), "comment/reply/{$node->nid}", array('attributes'=>array('class'=>'teaser-comment-write-comment'))) . '<div class="teaser-comment-form">';
+				$form['#suffix'] = '</div></div>';
+				$form['#validate'] = array('teaser_comments_comment_form_validate');
+				$form['#submit'] = array('teaser_comments_comment_form_submit');
+				$form['#theme'] = 'teaser_comments_comment_form';
 			}
 		}
 	}
@@ -341,6 +372,7 @@ function teaser_comments_edit_form(&$form_state, $cid) {
 	$form['buttons']['submit'] = array(
 		'#type' => 'submit',
 		'#value' => t('Save'),
+		'#attributes' => array('class'=>'teaser-comment-comment-submit'),
 		);
 	$form['buttons']['cancel'] = array(
 		'#type' => 'button',
@@ -391,7 +423,6 @@ function teaser_comments_edit_form_submit($form, &$form_state) {
 
 function teaser_comments_comment_form(&$form_state, $nid, $pid = NULL) {
 	global $user;
-	
 	$form = array();
 	$form['nid'] = array(
 		'#type' => 'value',
@@ -419,6 +450,7 @@ function teaser_comments_comment_form(&$form_state, $nid, $pid = NULL) {
 	$form['buttons']['submit'] = array(
 		'#type' => 'submit',
 		'#value' => $pid ? t('Post Reply') : t('Post Comment'),
+		'#attributes' => array('class'=>'teaser-comment-comment-submit'),
 		);
 	$form['buttons']['cancel'] = array(
 		'#type' => 'button',
@@ -461,19 +493,24 @@ function teaser_comments_comment_form_submit($form, &$form_state) {
 		} else {
 			$resp->mode = 'threaded';
 		}
+		$order = _comment_get_display_setting('sort', $node);
+		if ($order == COMMENT_ORDER_NEWEST_FIRST) {
+			$resp->sort = 'newest';
+		} else {
+			$resp->sort = 'oldest';
+		}
 		
 		$links = module_invoke_all('link', 'comment', $comment, 0);
 		drupal_alter('link', $links, $node, $comment);
-		
 		$resp->body = theme('comment_view', $comment, $node, $links);
 		print drupal_to_js($resp);
-		die;
+		exit();
 	} else {
 		$resp = new stdClass;
 		$resp->success = 0;
 		$resp->body = t('Error saving comment. Please try again');
 		print drupal_to_js($resp);
-		die;
+		exit();
 	}
 }
 
@@ -496,42 +533,6 @@ function theme_teaser_comment_submitted($comment) {
 function theme_teaser_comments_comment_form($form) {
 	// don't render label for comment field
 	unset($form['comment']['#title']);
-	return drupal_render($form);
-}
-
-function theme_teaser_comments_new_comment_form($form) {
-	$form['#prefix'] = '<div class="teaser-comment-form">';
-	$form['#suffix'] = '</div>';
-	$form['#attributes'] = array('class' => 'teaser-comment-form');
-	$form['comment_filter']['comment']['#rows'] = 3;
-	$form['buttons'] = array(
-		'#prefix' => '<div class="buttons">',
-		'#suffix' => '</div>',
-		'#weight' => 100,
-		);
-	$form['buttons']['submit'] = $form['submit'];
-	$form['buttons']['submit']['#value'] = t('Post Comment');
-	$form['buttons']['cancel'] = array(
-		'#type' => 'button',
-		'#value' => t('Cancel'),
-		'#attributes' => array('class'=>'teaser-comment-write-comment-cancel'),
-		'#weight' => 100,
-		);
-	
-	array_unshift($form['#validate'], 'teaser_comments_comment_form_validate');
-	array_unshift($form['#submit'], 'teaser_comments_comment_form_submit');
-	
-	unset($form['_author']);
 	unset($form['notifications']);
-	unset($form['comment_filter']['comment']['#title']);
-	unset($form['comment_filter']['format']);
-	unset($form['preview']);
-	unset($form['submit']);
-	
-	$output = '<div class="teaser-comment-form-wrapper">';
-	$output .= l(t('Write new comment'), "comment/reply/{$node->nid}", array('attributes'=>array('class'=>'teaser-comment-write-comment')));
-	$output .= drupal_render($form);
-	$output .= '</div>';
-	
-	return $output;
+	return drupal_render($form);
 }

@@ -156,20 +156,29 @@ body.admin-menu {
 }
 
 .no-sidebars #columns {
-	right: 992px;
+	right: 0;
 }
 
 .no-sidebars #content-wrapper {
-	left: 992px;
+	left: 0;
 	width: 992px;
 }
 
+.no-sidebars #main-wrapper,
+.no-sidebars #content-wrapper {
+	overflow: visible;
+}
+
+.no-sidebars #main,
+.no-sidebars #columns,
+.no-sidebars #content-wrapper {
+	float: none;
+}
+
 #content {
-	overflow: hidden;
 }
 
 #content .section {
-	overflow: hidden;
 	padding: 6px;
 }
 

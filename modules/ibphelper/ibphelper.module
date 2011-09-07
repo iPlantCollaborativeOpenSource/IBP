@@ -136,7 +136,7 @@ function ibphelper_block($op = 'list', $delta = 0, $edit = array()) {
 }
 
 function ibphelper_ibtools_nav_menu($pid = 0) {
-	$menu = taxonomy_get_tree(variable_get('ibphelper_tools_vocabulary', 0), $pid, 0);
+	$menu = taxonomy_get_tree(variable_get('ibphelper_tools_vocabulary', 0), $pid, -1, 1);
 	$items = array();
 	foreach ($menu as $m) {
 		$item = l($m->name, "taxonomy/term/$m->tid");
@@ -322,9 +322,37 @@ function ibphelper_clade($op, $clade) {
 		$menu = array(
 			'menu_name' => 'primary-links',
 			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/blog',
+			'link_path' => "clade/$clade->tid/blog",
+			'link_title' => $clade->name . ' blog',
+			'weight' => 10,
+			);
+		menu_link_save($menu);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/projects',
+			'link_path' => "clade/$clade->tid/projects",
+			'link_title' => $clade->name . ' projects',
+			'weight' => 11,
+			);
+		menu_link_save($menu);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
 			'router_path' => 'clade/%/forums',
 			'link_path' => "clade/$clade->tid/forums",
 			'link_title' => $clade->name . ' forum',
+			'weight' => 12,
+			);
+		menu_link_save($menu);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/gallery',
+			'link_path' => "clade/$clade->tid/gallery",
+			'link_title' => $clade->name . ' gallery',
+			'weight' => 13,
 			);
 		menu_link_save($menu);
 	}
@@ -520,4 +548,44 @@ function ibphelper_taxonomy_menu_path_custom($vid,$tid) {
 	} else {
 		return taxonomy_term_path(taxonomy_get_term($tid));
 	}
+}
+
+function ibphelper_views_api() {
+  return array('api' => 2.0);
+}
+
+// ctools integrations
+function ibphelper_ctools_plugin_api($module, $api) {
+  if (
+  	($module == 'ctools' && !empty($plugin)) ||
+  	($module == 'page_manager' && !empty($plugin))
+  )
+  {
+    return array('version' => 1);
+  }  
+}
+
+// Implementation of hook_ctools_plugin_directory()
+function ibphelper_ctools_plugin_directory($module, $plugin) {
+  if (
+  	($module == 'ctools' && !empty($plugin)) ||
+  	($module == 'page_manager' && !empty($plugin))
+  )
+  {
+    return "ctools_plugins/$plugin";
+  }
+}
+
+function ibphelper_clade_details_items($clade) {
+	return array(
+		'blog_page' => array(
+			'data' => l(t('Blogs'), sprintf('clade/%d/blog', $clade->tid)),
+			'data-sort' => 1,
+			'class' => 'clade-details-item',
+			),
+		);
+}
+
+function ibphelper_clade_details_items_alter(&$items) {
+	unset($items['gallery_page']);
 }

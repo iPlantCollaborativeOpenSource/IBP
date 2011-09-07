@@ -137,6 +137,10 @@ div#site-name /* The name of the website */ {
 	background-color: #f7f7f7;
 }
 
+.no-sidebars #columns {
+	background-color: #ffffff;
+}
+
 /*
  * Content
  */

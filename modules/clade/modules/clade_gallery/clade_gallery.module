@@ -124,7 +124,7 @@ function clade_gallery_form_alter(&$form, &$form_state, $form_id) {
 		$form['buttons']['submit']['#submit'][] = 'clade_gallery_clade_page_attach_image_submit';
 		
 		if (! empty($form['#node']->theme) && $form['#node']->theme = 'clade-page-mini-form') {
-			$form['group_image_info']['#prefix'] = theme('image', drupal_get_path('theme','myplant').'/images/camera_icon_24.png', '', '', array('class' => 'image-button'));
+			$form['group_image_info']['#prefix'] = theme('image', drupal_get_path('module','clade_gallery').'/images/camera_icon_24.png', '', '', array('class' => 'image-button'));
 			$form['group_image_info']['#suffix'] = '<span class="button-value"></span>';
 			$form['group_image_info']['#collapsible'] = FALSE;
 		}

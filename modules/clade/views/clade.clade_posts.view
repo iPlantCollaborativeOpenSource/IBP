@@ -1,9 +1,8 @@
 <?php
-// $Id$
 
 $view = new view;
-$view->name = 'clade_archive';
-$view->description = 'Clade Archive by Month';
+$view->name = 'clade_posts';
+$view->description = 'A chonologically descending view of posts in a clade';
 $view->tag = 'clade';
 $view->view_php = '';
 $view->base_table = 'node';
@@ -23,14 +22,14 @@ $handler->override_option('sorts', array(
 ));
 $handler->override_option('arguments', array(
   'tid' => array(
-    'default_action' => 'default',
+    'default_action' => 'ignore',
     'style_plugin' => 'default_summary',
     'style_options' => array(),
     'wildcard' => 'all',
     'wildcard_substitution' => 'All',
-    'title' => '%1 Archive',
+    'title' => '',
     'breadcrumb' => '',
-    'default_argument_type' => 'php',
+    'default_argument_type' => 'fixed',
     'default_argument' => '',
     'validate_type' => 'none',
     'validate_fail' => 'not found',
@@ -45,82 +44,10 @@ $handler->override_option('arguments', array(
     'validate_user_argument_type' => 'uid',
     'validate_user_roles' => array(
       '2' => 0,
-      '3' => 0,
+      '6' => 0,
       '5' => 0,
       '4' => 0,
-      '7' => 0,
-      '8' => 0,
-      '9' => 0,
-      '6' => 0,
-    ),
-    'relationship' => 'none',
-    'default_options_div_prefix' => '',
-    'default_argument_fixed' => '',
-    'default_argument_user' => 0,
-    'default_argument_php' => '$clade = clade_get_context(); if ($clade != NULL) return $clade->tid;',
-    'validate_argument_node_type' => array(
-      'webform' => 0,
-      'poll' => 0,
-      'faq' => 0,
-      'forum' => 0,
-      'clade' => 0,
-      'clade_page' => 0,
-      'clade_file' => 0,
-      'clade_image' => 0,
-      'page' => 0,
-      'profile' => 0,
-      'story' => 0,
-      'uprofile' => 0,
-    ),
-    'validate_argument_node_access' => 0,
-    'validate_argument_nid_type' => 'nid',
-    'validate_argument_vocabulary' => array(
-      '2' => 0,
-      '1' => 0,
       '3' => 0,
-      '18' => 0,
-    ),
-    'validate_argument_type' => 'tid',
-    'validate_argument_transform' => 0,
-    'validate_user_restrict_roles' => 0,
-    'validate_argument_is_member' => 'OG_VIEWS_DO_NOT_VALIDATE_MEMBERSHIP',
-    'validate_argument_group_node_type' => array(
-      'clade' => 0,
-    ),
-    'validate_argument_php' => '',
-    'override' => array(
-      'button' => 'Override',
-    ),
-  ),
-  'created_year_month' => array(
-    'default_action' => 'summary desc',
-    'style_plugin' => 'default_summary',
-    'style_options' => array(
-      'count' => 1,
-      'override' => 0,
-      'items_per_page' => '25',
-    ),
-    'wildcard' => 'all',
-    'wildcard_substitution' => 'All',
-    'title' => '%1 Archive: %2',
-    'breadcrumb' => '',
-    'default_argument_type' => 'fixed',
-    'default_argument' => '',
-    'validate_type' => 'none',
-    'validate_fail' => 'not found',
-    'id' => 'created_year_month',
-    'table' => 'node',
-    'field' => 'created_year_month',
-    'validate_user_argument_type' => 'uid',
-    'validate_user_roles' => array(
-      '2' => 0,
-      '3' => 0,
-      '5' => 0,
-      '4' => 0,
-      '7' => 0,
-      '8' => 0,
-      '9' => 0,
-      '6' => 0,
     ),
     'relationship' => 'none',
     'default_options_div_prefix' => '',
@@ -128,41 +55,45 @@ $handler->override_option('arguments', array(
     'default_argument_user' => 0,
     'default_argument_php' => '',
     'validate_argument_node_type' => array(
-      'webform' => 0,
-      'poll' => 0,
-      'faq' => 0,
       'forum' => 0,
-      'clade' => 0,
       'clade_page' => 0,
-      'clade_file' => 0,
-      'clade_image' => 0,
+      'book' => 0,
+      'ibp_tool' => 0,
       'page' => 0,
-      'profile' => 0,
       'story' => 0,
-      'uprofile' => 0,
+      'webform' => 0,
     ),
     'validate_argument_node_access' => 0,
     'validate_argument_nid_type' => 'nid',
     'validate_argument_vocabulary' => array(
-      '2' => 0,
       '1' => 0,
+      '9' => 0,
       '3' => 0,
-      '18' => 0,
+      '2' => 0,
     ),
     'validate_argument_type' => 'tid',
     'validate_argument_transform' => 0,
     'validate_user_restrict_roles' => 0,
-    'validate_argument_is_member' => 'OG_VIEWS_DO_NOT_VALIDATE_MEMBERSHIP',
-    'validate_argument_group_node_type' => array(
-      'clade' => 0,
-    ),
     'validate_argument_php' => '',
-    'override' => array(
-      'button' => 'Override',
-    ),
   ),
 ));
 $handler->override_option('filters', array(
+  'vid' => array(
+    'operator' => 'in',
+    'value' => array(
+      '1' => '1',
+    ),
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => FALSE,
+      'label' => '',
+    ),
+    'id' => 'vid',
+    'table' => 'term_data',
+    'field' => 'vid',
+    'relationship' => 'none',
+  ),
   'type' => array(
     'operator' => 'in',
     'value' => array(
@@ -187,7 +118,8 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
-$handler->override_option('title', 'Archived posts');
+$handler->override_option('empty', 'No activity to show! Why don\'t you post something? ');
+$handler->override_option('empty_format', '1');
 $handler->override_option('row_plugin', 'node');
 $handler->override_option('row_options', array(
   'relationship' => 'none',
@@ -195,25 +127,6 @@ $handler->override_option('row_options', array(
   'links' => 1,
   'comments' => 0,
 ));
-$handler = $view->new_display('page', 'Page', 'page_1');
-$handler->override_option('path', 'clade/%/archive/%');
-$handler->override_option('menu', array(
-  'type' => 'none',
-  'title' => '',
-  'description' => '',
-  'weight' => 0,
-  'name' => 'navigation',
-));
-$handler->override_option('tab_options', array(
-  'type' => 'none',
-  'title' => '',
-  'description' => '',
-  'weight' => 0,
-  'name' => 'navigation',
-));
-$handler = $view->new_display('block', 'Block', 'block_1');
-$handler->override_option('block_description', '');
-$handler->override_option('block_caching', -1);
 $handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
 $handler->override_option('pane_title', '');
 $handler->override_option('pane_description', '');
@@ -241,14 +154,23 @@ $handler->override_option('argument_input', array(
     'fixed' => '',
     'label' => 'Taxonomy: Term ID',
   ),
-  'created_year_month' => array(
-    'type' => 'none',
-    'context' => 'node.uid',
-    'context_optional' => 0,
-    'panel' => '0',
-    'fixed' => '',
-    'label' => 'Node: Created year + month',
-  ),
 ));
 $handler->override_option('link_to_view', 0);
 $handler->override_option('inherit_panels_path', 0);
+$handler = $view->new_display('page', 'Page', 'page_1');
+$handler->override_option('title', '%1 Blog');
+$handler->override_option('path', 'clade/%/blog');
+$handler->override_option('menu', array(
+  'type' => 'tab',
+  'title' => 'Blog',
+  'description' => '',
+  'weight' => '10',
+  'name' => 'navigation',
+));
+$handler->override_option('tab_options', array(
+  'type' => 'none',
+  'title' => '',
+  'description' => '',
+  'weight' => 0,
+  'name' => 'navigation',
+));

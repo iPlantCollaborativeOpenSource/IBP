@@ -85,8 +85,6 @@ function clade_homepage_get_arguments($task, $subtask_id) {
  */
 function clade_homepage_get_contexts($task, $subtask_id) {
   $context = ctools_context_get_placeholders_from_argument(clade_homepage_get_arguments($task, $subtask_id));
-	drupal_set_message('<pre>'.print_r($context,TRUE).'</pre>');
-
   return $context;
 }
 
@@ -291,6 +289,133 @@ function clade_clade_homepage_default_handlers() {
 		$display->panels['top'][0] = 'new-5';
 	$display->hide_title = PANELS_TITLE_FIXED;
 	$display->title_pane = 'new-5';
+	$handler->conf['display'] = $display;
+
+	$handlers[$handler->name] = $handler;
+	
+	$handler = new stdClass;
+	$handler->disabled = TRUE; /* Edit this to true to make a default handler disabled initially */
+	$handler->api_version = 1;
+	$handler->name = 'clade_homepage_alt_panel_context';
+	$handler->task = 'clade_homepage_alt';
+	$handler->subtask = '';
+	$handler->handler = 'panel_context';
+	$handler->weight = 0;
+	$handler->conf = array(
+		'title' => 'Clade panel',
+		'no_blocks' => 0,
+		'pipeline' => 'standard',
+		'css_id' => '',
+		'css' => '',
+		'contexts' => array(),
+		'relationships' => array(),
+	);
+	$display = new panels_display;
+	$display->layout = 'twocol_bricks';
+	$display->layout_settings = array();
+	$display->panel_settings = array(
+		'style_settings' => array(
+			'default' => NULL,
+			'top' => NULL,
+			'left_above' => NULL,
+			'right_above' => NULL,
+			'middle' => NULL,
+			'left_below' => NULL,
+			'right_below' => NULL,
+			'bottom' => NULL,
+		),
+	);
+	$display->cache = array();
+	$display->title = '';
+	$display->content = array();
+	$display->panels = array();
+		$pane = new stdClass;
+		$pane->pid = 'new-1';
+		$pane->panel = 'middle';
+		$pane->type = 'views_panes';
+		$pane->subtype = 'clade_forum_summary-panel_pane_1';
+		$pane->shown = TRUE;
+		$pane->access = array();
+		$pane->configuration = array(
+			'context' => array(
+				0 => 'argument_clade_1',
+			),
+		);
+		$pane->cache = array();
+		$pane->style = array(
+			'settings' => NULL,
+		);
+		$pane->css = array();
+		$pane->extras = array();
+		$pane->position = 0;
+		$display->content['new-1'] = $pane;
+		$display->panels['middle'][0] = 'new-1';
+		$pane = new stdClass;
+		$pane->pid = 'new-2';
+		$pane->panel = 'middle';
+		$pane->type = 'views_panes';
+		$pane->subtype = 'clade_blog_summary-panel_pane_1';
+		$pane->shown = TRUE;
+		$pane->access = array();
+		$pane->configuration = array(
+			'context' => array(
+				0 => 'argument_clade_1',
+			),
+		);
+		$pane->cache = array();
+		$pane->style = array(
+			'settings' => NULL,
+		);
+		$pane->css = array();
+		$pane->extras = array();
+		$pane->position = 1;
+		$display->content['new-2'] = $pane;
+		$display->panels['middle'][1] = 'new-2';
+		$pane = new stdClass;
+		$pane->pid = 'new-3';
+		$pane->panel = 'top';
+		$pane->type = 'block';
+		$pane->subtype = 'clade-5';
+		$pane->shown = TRUE;
+		$pane->access = array();
+		$pane->configuration = array(
+			'override_title' => 1,
+			'override_title_text' => '',
+		);
+		$pane->cache = array();
+		$pane->style = array(
+			'settings' => NULL,
+		);
+		$pane->css = array();
+		$pane->extras = array();
+		$pane->position = 0;
+		$display->content['new-3'] = $pane;
+		$display->panels['top'][0] = 'new-3';
+		$pane = new stdClass;
+		$pane->pid = 'new-4';
+		$pane->panel = 'top';
+		$pane->type = 'custom';
+		$pane->subtype = 'custom';
+		$pane->shown = TRUE;
+		$pane->access = array();
+		$pane->configuration = array(
+			'admin_title' => 'Clade description',
+			'title' => '',
+			'body' => '%clade:description',
+			'format' => '1',
+			'substitute' => 1,
+		);
+		$pane->cache = array();
+		$pane->style = array(
+			'settings' => NULL,
+		);
+		$pane->css = array();
+		$pane->extras = array();
+		$pane->position = 1;
+		$display->content['new-4'] = $pane;
+		$display->panels['top'][1] = 'new-4';
+	$display->hide_title = PANELS_TITLE_FIXED;
+	$display->title_pane = 'new-4';
 	$handler->conf['display'] = $display;
 
 	$handlers[$handler->name] = $handler;

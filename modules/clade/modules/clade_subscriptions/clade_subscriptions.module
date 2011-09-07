@@ -2,6 +2,7 @@
 //$Id$
 function clade_subscriptions_init() {
   global $user;
+	clade_set_context(clade_determine_context());
   if ($user->uid) {
     // $user gets modified by reference.
     clade_subscriptions_user('load', array(), $user);

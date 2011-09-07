@@ -1,0 +1,90 @@
+.view-clade-forum-summary,
+.view-clade-post-summary {
+
+}
+
+.view-clade-forum-summary .views-row,
+.view-clade-post-summary .views-row {
+	clear: both;
+	padding: 12px 0;
+	border-color: #888888;
+	border-style: dashed;
+	border-width: 1px 0 0;
+}
+
+.view-clade-forum-summary .field-content,
+.view-clade-post-summary .field-content {
+	margin: 0 0 0 12px;
+}
+
+.view-clade-forum-summary .field-content:first-child,
+.view-clade-post-summary .field-content:first-child {
+	margin: 0;
+}
+
+.view-clade-forum-summary .views-field-name a,
+.view-clade-post-summary .views-field-name a {
+	color: #888888;
+	font-weight: bold;
+	padding: 0 12px 0 0;
+	min-width: 100px;
+	display: inline-block;
+}
+
+.view-clade-forum-summary .views-field-name a:hover,
+.view-clade-post-summary .views-field-name a:hover {
+	color: #aaaaaa;
+}
+
+.view-clade-forum-summary .views-field-name a:after,
+.view-clade-post-summary .views-field-name a:after {
+	content: "|";
+	color: #cccccc;
+	float: right;
+}
+
+.view-clade-forum-summary .views-field-title,
+.view-clade-post-summary .views-field-title {
+	font-weight: bold;
+}
+
+.view-clade-forum-summary .views-field-name-1,
+.view-clade-post-summary .views-field-name-1 {
+	float: right;
+}
+
+.view-clade-forum-summary .views-field-comment-count,
+.view-clade-post-summary .views-field-comment-count {
+	float: right;
+	padding: 0 0 0 24px;
+	margin: 0px;
+	background-image: url(../images/forum-new.png);
+	background-position: left center;
+	background-repeat: no-repeat;
+}
+
+.view-clade-forum-summary .views-field-comment-count:before,
+.view-clade-post-summary .views-field-comment-count:before {
+	content: "|";
+	color: #cccccc;
+}
+
+.view-clade-forum-summary .more-link,
+.view-clade-post-summary .more-link {
+	padding: 12px 0 0;
+	border-top: 2px solid #cccccc;
+}
+
+.pane-clade-forum-summary-panel-pane-1 h2.pane-title {
+	padding-left: 30px;
+	background-image: url(../images/forum-icon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+.pane-clade-post-summary-panel-pane-1 h2.pane-title {
+	padding-left: 30px;
+	background-image: url(../images/blog-icon.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}

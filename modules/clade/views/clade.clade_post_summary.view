@@ -1,9 +1,7 @@
 <?php
-// $Id$
-
 $view = new view;
-$view->name = 'clade_gallery_view';
-$view->description = 'Clade Gallery View';
+$view->name = 'clade_post_summary';
+$view->description = '';
 $view->tag = 'clade';
 $view->view_php = '';
 $view->base_table = 'node';
@@ -11,18 +9,8 @@ $view->is_cacheable = FALSE;
 $view->api_version = 2;
 $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 $handler = $view->new_display('default', 'Defaults', 'default');
-$handler->override_option('relationships', array(
-  'vid' => array(
-    'label' => 'node',
-    'required' => 1,
-    'id' => 'vid',
-    'table' => 'term_node',
-    'field' => 'vid',
-    'relationship' => 'none',
-  ),
-));
 $handler->override_option('fields', array(
-  'clade_gallery_image_fid' => array(
+  'name' => array(
     'label' => '',
     'alter' => array(
       'alter_text' => 0,
@@ -45,22 +33,14 @@ $handler->override_option('fields', array(
     'empty' => '',
     'hide_empty' => 0,
     'empty_zero' => 0,
-    'link_to_node' => 0,
-    'label_type' => 'none',
-    'format' => 'small_linked',
-    'multiple' => array(
-      'group' => TRUE,
-      'multiple_number' => '',
-      'multiple_from' => '',
-      'multiple_reversed' => FALSE,
-    ),
+    'link_to_taxonomy' => 1,
     'exclude' => 0,
-    'id' => 'clade_gallery_image_fid',
-    'table' => 'node_data_clade_gallery_image',
-    'field' => 'clade_gallery_image_fid',
+    'id' => 'name',
+    'table' => 'term_data',
+    'field' => 'name',
     'relationship' => 'none',
   ),
-  'field_copyright_value' => array(
+  'title' => array(
     'label' => '',
     'alter' => array(
       'alter_text' => 0,
@@ -83,22 +63,49 @@ $handler->override_option('fields', array(
     'empty' => '',
     'hide_empty' => 0,
     'empty_zero' => 0,
-    'link_to_node' => 0,
-    'label_type' => 'none',
-    'format' => 'default',
-    'multiple' => array(
-      'group' => TRUE,
-      'multiple_number' => '',
-      'multiple_from' => '',
-      'multiple_reversed' => FALSE,
-    ),
-    'exclude' => 1,
-    'id' => 'field_copyright_value',
-    'table' => 'node_data_field_copyright',
-    'field' => 'field_copyright_value',
+    'link_to_node' => 1,
+    'exclude' => 0,
+    'id' => 'title',
+    'table' => 'node',
+    'field' => 'title',
     'relationship' => 'none',
   ),
-  'field_photographer_value' => array(
+  'comment_count' => array(
+    'label' => '',
+    'alter' => array(
+      'alter_text' => 0,
+      'text' => '',
+      'make_link' => 0,
+      'path' => '',
+      'link_class' => '',
+      'alt' => '',
+      'prefix' => '',
+      'suffix' => '',
+      'target' => '',
+      'help' => '',
+      'trim' => 0,
+      'max_length' => '',
+      'word_boundary' => 1,
+      'ellipsis' => 1,
+      'html' => 0,
+      'strip_tags' => 0,
+    ),
+    'empty' => '',
+    'hide_empty' => 1,
+    'empty_zero' => 1,
+    'set_precision' => FALSE,
+    'precision' => 0,
+    'decimal' => '.',
+    'separator' => ',',
+    'prefix' => '',
+    'suffix' => '',
+    'exclude' => 0,
+    'id' => 'comment_count',
+    'table' => 'node_comment_statistics',
+    'field' => 'comment_count',
+    'relationship' => 'none',
+  ),
+  'name_1' => array(
     'label' => '',
     'alter' => array(
       'alter_text' => 0,
@@ -121,82 +128,38 @@ $handler->override_option('fields', array(
     'empty' => '',
     'hide_empty' => 0,
     'empty_zero' => 0,
-    'link_to_node' => 0,
-    'label_type' => 'none',
-    'format' => 'default',
-    'multiple' => array(
-      'group' => TRUE,
-      'multiple_number' => '',
-      'multiple_from' => '',
-      'multiple_reversed' => FALSE,
-    ),
-    'exclude' => 1,
-    'id' => 'field_photographer_value',
-    'table' => 'node_data_field_photographer',
-    'field' => 'field_photographer_value',
-    'relationship' => 'none',
-  ),
-  'field_source_value' => array(
-    'label' => '',
-    'alter' => array(
-      'alter_text' => 0,
-      'text' => '',
-      'make_link' => 0,
-      'path' => '',
-      'link_class' => '',
-      'alt' => '',
-      'prefix' => '',
-      'suffix' => '',
-      'target' => '',
-      'help' => '',
-      'trim' => 0,
-      'max_length' => '',
-      'word_boundary' => 1,
-      'ellipsis' => 1,
-      'html' => 0,
-      'strip_tags' => 0,
-    ),
-    'empty' => '',
-    'hide_empty' => 0,
-    'empty_zero' => 0,
-    'link_to_node' => 0,
-    'label_type' => 'none',
-    'format' => 'default',
-    'multiple' => array(
-      'group' => TRUE,
-      'multiple_number' => '',
-      'multiple_from' => '',
-      'multiple_reversed' => FALSE,
-    ),
-    'exclude' => 1,
-    'id' => 'field_source_value',
-    'table' => 'node_data_field_source',
-    'field' => 'field_source_value',
+    'link_to_user' => 1,
+    'overwrite_anonymous' => 0,
+    'anonymous_text' => '',
+    'exclude' => 0,
+    'id' => 'name_1',
+    'table' => 'users',
+    'field' => 'name',
     'relationship' => 'none',
   ),
 ));
 $handler->override_option('sorts', array(
-  'created' => array(
+  'last_updated' => array(
     'order' => 'DESC',
     'granularity' => 'second',
-    'id' => 'created',
-    'table' => 'node',
-    'field' => 'created',
+    'id' => 'last_updated',
+    'table' => 'node_comment_statistics',
+    'field' => 'last_updated',
     'relationship' => 'none',
   ),
 ));
 $handler->override_option('arguments', array(
   'tid' => array(
-    'default_action' => 'not found',
+    'default_action' => 'ignore',
     'style_plugin' => 'default_summary',
     'style_options' => array(),
     'wildcard' => 'all',
     'wildcard_substitution' => 'All',
-    'title' => '%1 Gallery',
+    'title' => '',
     'breadcrumb' => '',
     'default_argument_type' => 'fixed',
     'default_argument' => '',
-    'validate_type' => 'none',
+    'validate_type' => 'taxonomy_term',
     'validate_fail' => 'not found',
     'break_phrase' => 0,
     'add_table' => 0,
@@ -209,40 +172,39 @@ $handler->override_option('arguments', array(
     'validate_user_argument_type' => 'uid',
     'validate_user_roles' => array(
       '2' => 0,
-      '3' => 0,
+      '6' => 0,
       '5' => 0,
       '4' => 0,
       '7' => 0,
-      '8' => 0,
-      '9' => 0,
-      '6' => 0,
+      '3' => 0,
     ),
-    'relationship' => 'vid',
+    'relationship' => 'none',
     'default_options_div_prefix' => '',
     'default_argument_fixed' => '',
     'default_argument_user' => 0,
     'default_argument_php' => '',
     'validate_argument_node_type' => array(
-      'webform' => 0,
-      'poll' => 0,
       'faq' => 0,
       'forum' => 0,
-      'clade' => 0,
       'clade_page' => 0,
-      'clade_file' => 0,
       'clade_image' => 0,
+      'book' => 0,
+      'crop_info_page' => 0,
+      'ibp_tool' => 0,
       'page' => 0,
-      'profile' => 0,
       'story' => 0,
-      'uprofile' => 0,
+      'training_page' => 0,
+      'webform' => 0,
     ),
     'validate_argument_node_access' => 0,
     'validate_argument_nid_type' => 'nid',
     'validate_argument_vocabulary' => array(
-      '2' => 0,
-      '1' => 0,
+      '1' => 1,
+      '4' => 0,
+      '5' => 0,
       '3' => 0,
-      '18' => 0,
+      '2' => 0,
+      '6' => 0,
     ),
     'validate_argument_type' => 'tid',
     'validate_argument_transform' => 0,
@@ -254,7 +216,7 @@ $handler->override_option('filters', array(
   'type' => array(
     'operator' => 'in',
     'value' => array(
-      'clade_image' => 'clade_image',
+      'clade_page' => 'clade_page',
     ),
     'group' => '0',
     'exposed' => FALSE,
@@ -267,6 +229,22 @@ $handler->override_option('filters', array(
     'field' => 'type',
     'relationship' => 'none',
   ),
+  'vid' => array(
+    'operator' => 'in',
+    'value' => array(
+      '1' => '1',
+    ),
+    'group' => '0',
+    'exposed' => FALSE,
+    'expose' => array(
+      'operator' => FALSE,
+      'label' => '',
+    ),
+    'id' => 'vid',
+    'table' => 'term_data',
+    'field' => 'vid',
+    'relationship' => 'none',
+  ),
 ));
 $handler->override_option('access', array(
   'type' => 'none',
@@ -274,40 +252,60 @@ $handler->override_option('access', array(
 $handler->override_option('cache', array(
   'type' => 'none',
 ));
-$handler->override_option('header', '<?php
-$current_view = views_get_current_view();
-if ($clade = clade_get_clade($current_view->args[0])) {
-	print l(t(\'Upload an image\'), "clade/{$clade->tid}/post/add", array(\'query\' => array(\'image\' => TRUE), \'attributes\' => array(\'class\' => \'button\')));
-}
-?>');
-$handler->override_option('header_format', '3');
-$handler->override_option('header_empty', 0);
-$handler->override_option('footer', '<?php
-$current_view = views_get_current_view();
-if ($clade = clade_get_clade($current_view->args[0])) {
-	print l(t(\'Upload an image\'), "clade/{$clade->tid}/post/add", array(\'query\' => array(\'image\' => TRUE), \'attributes\' => array(\'class\' => \'button\')));
-}
-?>');
-$handler->override_option('footer_format', '3');
-$handler->override_option('footer_empty', 1);
-$handler->override_option('empty', 'There are no images in this Clade\'s gallery, yet.  You should upload one!');
-$handler->override_option('empty_format', '2');
-$handler->override_option('items_per_page', 25);
-$handler->override_option('use_pager', '1');
+$handler->override_option('title', 'Latest Blog Posts');
+$handler->override_option('items_per_page', 5);
+$handler->override_option('use_more', 1);
+$handler->override_option('use_more_always', 0);
+$handler->override_option('use_more_text', 'View all blog posts');
 $handler->override_option('row_options', array(
   'inline' => array(
-    'clade_gallery_image_fid' => 'clade_gallery_image_fid',
+    'name' => 'name',
+    'title' => 'title',
+    'comment_count' => 'comment_count',
+    'name_1' => 'name_1',
   ),
   'separator' => '',
   'hide_empty' => 0,
 ));
+$handler = $view->new_display('panel_pane', 'Content pane', 'panel_pane_1');
+$handler->override_option('pane_title', '');
+$handler->override_option('pane_description', '');
+$handler->override_option('pane_category', array(
+  'name' => 'View panes',
+  'weight' => 0,
+));
+$handler->override_option('allow', array(
+  'use_pager' => 0,
+  'items_per_page' => 0,
+  'offset' => 0,
+  'link_to_view' => 0,
+  'more_link' => 0,
+  'path_override' => 0,
+  'title_override' => 0,
+  'exposed_form' => 0,
+  'fields_override' => 0,
+));
+$handler->override_option('argument_input', array(
+  'tid' => array(
+    'type' => 'context',
+    'context' => 'clade.tid',
+    'context_optional' => 1,
+    'panel' => '0',
+    'fixed' => '',
+    'label' => 'Taxonomy: Term ID',
+  ),
+));
+$handler->override_option('link_to_view', 0);
+$handler->override_option('inherit_panels_path', 0);
 $handler = $view->new_display('page', 'Page', 'page_1');
-$handler->override_option('path', 'clade/%/gallery');
+$handler->override_option('items_per_page', 25);
+$handler->override_option('use_pager', '1');
+$handler->override_option('path', 'clade/%/blog-summary');
 $handler->override_option('menu', array(
-  'type' => 'tab',
-  'title' => 'Gallery',
+  'type' => 'none',
+  'title' => '',
   'description' => '',
-  'weight' => '12',
+  'weight' => 0,
   'name' => 'navigation',
 ));
 $handler->override_option('tab_options', array(
