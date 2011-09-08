@@ -354,7 +354,7 @@ function clade_clade_homepage_default_handlers() {
 		$pane->pid = 'new-2';
 		$pane->panel = 'middle';
 		$pane->type = 'views_panes';
-		$pane->subtype = 'clade_blog_summary-panel_pane_1';
+		$pane->subtype = 'clade_post_summary-panel_pane_1';
 		$pane->shown = TRUE;
 		$pane->access = array();
 		$pane->configuration = array(
