@@ -8,13 +8,13 @@ h2.title a {
 
 .tool-properties {
 	float: left;
-	width: 380px;
+	width: 365px;
 	margin: 0 10px 10px 0;
 }
 
 .tool-screenshots {
 	float: right;
-	width: 330px;
+	width: 300px;
 	margin: 0 0 10px 10px;
 }
 
@@ -63,10 +63,6 @@ h2.title a {
 .field-field-tool-platform .field-items,
 .field-field-tool-version .field-items,
 .field-field-tool-dl-link .field-items,
-.field-field-tool-file .field-items {
-	margin: 0 0 0 120px;
-}
-
 .field-field-tool-file .field-items {
 	margin: 0 0 0 100px;
 }
@@ -156,12 +152,12 @@ h2.title a {
 }
 
 .screenshots a {
-	margin: 0 5px;
+	margin: 0 7px;
 }
 
 .rollovers {
 	position: relative;
-	width: 330px;
+	width: 300px;
 	height: 200px;
 }
 

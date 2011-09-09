@@ -451,8 +451,8 @@ function ibphelper_imagecache_default_presets() {
 				'action' => 'imagecache_scale_and_crop',
 				'data' => 
 				array (
-					'width' => '100',
-					'height' => '66',
+					'width' => '85',
+					'height' => '56',
 				),
 			),
 		),
