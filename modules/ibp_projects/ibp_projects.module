@@ -82,6 +82,22 @@ function ibp_projects_clade($op, $clade, $args=array()) {
 	// TODO delete?
 }
 
+function ibp_projects_clade_details_items($clade) {
+	return array(
+		'project_page' => array(
+			'data' => l(t('Projects'), "clade/$clade->tid/projects"),
+			'data-sort' => 3,
+			'class' => 'clade-details-item',
+			),
+		'add_project_page' => array(
+			'data' => l(t('Add a new Project'), "node/add/ibp-project"),
+			'data-sort' => 12,
+			'class' => 'clade-details-item',
+			),
+		);
+}
+
+
 function ibp_projects_views_api() {
   return array('api' => 2.0);
 }

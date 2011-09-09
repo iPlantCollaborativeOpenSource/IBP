@@ -197,34 +197,34 @@ function clade_subscriptions_clade_details_items($clade) {
 	if ($count) {
 		$items['members'] = array(
 			'data' => l(t('@num members', array('@num' => $count)), "clade/$clade->tid/members"),
-			'data-sort' => 10,
+			'data-sort' => 40,
 			'class' => 'clade-details-item',
 			);
 	}
 	if ($admins) {
 		$items['admins'] = array(
 			'data' => theme('item_list', $admins, t('Clade Managers'), 'ul', array('class' => 'clade-details-admins')),
-			'data-sort' => 12
+			'data-sort' => 100
 			);
 	}
 	if ($user->uid) {
 		if (! array_key_exists($clade->tid, $user->clades)) {
 			$items['membership'] = array(
 				'data' => l(t('Join this Clade'), "clade/$clade->tid/members/join"),
-				'data-sort' => 11,
+				'data-sort' => 50,
 				'class' => 'clade-details-item',
 				);
 		} else {
 			$items['membership'] = array(
 				'data' => l(t('My membership'), "clade/$clade->tid/my-membership"),
-				'data-sort' => 11,
+				'data-sort' => 50,
 				'class' => 'clade-details-item',
 				);
 		}
 	} else {
 		$items['membership'] = array(
 			'data' => l(t('Login to join or post'), variable_get('shib_auth_handler_url', 'user/login'), array('query' => array('destination' => "clade/$clade->tid"))),
-			'data-sort' => 11,
+			'data-sort' => 50,
 			'class' => 'clade-details-item',
 			);
 	}
