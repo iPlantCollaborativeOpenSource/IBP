@@ -14,6 +14,37 @@ function ibp_projects_node_info() {
 	);
 }
 
+function ibp_projects_perm() {
+  return array(
+			'create ibp_project',
+			'edit own ibp_project',
+			'edit any ibp_project',
+			'delete ibp_project',
+		);
+}
+
+/**
+ * Implementation of hook_access()
+ */
+function ibp_projects_access($op, $node, $account) {
+  global $user;
+  switch ($op) {
+  case 'view' :
+  	return TRUE;
+  case 'create' :
+  	return user_access('create ibp_project');
+  case 'update' :
+  	if ($user->uid == $node->uid) {
+  		return user_access('edit own ibp_project');
+  	} else {
+  		return user_access('edit any ibp_project');
+  	}
+  case 'delete' :
+  	return user_access('delete ibp_project');
+  }
+}
+
+
 function ibp_projects_form(&$node, $form_state) {
 	$type = node_get_types('type', $node->type);
 	$form = array();
