@@ -1,0 +1,13 @@
+<?php
+
+function ibp_projects_install() {
+	variable_set("comment_ibp_project", 0);
+
+	$vocab = taxonomy_vocabulary_load(variable_get('clade_vocabulary',0));
+	$vocab->nodes['ibp_project'] = 'ibp_project';
+	$values = (array) $vocab;
+	taxonomy_save_vocabulary($values);
+}
+
+function ibp_projects_uninstall() {
+}

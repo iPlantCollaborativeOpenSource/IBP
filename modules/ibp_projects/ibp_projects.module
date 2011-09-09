@@ -1,0 +1,56 @@
+<?php
+
+function ibp_projects_node_info() {
+  return array(
+		'ibp_project' => array(
+			'name' => t('IBP Project'),
+			'module' => 'ibp_projects',
+			'description' => 'A project within a crop or crops.',
+			'has_title' => TRUE,
+			'title_label' => 'Project Name',
+			'has_body' => TRUE,
+			'body_label' => 'Description',
+		),
+	);
+}
+
+function ibp_projects_form(&$node, $form_state) {
+	$type = node_get_types('type', $node->type);
+	$form = array();
+	
+	$form['title'] = array(
+		'#title' => $type->title_label,
+		'#type' => 'textfield',
+		'#required' => TRUE,
+		'#default_value' => $node->nid ? $node->title : $form_state['values']['title'],
+	);
+	
+	$form['body'] = array(
+		'#title' => $type->body_label,
+		'#type' => 'textarea',
+		'#required' => TRUE,
+		'#default_value' => $node->nid ? $node->body : $form_state['values']['body'],
+	);
+	
+	return $form;
+}
+
+function ibp_projects_clade($op, $clade, $args=array()) {
+	if ($op == 'clade insert') {
+		$clade_menu = menu_get_item("clade/$clade->tid");
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/projects',
+			'link_path' => "clade/$clade->tid/projects",
+			'link_title' => $clade->name . ' projects',
+			'weight' => 11,
+			);
+		menu_link_save($menu);
+	}
+	// TODO delete?
+}
+
+function ibp_projects_views_api() {
+  return array('api' => 2.0);
+}

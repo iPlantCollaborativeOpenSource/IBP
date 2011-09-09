@@ -1,0 +1,6 @@
+; $Id$
+name = IBP Projects
+description = "Adds project functionalities to crops/clades."
+package = "IBP"
+core = 6.x
+

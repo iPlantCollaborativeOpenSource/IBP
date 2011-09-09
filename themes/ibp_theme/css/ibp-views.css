@@ -1,10 +1,12 @@
 .view-clade-forum-summary,
-.view-clade-post-summary {
+.view-clade-post-summary,
+.view-ibp-projects-summary {
 
 }
 
 .view-clade-forum-summary .views-row,
-.view-clade-post-summary .views-row {
+.view-clade-post-summary .views-row,
+.view-ibp-projects-summary .views-row {
 	clear: both;
 	padding: 12px 0;
 	border-color: #888888;
@@ -13,12 +15,14 @@
 }
 
 .view-clade-forum-summary .field-content,
-.view-clade-post-summary .field-content {
+.view-clade-post-summary .field-content,
+.view-ibp-projects-summary .field-content {
 	margin: 0 0 0 12px;
 }
 
 .view-clade-forum-summary .field-content:first-child,
-.view-clade-post-summary .field-content:first-child {
+.view-clade-post-summary .field-content:first-child,
+.view-ibp-projects-summary .field-content:first-child {
 	margin: 0;
 }
 
@@ -32,7 +36,8 @@
 }
 
 .view-clade-forum-summary .views-field-name a:hover,
-.view-clade-post-summary .views-field-name a:hover {
+.view-clade-post-summary .views-field-name a:hover,
+.view-ibp-projects-summary .views-field-tid a:hover {
 	color: #aaaaaa;
 }
 
@@ -44,47 +49,115 @@
 }
 
 .view-clade-forum-summary .views-field-title,
-.view-clade-post-summary .views-field-title {
+.view-clade-post-summary .views-field-title,
+.view-ibp-projects-summary .views-field-title {
 	font-weight: bold;
 }
 
 .view-clade-forum-summary .views-field-name-1,
-.view-clade-post-summary .views-field-name-1 {
+.view-clade-post-summary .views-field-name-1,
+.view-ibp-projects-summary .views-field-ibp-project-pi-uid,
+.view-ibp-projects-summary .views-field-ibp-project-collaborators-uid,
+.view-ibp-projects-summary .views-field-ibp-project-number-value {
 	float: right;
 }
 
+.view-ibp-projects-summary .views-field-ibp-project-number-value .field-content {
+	min-width: 50px;
+	margin: 0 0 0 10px;
+}
+
 .view-clade-forum-summary .views-field-comment-count,
-.view-clade-post-summary .views-field-comment-count {
+.view-clade-post-summary .views-field-comment-count,
+.view-ibp-projects-summary .views-field-ibp-project-number-value {
 	float: right;
-	padding: 0 0 0 24px;
-	margin: 0px;
+	text-align: right;
+	min-width: 50px;
+	padding: 0 0 0 10px;
+}
+
+.view-clade-forum-summary .views-field-comment-count .field-content,
+.view-clade-post-summary .views-field-comment-count .field-content {
+	color: #00A3F7;
+	margin: 0 0 0 15px;
+	padding: 0 0 0 35px;
 	background-image: url(../images/forum-new.png);
 	background-position: left center;
 	background-repeat: no-repeat;
 }
 
 .view-clade-forum-summary .views-field-comment-count:before,
-.view-clade-post-summary .views-field-comment-count:before {
+.view-clade-post-summary .views-field-comment-count:before,
+.view-ibp-projects-summary .views-field-ibp-project-number-value:before {
 	content: "|";
 	color: #cccccc;
 }
 
-.view-clade-forum-summary .more-link,
-.view-clade-post-summary .more-link {
-	padding: 12px 0 0;
-	border-top: 2px solid #cccccc;
+.view-clade-forum-summary .view-content,
+.view-clade-post-summary .view-content,
+.view-ibp-projects-summary .view-content {
+	margin: 0 0 12px;
+	border-bottom: 2px solid #cccccc;
+}
+
+.pane-clade-forum-summary-panel-pane-1 h2.pane-title,
+.pane-clade-post-summary-panel-pane-1 h2.pane-title,
+.pane-ibp-projects-summary-panel-pane-1 h2.pane-title {
+	padding-left: 30px;
+	background-repeat: no-repeat;
+	background-position: left center;
 }
 
 .pane-clade-forum-summary-panel-pane-1 h2.pane-title {
-	padding-left: 30px;
 	background-image: url(../images/forum-icon.png);
-	background-repeat: no-repeat;
-	background-position: left center;
 }
 
 .pane-clade-post-summary-panel-pane-1 h2.pane-title {
-	padding-left: 30px;
 	background-image: url(../images/blog-icon.png);
-	background-repeat: no-repeat;
-	background-position: left center;
+}
+
+.pane-ibp-projects-summary-panel-pane-1 h2.pane-title {
+	background-image: url(../images/project-icon.png);
+}
+
+.view-ibp-projects-summary .item-list,
+.view-ibp-projects-summary .item-list ul,
+.view-ibp-projects-summary .item-list ul li {
+	display: inline;
+	padding: 0;
+	margin: 0;
+}
+
+.view-ibp-projects-summary .item-list ul,
+.view-ibp-projects-summary .item-list ul li {
+	list-style: none;
+}
+
+.view-ibp-projects-summary .item-list ul li:after {
+	content: "|";
+	color: #cccccc;
+	font-weight: bold;
+	padding: 0 6px;
+}
+
+.view-ibp-projects-summary .item-list ul li a {
+	color: #888888;
+	font-weight: bold;
+}
+
+.views-field-ibp-project-number-value,
+.views-field-ibp-project-collaborators-uid {
+	color: #888888;
+}
+
+.views-field-ibp-project-collaborators-uid {
+	padding: 0 3px;
+}
+
+.views-field-ibp-project-number-value .field-content:before {
+	content: "#";
+}
+
+.views-field-ibp-project-collaborators-uid div {
+	display: inline;
 }

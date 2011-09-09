@@ -16,20 +16,29 @@ function ibphelper_menu() {
 			'page callback' => 'drupal_get_form',
 			'page arguments' => array('ibphelper_admin_form'),
 			'title' => 'IBP Helper',
-			),
+		),
 		'user/%user/my-ibp-pages' => array(
 			'access callback' => 'ibphelper_my_pages_access',
 			'page callback' => 'ibphelper_my_pages',
 			'title' => 'My Saved Pages'
-			),
+		),
 		'training/%' => array(
 			'access arguments' => array('access content'),
 			'page callback' => 'ibphelper_ibp_training',
 			'page arguments' => array(1),
 			'title callback' => 'ibphelper_ibp_training_title',
 			'title arguments' => array(1),
-			),
-		);
+		),
+		'clade/%clade/crop-information' => array(
+			'type' => MENU_LOCAL_TASK,
+			'weight' => 25,
+			'title' => 'Crop Information',
+			'page callback' => 'ibphelper_crop_info',
+			'page arguments' => array(1),
+			'access callback' => 'ibphelper_crop_info_access',
+			'access arguments' => array(1),
+		),
+	);
 }
 
 function ibphelper_menu_alter(&$items)
@@ -318,7 +327,7 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 
 function ibphelper_clade($op, $clade) {
 	if ($op == 'clade insert') {
-		$clade_menu = menu_get_item("clade/$clade_tid");
+		$clade_menu = menu_get_item("clade/$clade->tid");
 		$menu = array(
 			'menu_name' => 'primary-links',
 			'plid' => $clade_menu['mlid'],
@@ -588,4 +597,15 @@ function ibphelper_clade_details_items($clade) {
 
 function ibphelper_clade_details_items_alter(&$items) {
 	unset($items['gallery_page']);
+}
+
+function ibphelper_crop_info_access($crop) {
+	if (drupal_lookup_path('source', "crop-information/$crop->name")) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+function ibphelper_crop_info($crop) {
+	drupal_goto("crop-information/$crop->name");
 }

@@ -42,36 +42,36 @@ div.teaser-comment-form {
 	top: 0.5em;
 }
 
-.teaser-comment .links {
-	margin-right: 1em;
-}
-
-.teaser-comment .comment_delete,
-.teaser-comment .comment_edit,
-.teaser-comment .comment_reply {
+.teaser-comment ul.links {
+	margin: 0 6px 6px 0;
 	padding: 0;
-	margin: 0;
+	list-style: none;
 }
 
-.teaser-comment .comment_delete a,
-.teaser-comment .comment_edit a,
-.teaser-comment .comment_reply a {
+.teaser-comment ul.links li {
+	float: left;
+	margin: 0 3px 0 0;
+	padding: 0;
+}
+
+.teaser-comment ul.links li a {
 	color: transparent;
 	background-repeat: no-repeat;
+	background-position: center center;
 	width: 24px;
 	height: 24px;
 	display: inline-block;
 }
 
-.teaser-comment .comment_delete a {
+.teaser-comment ul.links li.comment_delete a {
 	background-image: url(../images/delete.png );
 }
 
-.teaser-comment .comment_edit a {
+.teaser-comment ul.links li.comment_edit a {
 	background-image: url(../images/edit.png );
 }
 
-.teaser-comment .comment_reply a {
+.teaser-comment ul.links li.comment_reply a {
 	background-image: url(../images/reply.png );
 }
 
