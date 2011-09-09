@@ -83,18 +83,21 @@ function ibp_projects_clade($op, $clade, $args=array()) {
 }
 
 function ibp_projects_clade_details_items($clade) {
-	return array(
-		'project_page' => array(
-			'data' => l(t('Projects'), "clade/$clade->tid/projects"),
-			'data-sort' => 3,
-			'class' => 'clade-details-item',
-			),
-		'add_project_page' => array(
-			'data' => l(t('Add a new Project'), "node/add/ibp-project"),
+	$items = array(
+	'project_page' => array(
+		'data' => l(t('Projects'), "clade/$clade->tid/projects"),
+		'data-sort' => 3,
+		'class' => 'clade-details-item',
+		),
+	);
+	if (user_access('create ibp_project')) {
+		$items['add_project_page'] = array(
+			'data' => l(t('Add a new Project'), "node/add/ibp-project", array('query' => array('clades' => $clade->tid))),
 			'data-sort' => 12,
 			'class' => 'clade-details-item',
-			),
 		);
+	}
+	return $items;
 }
 
 
