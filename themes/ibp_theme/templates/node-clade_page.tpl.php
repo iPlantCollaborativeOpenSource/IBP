@@ -89,7 +89,27 @@
   <?php endif; ?>
 
   <div class="content">
-    <?php print $content; ?>
+  	<?php if (isset($node->field_clade_image[0]['fid'])): ?>
+  		<div class="clade-page-image">
+  			<?php print $node->field_clade_image[0]['view']; ?>
+  			<div class="clade-page-image-title">
+  				<?php print $field_clade_image_photographer_rendered; ?>
+  				<?php print $field_clade_image_copyright_rendered; ?>
+  				<?php print $field_clade_image_source_rendered; ?>
+  			</div>
+  		</div>
+  	<?php endif; ?>
+    
+    <?php print $node->content['body']['#value']; ?>
+    
+    <?php if (isset($node->field_clade_file[0]['fid'])): ?>
+    	<div class="clade-page-file">
+    		<?php
+    			print $field_clade_file_rendered;
+					print $field_clade_file_source_rendered;
+				?>
+    	</div>
+    <?php endif; ?>
   </div>
 
   <?php print $links; ?>

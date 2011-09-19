@@ -101,7 +101,7 @@ function clade_gallery_form_alter(&$form, &$form_state, $form_id) {
 		$form['group_image_info'] = $image_form['group_image_info'];
 		$form['group_image_info']['#collapsible'] = TRUE;
 		$form['group_image_info']['#collapsed'] = empty($clade_image->nid) && empty($_GET['image']);
-		$form['group_image_info']['#weight'] = 10;
+		$form['group_image_info']['#weight'] = -3;
 		$form['group_image_info']['#title'] = t('Attach an Image');
 		$form['group_image_info']['#tree'] = TRUE;
 		

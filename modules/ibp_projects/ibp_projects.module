@@ -44,7 +44,6 @@ function ibp_projects_access($op, $node, $account) {
   }
 }
 
-
 function ibp_projects_form(&$node, $form_state) {
 	$type = node_get_types('type', $node->type);
 	$form = array();
@@ -54,6 +53,7 @@ function ibp_projects_form(&$node, $form_state) {
 		'#type' => 'textfield',
 		'#required' => TRUE,
 		'#default_value' => $node->nid ? $node->title : $form_state['values']['title'],
+		'#weight' => -20,
 	);
 	
 	$form['body'] = array(
@@ -62,8 +62,28 @@ function ibp_projects_form(&$node, $form_state) {
 		'#required' => TRUE,
 		'#default_value' => $node->nid ? $node->body : $form_state['values']['body'],
 	);
-	
+	$form['#validate'] = array('ibp_projects_form_validate');
+	$form['#after_build'] = array('ibp_projects_form_ibp_project_node_form_after_build');
 	return $form;
+}
+
+function ibp_projects_form_ibp_project_node_form_after_build($form, &$form_state) {
+	$form['ibp_project_number']['#weight'] = -5;
+	$form['ibp_project_pi']['#weight'] = -4;
+	$form['ibp_project_pi_text']['#weight'] = -3;
+	$form['ibp_project_collaborators']['#weight'] = -2;
+	$form['ibp_project_collaborators_text']['#weight'] = -1;
+	return $form;
+}
+
+function ibp_projects_form_validate($form, &$form_state) {
+	if (empty($form_state['values']['ibp_project_pi'][0]['uid']) &&
+			empty($form_state['values']['ibp_project_pi_text'][0]['value'])
+	) {
+		form_set_error($form_state['values']['ibp_project_pi'][0]['_error_element'], 'Please provide a Principal Investigator');
+		form_set_error($form_state['values']['ibp_project_pi_text'][0]['_error_element'], 'Please provide a Principal Investigator');
+		array_pop($_SESSION['messages']['error']); // get rid of duplicate error message
+	}
 }
 
 function ibp_projects_clade($op, $clade, $args=array()) {

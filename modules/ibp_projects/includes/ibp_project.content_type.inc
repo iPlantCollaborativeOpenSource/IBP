@@ -26,7 +26,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 		'modified' => false,
 		'locked' => true,
 		'reset' => 'Reset to defaults',
-		'comment' => 2,
+		'comment' => 0,
 		'comment_default_mode' => 4,
 		'comment_default_order' => 1,
 		'comment_default_per_page' => 50,
@@ -62,7 +62,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'text',
 			'widget_type' => 'text_textfield',
 			'change' => 'Change basic information',
-			'weight' => '-4',
+			'weight' => -10,
 			'rows' => 5,
 			'size' => '60',
 			'description' => '',
@@ -143,11 +143,11 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'userreference',
 			'widget_type' => 'userreference_autocomplete',
 			'change' => 'Change basic information',
-			'weight' => '-3',
+			'weight' => -9,
 			'autocomplete_match' => 'contains',
 			'size' => '60',
 			'reverse_link' => 0,
-			'description' => '',
+			'description' => 'Provide the username of the IBP user who is the PI on the project.',
 			'default_value' => 
 			array (
 				0 => 
@@ -159,7 +159,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'default_value_php' => '',
 			'default_value_widget' => 
 			array (
-				'field_pi' => 
+				'ibp_project_pi' => 
 				array (
 					0 => 
 					array (
@@ -173,7 +173,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 				),
 			),
 			'group' => false,
-			'required' => 1,
+			'required' => 0,
 			'multiple' => '0',
 			'referenceable_roles' => 
 			array (
@@ -185,7 +185,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 				3 => 0,
 			),
 			'referenceable_status' => '',
-			'advanced_view' => '--',
+			'advanced_view' => 'select_user_lookup',
 			'advanced_view_args' => '',
 			'op' => 'Save field settings',
 			'module' => 'userreference',
@@ -241,16 +241,107 @@ function _ibp_projects_ibp_project_content_type_def() {
 		),
 		2 => 
 		array (
+			'label' => 'Principal Investigator (non-IBP user)',
+			'field_name' => 'ibp_project_pi_text',
+			'type' => 'text',
+			'widget_type' => 'text_textfield',
+			'change' => 'Change basic information',
+			'weight' => -8,
+			'rows' => 5,
+			'size' => '60',
+			'description' => 'If the PI is not an IBP user, then simply enter the person\'s name.',
+			'default_value' => 
+			array (
+				0 => 
+				array (
+					'value' => '',
+					'_error_element' => 'default_value_widget][ibp_project_pi_text][0][value',
+				),
+			),
+			'default_value_php' => '',
+			'default_value_widget' => 
+			array (
+				'ibp_project_pi_text' => 
+				array (
+					0 => 
+					array (
+						'value' => '',
+						'_error_element' => 'default_value_widget][ibp_project_pi_text][0][value',
+					),
+				),
+			),
+			'group' => false,
+			'required' => 0,
+			'multiple' => '0',
+			'text_processing' => '0',
+			'max_length' => '',
+			'allowed_values' => '',
+			'allowed_values_php' => '',
+			'op' => 'Save field settings',
+			'module' => 'text',
+			'widget_module' => 'text',
+			'columns' => 
+			array (
+				'value' => 
+				array (
+					'type' => 'text',
+					'size' => 'big',
+					'not null' => false,
+					'sortable' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
+		3 => 
+		array (
 			'label' => 'Collaborators',
 			'field_name' => 'ibp_project_collaborators',
 			'type' => 'userreference',
 			'widget_type' => 'userreference_autocomplete',
 			'change' => 'Change basic information',
-			'weight' => '-2',
+			'weight' => -7,
 			'autocomplete_match' => 'contains',
 			'size' => '60',
 			'reverse_link' => 0,
-			'description' => '',
+			'description' => 'Provide the username(s) of IBP users who are collaborators on this project.',
 			'default_value' => 
 			array (
 				0 => 
@@ -262,7 +353,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'default_value_php' => '',
 			'default_value_widget' => 
 			array (
-				'field_collaborators' => 
+				'ibp_project_collaborators' => 
 				array (
 					0 => 
 					array (
@@ -288,7 +379,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 				3 => 0,
 			),
 			'referenceable_status' => '',
-			'advanced_view' => '--',
+			'advanced_view' => 'select_user_lookup',
 			'advanced_view_args' => '',
 			'op' => 'Save field settings',
 			'module' => 'userreference',
@@ -342,17 +433,110 @@ function _ibp_projects_ibp_project_content_type_def() {
 				),
 			),
 		),
+		4 => 
+		array (
+			'label' => 'Collaborators (non-IBP users)',
+			'field_name' => 'ibp_project_collaborators_text',
+			'type' => 'text',
+			'widget_type' => 'text_textfield',
+			'change' => 'Change basic information',
+			'weight' => -6,
+			'rows' => 5,
+			'size' => '60',
+			'description' => 'Enter any project collaborators that are not IBP users.',
+			'default_value' => 
+			array (
+				0 => 
+				array (
+					'value' => '',
+					'_error_element' => 'default_value_widget][ibp_project_collaborators_text][0][value',
+				),
+			),
+			'default_value_php' => '',
+			'default_value_widget' => 
+			array (
+				'ibp_project_collaborators_text' => 
+				array (
+					0 => 
+					array (
+						'value' => '',
+						'_error_element' => 'default_value_widget][ibp_project_collaborators_text][0][value',
+					),
+				),
+			),
+			'group' => false,
+			'required' => 0,
+			'multiple' => '1',
+			'text_processing' => '0',
+			'max_length' => '',
+			'allowed_values' => '',
+			'allowed_values_php' => '',
+			'op' => 'Save field settings',
+			'module' => 'text',
+			'widget_module' => 'text',
+			'columns' => 
+			array (
+				'value' => 
+				array (
+					'type' => 'text',
+					'size' => 'big',
+					'not null' => false,
+					'sortable' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
 	);
 	$content['extra']  = array (
 		'title' => '-5',
-		'body_field' => '-1',
-		'revision_information' => '3',
-		'author' => '2',
-		'options' => '4',
-		'comment_settings' => '5',
-		'menu' => '0',
-		'path' => '6',
-		'detailed_question' => '1',
+		'body_field' => '2',
+		'revision_information' => '6',
+		'author' => '5',
+		'options' => '7',
+		'comment_settings' => '8',
+		'menu' => '3',
+		'taxonomy' => '-3',
+		'path' => '4',
+		'detailed_question' => '9',
 	);
+
 	return $content;
 }

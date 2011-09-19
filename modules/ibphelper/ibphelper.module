@@ -38,6 +38,15 @@ function ibphelper_menu() {
 			'access callback' => 'ibphelper_crop_info_access',
 			'access arguments' => array(1),
 		),
+		'node/%node/query' => array(
+			'type' => MENU_LOCAL_TASK,
+			'weight' => 25,
+			'title' => 'Query Interface',
+			'page callback' => 'ibphelper_crop_info_query',
+			'page arguments' => array(1),
+			'access callback' => 'ibphelper_crop_info_query_access',
+			'access arguments' => array(1),
+		),
 	);
 }
 
@@ -162,6 +171,9 @@ function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
 		if ($node->type == 'forum' && isset($node->content['forum_navigation'])) {
 			$node->forum_navigation = $node->content['forum_navigation'];
 			unset($node->content['forum_navigation']);
+		}
+		else if ($node->type == 'crop_info_page') {
+			menu_set_active_item("node/$node->nid");
 		}
 	} else if ($op == 'insert' || $op == 'update') {
 		if ($node->type == 'training_page') {
@@ -323,49 +335,6 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 			db_query($sql, $account->uid);
 		}
 	}
-}
-
-function ibphelper_clade($op, $clade) {
-	if ($op == 'clade insert') {
-		$clade_menu = menu_get_item("clade/$clade->tid");
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/blog',
-			'link_path' => "clade/$clade->tid/blog",
-			'link_title' => $clade->name . ' blog',
-			'weight' => 10,
-			);
-		menu_link_save($menu);
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/projects',
-			'link_path' => "clade/$clade->tid/projects",
-			'link_title' => $clade->name . ' projects',
-			'weight' => 11,
-			);
-		menu_link_save($menu);
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/forums',
-			'link_path' => "clade/$clade->tid/forums",
-			'link_title' => $clade->name . ' forum',
-			'weight' => 12,
-			);
-		menu_link_save($menu);
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/gallery',
-			'link_path' => "clade/$clade->tid/gallery",
-			'link_title' => $clade->name . ' gallery',
-			'weight' => 13,
-			);
-		menu_link_save($menu);
-	}
-	// TODO delete?
 }
 
 function ibphelper_imagecache_default_presets() {
@@ -585,20 +554,6 @@ function ibphelper_ctools_plugin_directory($module, $plugin) {
   }
 }
 
-function ibphelper_clade_details_items($clade) {
-	return array(
-		'blog_page' => array(
-			'data' => l(t('Blogs'), sprintf('clade/%d/blog', $clade->tid)),
-			'data-sort' => 1,
-			'class' => 'clade-details-item',
-			),
-		);
-}
-
-function ibphelper_clade_details_items_alter(&$items) {
-	unset($items['gallery_page']);
-}
-
 function ibphelper_crop_info_access($crop) {
 	if (drupal_lookup_path('source', "crop-information/$crop->name")) {
 		return TRUE;
@@ -608,4 +563,61 @@ function ibphelper_crop_info_access($crop) {
 
 function ibphelper_crop_info($crop) {
 	drupal_goto("crop-information/$crop->name");
+}
+
+function ibphelper_crop_info_query($node) {
+	return '<script>$(document).ready(function() {window.open(\''. $node->field_query_url[0]['url'] .'\');});</script>'.node_page_view($node);
+}
+
+function ibphelper_crop_info_query_access($node) {
+	if ($node->type == 'crop_info_page') {
+		if (! empty($node->field_query_url[0]['url'])) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+function ibphelper_clade($op, $clade) {
+	if ($op == 'clade insert') {
+		$clade_menu = menu_get_item("clade/$clade->tid");
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/blog',
+			'link_path' => "clade/$clade->tid/blog",
+			'link_title' => $clade->name . ' blog',
+			'weight' => 10,
+			);
+		menu_link_save($menu);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/forums',
+			'link_path' => "clade/$clade->tid/forums",
+			'link_title' => $clade->name . ' forum',
+			'weight' => 12,
+			);
+		menu_link_save($menu);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/variety-releases',
+			'link_path' => "clade/$clade->tid/variety-releases",
+			'link_title' => $clade->name . ' Variety Releases',
+			'weight' => 12,
+			);
+		menu_link_save($menu);
+	}
+	// TODO delete?
+}
+
+function ibphelper_clade_details_items($clade) {
+	return array(
+		'blog_page' => array(
+			'data' => l(t('Blogs'), sprintf('clade/%d/blog', $clade->tid)),
+			'data-sort' => 1,
+			'class' => 'clade-details-item',
+			),
+		);
 }

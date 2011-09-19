@@ -27,8 +27,16 @@ h2.title a {
 .field-field-tool-usability,
 .field-field-tool-platform,
 .field-field-tool-version,
-.field-field-tool-dl-link {
-	border-bottom: 1px dashed #141414;
+.field-field-tool-dl-link,
+.field-field-tool-developers,
+.field-field-tool-techsupport {
+	border-style: dashed;
+	border-color: #141414;
+	border-width: 0 0 4px 0;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
 	padding: 6px 3px;
 }
 
@@ -45,6 +53,8 @@ h2.title a {
 .field-field-tool-platform .field-label,
 .field-field-tool-version .field-label,
 .field-field-tool-dl-link .field-label,
+.field-field-tool-developers .field-label,
+.field-field-tool-techsupport .field-label,
 .field-field-tool-file .field-label {
 	float: left;
 }
@@ -63,8 +73,13 @@ h2.title a {
 .field-field-tool-platform .field-items,
 .field-field-tool-version .field-items,
 .field-field-tool-dl-link .field-items,
+.field-field-tool-developers .field-items,
 .field-field-tool-file .field-items {
 	margin: 0 0 0 100px;
+}
+
+.field-field-tool-techsupport .field-items {
+	margin: 0 0 0 145px;
 }
 
 .field-field-tool-file {

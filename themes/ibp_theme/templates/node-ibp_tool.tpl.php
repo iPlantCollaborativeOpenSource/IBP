@@ -96,6 +96,8 @@
 			<?php print $field_tool_platform_rendered; ?>
 			<?php print $field_tool_version_rendered; ?>
 			<?php print $field_tool_dl_link_rendered; ?>
+			<?php print $field_tool_developers_rendered; ?>
+			<?php print $field_tool_techsupport_rendered; ?>
 		</div>
 		<div class="tool-screenshots">
 			<?php print $field_tool_screenshot_rendered; ?>

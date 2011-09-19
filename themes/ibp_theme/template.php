@@ -163,7 +163,14 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
   }
   
   // add css per node type
-  drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css');
+  $nodetype_css_path = drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css';
+  if (file_exists($nodetype_css_path)) {
+  	drupal_add_css($nodetype_css_path);
+  }
+  $nodetype_js_path = drupal_get_path('theme','ibp_theme').'/js/node-'.$node->type.'.js';
+  if (file_exists($nodetype_js_path)) {
+  	drupal_add_js($nodetype_js_path);
+  }
 
 	if ($node->type == 'training_page') {
 		// don't show training types in taxonomy links
