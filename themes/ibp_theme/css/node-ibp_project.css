@@ -1,0 +1,73 @@
+.field-label,
+.body-label,
+.crops-label,
+.keywords-label {
+	font-weight: bold;
+	float: left;
+	margin: 0 12px 0 0;
+	color: #777777;
+}
+
+.field-label:after,
+.body-label:after,
+.crops-label:after,
+.keywords-label:after {
+	content: ":";
+}
+
+.field-items,
+.node-body,
+.crops-items,
+.keywords-items {
+	color: #111111;
+}
+
+.field-ibp-project-collaborators .field-items {
+	margin-left: 110px;
+}
+
+.crops .crops-items {
+	margin-left: 70px;
+}
+
+.keywords .keywords-items {
+	margin-left: 56px;
+}
+
+.field-ibp-project-collaborators .field-item,
+.crops-item,
+.keywords-item {
+	display: inline;
+}
+
+.field-ibp-project-collaborators .field-item:after,
+.crops-item a:after,
+.keywords-item a:after {
+	content: ", ";
+}
+
+.field-ibp-project-collaborators .field-item:last-child:after,
+.crops-item:last-child a:after,
+.keywords-item:last-child a:after {
+	content: "";
+}
+
+.field,
+.crops,
+.keywords {
+	border-width: 0 0 4px 0;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	padding: 8px 0;
+}
+
+.node-body {
+	line-height: 18px;
+	text-align: justify;
+}
+
+.node-body p {
+	margin: 0.5em 0 1em;
+}

@@ -54,6 +54,308 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'typeauthor' => false,
 		),
 	);
+	$content['groups']  = array (
+		0 => 
+		array (
+			'label' => 'Project Proposal',
+			'group_type' => 'standard',
+			'settings' => 
+			array (
+				'form' => 
+				array (
+					'style' => 'fieldset_collapsed',
+					'description' => '',
+				),
+				'display' => 
+				array (
+					'description' => '',
+					'teaser' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'full' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					4 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					2 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					3 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'token' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'label' => 'above',
+				),
+			),
+			'weight' => '1',
+			'group_name' => 'group_proposal_files',
+		),
+		1 => 
+		array (
+			'label' => 'Project Reports',
+			'group_type' => 'standard',
+			'settings' => 
+			array (
+				'form' => 
+				array (
+					'style' => 'fieldset_collapsed',
+					'description' => '',
+				),
+				'display' => 
+				array (
+					'description' => '',
+					'teaser' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'full' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					4 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					2 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					3 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'token' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'label' => 'above',
+				),
+			),
+			'weight' => '2',
+			'group_name' => 'group_reports',
+		),
+		2 => 
+		array (
+			'label' => 'Project Publications',
+			'group_type' => 'standard',
+			'settings' => 
+			array (
+				'form' => 
+				array (
+					'style' => 'fieldset_collapsed',
+					'description' => '',
+				),
+				'display' => 
+				array (
+					'description' => '',
+					'teaser' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'full' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					4 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					2 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					3 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'token' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'label' => 'above',
+				),
+			),
+			'weight' => '3',
+			'group_name' => 'group_publications',
+		),
+		3 => 
+		array (
+			'label' => 'Project Products',
+			'group_type' => 'standard',
+			'settings' => 
+			array (
+				'form' => 
+				array (
+					'style' => 'fieldset_collapsed',
+					'description' => '',
+				),
+				'display' => 
+				array (
+					'description' => '',
+					'teaser' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'full' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					4 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					2 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					3 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'token' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'label' => 'above',
+				),
+			),
+			'weight' => '4',
+			'group_name' => 'group_products',
+		),
+		4 => 
+		array (
+			'label' => 'Project Datasets',
+			'group_type' => 'standard',
+			'settings' => 
+			array (
+				'form' => 
+				array (
+					'style' => 'fieldset_collapsed',
+					'description' => '',
+				),
+				'display' => 
+				array (
+					'description' => '',
+					'teaser' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'full' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					4 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					2 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					3 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'token' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'label' => 'above',
+				),
+			),
+			'weight' => '5',
+			'group_name' => 'group_datasets',
+		),
+		5 => 
+		array (
+			'label' => 'Project Media',
+			'group_type' => 'standard',
+			'settings' => 
+			array (
+				'form' => 
+				array (
+					'style' => 'fieldset_collapsed',
+					'description' => '',
+				),
+				'display' => 
+				array (
+					'description' => '',
+					'teaser' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'full' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					4 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					2 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					3 => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'token' => 
+					array (
+						'format' => 'fieldset',
+						'exclude' => 0,
+					),
+					'label' => 'above',
+				),
+			),
+			'weight' => '6',
+			'group_name' => 'group_media',
+		),
+	);
 	$content['fields']  = array (
 		0 => 
 		array (
@@ -62,7 +364,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'text',
 			'widget_type' => 'text_textfield',
 			'change' => 'Change basic information',
-			'weight' => -10,
+			'weight' => '-6',
 			'rows' => 5,
 			'size' => '60',
 			'description' => '',
@@ -143,7 +445,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'userreference',
 			'widget_type' => 'userreference_autocomplete',
 			'change' => 'Change basic information',
-			'weight' => -9,
+			'weight' => '-5',
 			'autocomplete_match' => 'contains',
 			'size' => '60',
 			'reverse_link' => 0,
@@ -246,7 +548,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'text',
 			'widget_type' => 'text_textfield',
 			'change' => 'Change basic information',
-			'weight' => -8,
+			'weight' => '-4',
 			'rows' => 5,
 			'size' => '60',
 			'description' => 'If the PI is not an IBP user, then simply enter the person\'s name.',
@@ -337,7 +639,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'userreference',
 			'widget_type' => 'userreference_autocomplete',
 			'change' => 'Change basic information',
-			'weight' => -7,
+			'weight' => '-3',
 			'autocomplete_match' => 'contains',
 			'size' => '60',
 			'reverse_link' => 0,
@@ -440,7 +742,7 @@ function _ibp_projects_ibp_project_content_type_def() {
 			'type' => 'text',
 			'widget_type' => 'text_textfield',
 			'change' => 'Change basic information',
-			'weight' => -6,
+			'weight' => '-2',
 			'rows' => 5,
 			'size' => '60',
 			'description' => 'Enter any project collaborators that are not IBP users.',
@@ -524,18 +826,532 @@ function _ibp_projects_ibp_project_content_type_def() {
 				),
 			),
 		),
+		5 => 
+		array (
+			'label' => 'Proposal Files',
+			'field_name' => 'ibp_project_proposal_file',
+			'type' => 'filefield',
+			'widget_type' => 'filefield_widget',
+			'change' => 'Change basic information',
+			'weight' => '10',
+			'file_extensions' => 'txt',
+			'progress_indicator' => 'bar',
+			'file_path' => '',
+			'max_filesize_per_file' => '',
+			'max_filesize_per_node' => '',
+			'description' => '',
+			'group' => 'group_proposal_files',
+			'required' => 0,
+			'multiple' => '1',
+			'list_field' => '0',
+			'list_default' => 1,
+			'description_field' => '1',
+			'op' => 'Save field settings',
+			'module' => 'filefield',
+			'widget_module' => 'filefield',
+			'columns' => 
+			array (
+				'fid' => 
+				array (
+					'type' => 'int',
+					'not null' => false,
+					'views' => true,
+				),
+				'list' => 
+				array (
+					'type' => 'int',
+					'size' => 'tiny',
+					'not null' => false,
+					'views' => true,
+				),
+				'data' => 
+				array (
+					'type' => 'text',
+					'serialize' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
+		6 => 
+		array (
+			'label' => 'Project Report Files',
+			'field_name' => 'ibp_project_report_file',
+			'type' => 'filefield',
+			'widget_type' => 'filefield_widget',
+			'change' => 'Change basic information',
+			'weight' => '10',
+			'file_extensions' => '',
+			'progress_indicator' => 'bar',
+			'file_path' => '',
+			'max_filesize_per_file' => '',
+			'max_filesize_per_node' => '',
+			'description' => '',
+			'group' => 'group_reports',
+			'required' => 0,
+			'multiple' => '1',
+			'list_field' => '0',
+			'list_default' => 1,
+			'description_field' => '1',
+			'op' => 'Save field settings',
+			'module' => 'filefield',
+			'widget_module' => 'filefield',
+			'columns' => 
+			array (
+				'fid' => 
+				array (
+					'type' => 'int',
+					'not null' => false,
+					'views' => true,
+				),
+				'list' => 
+				array (
+					'type' => 'int',
+					'size' => 'tiny',
+					'not null' => false,
+					'views' => true,
+				),
+				'data' => 
+				array (
+					'type' => 'text',
+					'serialize' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
+		7 => 
+		array (
+			'label' => 'Project Publication Files',
+			'field_name' => 'ibp_project_publication_file',
+			'type' => 'filefield',
+			'widget_type' => 'filefield_widget',
+			'change' => 'Change basic information',
+			'weight' => '11',
+			'file_extensions' => '',
+			'progress_indicator' => 'bar',
+			'file_path' => '',
+			'max_filesize_per_file' => '',
+			'max_filesize_per_node' => '',
+			'description' => '',
+			'group' => 'group_publications',
+			'required' => 0,
+			'multiple' => '1',
+			'list_field' => '0',
+			'list_default' => 1,
+			'description_field' => '1',
+			'op' => 'Save field settings',
+			'module' => 'filefield',
+			'widget_module' => 'filefield',
+			'columns' => 
+			array (
+				'fid' => 
+				array (
+					'type' => 'int',
+					'not null' => false,
+					'views' => true,
+				),
+				'list' => 
+				array (
+					'type' => 'int',
+					'size' => 'tiny',
+					'not null' => false,
+					'views' => true,
+				),
+				'data' => 
+				array (
+					'type' => 'text',
+					'serialize' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
+		8 => 
+		array (
+			'label' => 'Project Product Files',
+			'field_name' => 'ibp_project_product_file',
+			'type' => 'filefield',
+			'widget_type' => 'filefield_widget',
+			'change' => 'Change basic information',
+			'weight' => '12',
+			'file_extensions' => '',
+			'progress_indicator' => 'bar',
+			'file_path' => '',
+			'max_filesize_per_file' => '',
+			'max_filesize_per_node' => '',
+			'description' => '',
+			'group' => 'group_products',
+			'required' => 0,
+			'multiple' => '1',
+			'list_field' => '0',
+			'list_default' => 1,
+			'description_field' => '1',
+			'op' => 'Save field settings',
+			'module' => 'filefield',
+			'widget_module' => 'filefield',
+			'columns' => 
+			array (
+				'fid' => 
+				array (
+					'type' => 'int',
+					'not null' => false,
+					'views' => true,
+				),
+				'list' => 
+				array (
+					'type' => 'int',
+					'size' => 'tiny',
+					'not null' => false,
+					'views' => true,
+				),
+				'data' => 
+				array (
+					'type' => 'text',
+					'serialize' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
+		9 => 
+		array (
+			'label' => 'Project Dataset Files',
+			'field_name' => 'ibp_project_dataset_file',
+			'type' => 'filefield',
+			'widget_type' => 'filefield_widget',
+			'change' => 'Change basic information',
+			'weight' => '13',
+			'file_extensions' => '',
+			'progress_indicator' => 'bar',
+			'file_path' => '',
+			'max_filesize_per_file' => '',
+			'max_filesize_per_node' => '',
+			'description' => '',
+			'group' => 'group_datasets',
+			'required' => 0,
+			'multiple' => '1',
+			'list_field' => '0',
+			'list_default' => 1,
+			'description_field' => '1',
+			'op' => 'Save field settings',
+			'module' => 'filefield',
+			'widget_module' => 'filefield',
+			'columns' => 
+			array (
+				'fid' => 
+				array (
+					'type' => 'int',
+					'not null' => false,
+					'views' => true,
+				),
+				'list' => 
+				array (
+					'type' => 'int',
+					'size' => 'tiny',
+					'not null' => false,
+					'views' => true,
+				),
+				'data' => 
+				array (
+					'type' => 'text',
+					'serialize' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'default',
+					'exclude' => 0,
+				),
+			),
+		),
+		10 => 
+		array (
+			'label' => 'Project Images',
+			'field_name' => 'ibp_project_image',
+			'type' => 'filefield',
+			'widget_type' => 'imagefield_widget',
+			'change' => 'Change basic information',
+			'weight' => '14',
+			'file_extensions' => 'png gif jpg jpeg',
+			'progress_indicator' => 'bar',
+			'file_path' => '',
+			'max_filesize_per_file' => '',
+			'max_filesize_per_node' => '',
+			'max_resolution' => 0,
+			'min_resolution' => 0,
+			'custom_alt' => 0,
+			'alt' => '',
+			'custom_title' => 0,
+			'title_type' => 'textfield',
+			'title' => '',
+			'use_default_image' => 0,
+			'default_image_upload' => '',
+			'default_image' => NULL,
+			'description' => '',
+			'group' => 'group_media',
+			'required' => 0,
+			'multiple' => '1',
+			'list_field' => '0',
+			'list_default' => 1,
+			'description_field' => '1',
+			'op' => 'Save field settings',
+			'module' => 'filefield',
+			'widget_module' => 'imagefield',
+			'columns' => 
+			array (
+				'fid' => 
+				array (
+					'type' => 'int',
+					'not null' => false,
+					'views' => true,
+				),
+				'list' => 
+				array (
+					'type' => 'int',
+					'size' => 'tiny',
+					'not null' => false,
+					'views' => true,
+				),
+				'data' => 
+				array (
+					'type' => 'text',
+					'serialize' => true,
+					'views' => true,
+				),
+			),
+			'display_settings' => 
+			array (
+				'label' => 
+				array (
+					'format' => 'above',
+					'exclude' => 0,
+				),
+				'teaser' => 
+				array (
+					'format' => 'image_plain',
+					'exclude' => 0,
+				),
+				'full' => 
+				array (
+					'format' => 'image_plain',
+					'exclude' => 0,
+				),
+				4 => 
+				array (
+					'format' => 'image_plain',
+					'exclude' => 0,
+				),
+				2 => 
+				array (
+					'format' => 'image_plain',
+					'exclude' => 0,
+				),
+				3 => 
+				array (
+					'format' => 'image_plain',
+					'exclude' => 0,
+				),
+				'token' => 
+				array (
+					'format' => 'image_plain',
+					'exclude' => 0,
+				),
+			),
+		),
 	);
 	$content['extra']  = array (
-		'title' => '-5',
-		'body_field' => '2',
-		'revision_information' => '6',
-		'author' => '5',
-		'options' => '7',
-		'comment_settings' => '8',
-		'menu' => '3',
-		'taxonomy' => '-3',
-		'path' => '4',
-		'detailed_question' => '9',
+		'title' => '-7',
+		'body_field' => '-1',
+		'revision_information' => '10',
+		'author' => '9',
+		'options' => '11',
+		'comment_settings' => '12',
+		'menu' => '7',
+		'taxonomy' => '0',
+		'path' => '8',
+		'detailed_question' => '13',
 	);
 
 	return $content;

@@ -239,7 +239,25 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 	} else if ($form_id == 'contact_mail_user') {
 		global $user;
 		drupal_set_title('Contact ' . $user->profile_first_name . ' ' . $user->profile_last_name);
+	} else if ($form_id == 'clade_page_node_form') {
+		$form['#after_build'][] = 'ibphelper_clade_page_node_form_after_build';
+	} else if ($form_id == 'ibp_tool_node_form') {
+		foreach ($form['taxonomy'] as $vid => $field) {
+			if ($field['#title'] == 'IBP tools category') {
+				$form['taxonomy'][$vid]['#required'] = 1;
+			}
+		}
 	}
+}
+
+function ibphelper_clade_page_node_form_after_build($form, &$form_state) {
+	if ($form['group_image_info']['field_clade_image'][0]['#default_value']['fid']) {
+		$form['group_image_info']['#collapsed'] = 0;
+	}
+	if ($form['group_file_info']['field_clade_file'][0]['#default_value']['fid']) {
+		$form['group_file_info']['#collapsed'] = 0;
+	}
+	return $form;
 }
 
 // function ibphelper_link_alter(&$links, $node, $comment = NULL) {

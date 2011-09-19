@@ -300,6 +300,8 @@ $handler->override_option('cache', array(
   'type' => 'none',
 ));
 $handler->override_option('title', '%1 Projects');
+$handler->override_option('empty', 'There are no projects for this Crop.');
+$handler->override_option('empty_format', '2');
 $handler->override_option('use_pager', '1');
 $handler->override_option('use_more', 0);
 $handler->override_option('use_more_always', 0);
