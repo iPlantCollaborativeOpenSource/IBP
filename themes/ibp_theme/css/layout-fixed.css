@@ -80,6 +80,16 @@ body.admin-menu {
 	top: -8px;
 }
 
+.maintenance_page #messages-wrapper,
+.maintenance_page #main-topper,
+.maintenance_page #main-wrapper {
+	top: 16px;
+}
+
+.maintenance_page #columns {
+	min-height: 200px;
+}
+
 #main,
 #columns {
 	float: left;

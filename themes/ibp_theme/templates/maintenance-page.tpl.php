@@ -28,18 +28,23 @@
     <div id="header"><div class="section clearfix">
 
       <?php if ($logo): ?>
-        <a href="<?php print $base_path; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" /></a>
+        <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" /></a>
       <?php endif; ?>
-
+			
       <?php if ($site_name || $site_slogan): ?>
         <div id="name-and-slogan">
           <?php if ($site_name): ?>
-            <div id="site-name"><strong>
-              <a href="<?php print $base_path; ?>" title="<?php print t('Home'); ?>" rel="home">
-              <?php print $site_name; ?>
-              </a>
-            </strong></div>
+            <?php if ($title): ?>
+              <div id="site-name"><strong>
+                <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
+              </strong></div>
+            <?php else: /* Use h1 when the content title is empty */ ?>
+              <h1 id="site-name">
+                <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
+              </h1>
+            <?php endif; ?>
           <?php endif; ?>
+
           <?php if ($site_slogan): ?>
             <div id="site-slogan"><?php print $site_slogan; ?></div>
           <?php endif; ?>
@@ -47,43 +52,64 @@
       <?php endif; ?>
 
       <?php print $header; ?>
+      
+			<?php if ($navigation): ?>
+        <div id="navigation">
+          <?php print $navigation; ?>
+          <div class="subnavigation"></div>
+        </div><!-- /#navigation -->
+      <?php endif; ?>
 
     </div></div><!-- /.section, /#header -->
 
-    <div id="main-wrapper"><div id="main" class="clearfix<?php if ($navigation) { print ' with-navigation'; } ?>">
-
-      <div id="content" class="column"><div class="section">
-
-        <?php print $highlight; ?>
-
-        <?php if ($title): ?>
-          <h1 class="title"><?php print $title; ?></h1>
-        <?php endif; ?>
-        <?php if ($messages): print $messages; endif; ?>
-
-        <?php print $content_top; ?>
-
-        <div id="content-area">
-          <?php print $content; ?>
-        </div>
-
-        <?php print $content_bottom; ?>
-
-      </div></div><!-- /.section, /#content -->
-
-      <?php if ($navigation): ?>
-        <div id="navigation"><div class="section clearfix">
-
-          <?php print $navigation; ?>
-
-        </div></div><!-- /.section, /#navigation -->
-      <?php endif; ?>
-
-      <?php print $sidebar_first; ?>
-
-      <?php print $sidebar_second; ?>
-
-    </div></div><!-- /#main, /#main-wrapper -->
+		<div id="main-topper"><div class="section clearfix">
+			<?php if ($title): ?>
+				<h1 class="title">
+					<?php print $title; ?>
+					<?php if ($my_pages_form): ?>
+						<?php print $my_pages_form; ?>
+					<?php endif; ?>
+				</h1>
+			<?php endif; ?>
+			<?php print $breadcrumb; ?>
+			<?php if ($tabs): ?>
+				<div class="tabs"><?php print $tabs; ?></div>
+			<?php endif; ?>
+		</div></div>
+		
+    <div id="main-wrapper">
+    	<div id="main">
+				<div id="columns">
+					<div id="content-wrapper">
+						<div id="content">
+							<div class="section">
+								<?php if ($mission): ?>
+									<div id="mission"><?php print $mission; ?></div>
+								<?php endif; ?>
+				
+								<?php print $highlight; ?>
+				
+								<?php print $help; ?>
+				
+								<?php print $content_top; ?>
+				
+								<div id="content-area">
+									<?php print $content; ?>
+								</div>
+				
+								<?php print $content_bottom; ?>
+				
+								<?php if ($feed_icons): ?>
+									<div class="feed-icons"><?php print $feed_icons; ?></div>
+								<?php endif; ?>
+							</div>
+						</div>
+					</div>
+					<?php print $sidebar_first; ?>
+					<?php print $sidebar_second; ?>
+				</div><!-- /.section, /#content -->
+    	</div>
+    </div><!-- /#main, /#main-wrapper -->
 
     <?php if ($footer || $footer_message): ?>
       <div id="footer"><div class="section">
