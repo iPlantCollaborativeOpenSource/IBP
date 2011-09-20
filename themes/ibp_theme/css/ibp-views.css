@@ -86,17 +86,22 @@
 }
 
 .view-clade-post-summary .views-field-name-1,
-.view-ibp-projects-summary .views-field-ibp-project-pi-uid {
+.view-ibp-projects-summary .views-field-ibp-project-pi-uid,
+.view-ibp-projects-summary .views-field-ibp-project-pi-text-value {
+	color: #888888;
 	width: 120px;
 	font-size: 12px;
 	padding-right: 10px;
 }
 
-.view-ibp-projects-summary .views-field-ibp-project-pi-uid {
+.view-ibp-projects-summary .views-field-ibp-project-pi-uid,
+.view-ibp-projects-summary .views-field-ibp-project-pi-text-value {
 	padding-right: 0;
 }
 
-.view-ibp-projects-summary .views-field-ibp-project-collaborators-uid {
+.view-ibp-projects-summary .views-field-ibp-project-collaborators-uid,
+.view-ibp-projects-summary .views-field-ibp-project-collaborators-text-value {
+	color: #888888;
 	font-size: 12px;
 	width: 65px;
 	padding-right: 5px;
