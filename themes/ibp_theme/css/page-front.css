@@ -133,11 +133,19 @@ ul.tabs li:first-child a {
 #front-wrapper .column-section {
 	font-size: 12px;
 	text-align: justify;
-	border-bottom: 1px dashed #666666;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-width: 0 0 4px 0;
 }
 
 #front-wrapper .column-section:last-child {
-	border-bottom: none;
+	border: none;
+	-moz-border-image: none;
+	-o-border-image: none;
+	-webkit-border-image: none;
+	border-image: none;
 }
 
 a.go {

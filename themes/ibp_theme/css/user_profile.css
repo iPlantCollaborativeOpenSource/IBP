@@ -5,13 +5,21 @@
 .profile-item {
 	font-size: 1.1em;
 	line-height: 2em;
-	border-bottom: 1px dashed #333333;
 	margin-left: 220px;
 	padding: 6px 0;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-width: 0 0 4px 0;
 }
 
 .profile-item:last-child {
 	border: none;
+	-moz-border-image: none;
+	-o-border-image: none;
+	-webkit-border-image: none;
+	border-image: none;
 }
 
 .profile-name {

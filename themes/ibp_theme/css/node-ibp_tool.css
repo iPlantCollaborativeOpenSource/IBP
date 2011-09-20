@@ -30,8 +30,6 @@ h2.title a {
 .field-field-tool-dl-link,
 .field-field-tool-developers,
 .field-field-tool-techsupport {
-	border-style: dashed;
-	border-color: #141414;
 	border-width: 0 0 4px 0;
 	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
 	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;

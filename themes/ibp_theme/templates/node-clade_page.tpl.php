@@ -88,7 +88,7 @@
     </span></div>
   <?php endif; ?>
 
-  <div class="content">
+  <div class="content clearfix">
   	<?php if (isset($node->field_clade_image[0]['fid'])): ?>
   		<div class="clade-page-image">
   			<?php print $node->field_clade_image[0]['view']; ?>

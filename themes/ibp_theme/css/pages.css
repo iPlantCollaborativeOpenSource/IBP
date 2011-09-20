@@ -326,6 +326,22 @@ ul.links li {
                    and for any blocks placed in the footer region */ {
 }
 
+.region-page-bottom {
+}
+
+.region-page-bottom:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	height: 0px;
+}
+
+.region-page-bottom .block {
+	float: left;
+	width: 33%;
+}
+
 .region-footer {
 }
 
