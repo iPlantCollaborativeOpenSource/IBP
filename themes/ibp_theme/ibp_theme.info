@@ -48,6 +48,7 @@ stylesheets[all][]   = css/forums.css
 stylesheets[all][]   = css/columns.css
 stylesheets[all][]   = css/flags.css
 stylesheets[all][]   = js/fancybox/jquery.fancybox-1.3.4.css
+stylesheets[all][]   = css/jquery-ui-themes/smoothness/ui.all.css
 
   ; Set the conditional stylesheets that are processed by IE.
 conditional-stylesheets[if IE][all][]       = css/ie.css

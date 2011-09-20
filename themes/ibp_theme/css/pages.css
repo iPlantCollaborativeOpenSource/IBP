@@ -16,7 +16,7 @@ body {
 	background-color: #fbf9f3;
 	background-attachment: scroll;
 	background-position: 50% 0;
-	background-repeat: no-repeat;
+	background-repeat: repeat-x;
 }
 
 body.admin-menu {
@@ -304,8 +304,13 @@ ul.links li {
 }
 
 .region-sidebar-second .section > div {
-	padding-bottom: 12px;
-	border-bottom: 1px dashed #141414;
+	padding: 12px 0;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-width: 0 0 4px 0;
+	margin-bottom: 0;
 }
 
 /*

@@ -16,7 +16,7 @@ CKEDITOR.editorConfig = function(config) {
   // The minimum editor width, in pixels, when resizing it with the resize handle.
   config.resize_minWidth = 450;
   
-  config.colorButton_colors = '000,111,333,666,888,ccc,eee,fff,095392,0b65b2,0d77d2,1189f0,3199f2,51a9f4,71b9f6,91c8f8,1a4d1a,262,2b802b,393,3bb23b,4cc34c,6c6,7fd47f,f00,f22,f44,f66,f88,faa,fcc,fee,ff0,ff2,ff4,ff6,ff8,ffa,ffc,ff3';
+  config.colorButton_colors = '000,111,333,666,888,ccc,eee,fff,00496f,006091,0076b3,008dd5,00A3F7,1ab1ff,3cbdff,5ec8ff,1a4d1a,262,2b802b,393,3bb23b,4cc34c,6c6,7fd47f,f00,f22,f44,f66,f88,faa,fcc,fee,ff0,ff2,ff4,ff6,ff8,ffa,ffc,ff3';
 
   // Protect PHP code tags (<?...?>) so CKEditor will not break them when
   // switching from Source to WYSIWYG.
