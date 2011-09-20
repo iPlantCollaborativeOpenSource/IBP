@@ -82,7 +82,7 @@ $handler->override_option('fields', array(
     'field' => 'title',
     'relationship' => 'none',
   ),
-  'ibp_project_number_value' => array(
+  'ibp_project_pi_uid' => array(
     'label' => '',
     'alter' => array(
       'alter_text' => 0,
@@ -115,9 +115,9 @@ $handler->override_option('fields', array(
       'multiple_reversed' => FALSE,
     ),
     'exclude' => 0,
-    'id' => 'ibp_project_number_value',
-    'table' => 'node_data_ibp_project_number',
-    'field' => 'ibp_project_number_value',
+    'id' => 'ibp_project_pi_uid',
+    'table' => 'node_data_ibp_project_pi',
+    'field' => 'ibp_project_pi_uid',
     'relationship' => 'none',
   ),
   'ibp_project_collaborators_uid' => array(
@@ -158,7 +158,7 @@ $handler->override_option('fields', array(
     'field' => 'ibp_project_collaborators_uid',
     'relationship' => 'none',
   ),
-  'ibp_project_pi_uid' => array(
+  'ibp_project_number_value' => array(
     'label' => '',
     'alter' => array(
       'alter_text' => 0,
@@ -191,9 +191,9 @@ $handler->override_option('fields', array(
       'multiple_reversed' => FALSE,
     ),
     'exclude' => 0,
-    'id' => 'ibp_project_pi_uid',
-    'table' => 'node_data_ibp_project_pi',
-    'field' => 'ibp_project_pi_uid',
+    'id' => 'ibp_project_number_value',
+    'table' => 'node_data_ibp_project_number',
+    'field' => 'ibp_project_number_value',
     'relationship' => 'none',
   ),
 ));
@@ -293,13 +293,7 @@ $handler->override_option('use_more_always', 0);
 $handler->override_option('use_more_text', 'View all projects');
 $handler->override_option('distinct', 1);
 $handler->override_option('row_options', array(
-  'inline' => array(
-    'tid' => 'tid',
-    'title' => 'title',
-    'ibp_project_pi_uid' => 'ibp_project_pi_uid',
-    'ibp_project_collaborators_uid' => 'ibp_project_collaborators_uid',
-    'ibp_project_number_value' => 'ibp_project_number_value',
-  ),
+  'inline' => array(),
   'separator' => '',
   'hide_empty' => 0,
 ));

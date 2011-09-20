@@ -1,38 +1,122 @@
-.view-clade-forum-summary,
-.view-clade-post-summary,
-.view-ibp-projects-summary {
-
+.view-clade-forum-summary.clade-context .views-field-name,
+.view-clade-post-summary.clade-context .views-field-name,
+.view-ibp-projects-summary.clade-context .views-field-tid {
+	display: none;
 }
 
 .view-clade-forum-summary .views-row,
 .view-clade-post-summary .views-row,
 .view-ibp-projects-summary .views-row {
+	position: relative;
 	clear: both;
 	padding: 12px 0;
-	border-color: #888888;
-	border-style: dashed;
-	border-width: 1px 0 0;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-width: 0 0 4px 0;
 }
 
-.view-clade-forum-summary .field-content,
-.view-clade-post-summary .field-content,
-.view-ibp-projects-summary .field-content {
-	margin: 0 0 0 12px;
+.view-clade-forum-summary .views-row:last-child,
+.view-clade-post-summary .views-row:last-child,
+.view-ibp-projects-summary .views-row:last-child {
+	border: none;
+	-moz-border-image: none;
+	-o-border-image: none;
+	-webkit-border-image: none;
+	border-image: none;
 }
 
-.view-clade-forum-summary .field-content:first-child,
-.view-clade-post-summary .field-content:first-child,
-.view-ibp-projects-summary .field-content:first-child {
-	margin: 0;
+.view-clade-forum-summary .views-row:after,
+.view-clade-post-summary .views-row:after,
+.view-ibp-projects-summary .views-row:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	height: 0px;
+}
+
+.view-clade-forum-summary .views-row > div,
+.view-clade-post-summary .views-row > div,
+.view-ibp-projects-summary .views-row > div {
+	float: left;
+}
+
+.view-clade-forum-summary .views-field-name,
+.view-clade-post-summary .views-field-name,
+.view-ibp-projects-summary .views-field-tid {
+	font-size: 12px;
+	text-transform: uppercase;
+	width: 74px;
+	padding-right: 5px;
+	border-color: #cccccc;
+	border-style: solid;
+	border-width: 0 1px 0 0;
+}
+
+.view-clade-forum-summary .views-field-title {
+	width: 530px;
+	padding: 0 10px 0 10px;
+}
+
+.view-clade-post-summary .views-field-title {
+	width: 400px;
+	padding: 0 10px 0 10px;
+}
+
+.view-ibp-projects-summary .views-field-title {
+	width: 340px;
+	padding: 0 10px 0 10px;
+}
+
+.view-clade-forum-summary.clade-context .views-field-title {
+	width: 620px;
+	padding: 0 10px 0 0;
+}
+
+.view-clade-post-summary.clade-context .views-field-title {
+	width: 490px;
+	padding: 0 10px 0 0;
+}
+
+.view-ibp-projects-summary.clade-context .views-field-title {
+	width: 430px;
+	padding: 0 10px 0 0;
+}
+
+.view-clade-post-summary .views-field-name-1,
+.view-ibp-projects-summary .views-field-ibp-project-pi-uid {
+	width: 120px;
+	font-size: 12px;
+	padding-right: 10px;
+}
+
+.view-ibp-projects-summary .views-field-ibp-project-pi-uid {
+	padding-right: 0;
+}
+
+.view-ibp-projects-summary .views-field-ibp-project-collaborators-uid {
+	font-size: 12px;
+	width: 65px;
+	padding-right: 5px;
+}
+
+.view-ibp-projects-summary .views-field-ibp-project-number-value,
+.view-clade-post-summary .views-field-comment-count,
+.view-clade-forum-summary .views-field-comment-count {
+	font-size: 12px;
+	width: 50px;
+	padding-left: 9px;
+	border-color: #cccccc;
+	border-style: solid;
+	border-width: 0 0 0 1px;
 }
 
 .view-clade-forum-summary .views-field-name a,
 .view-clade-post-summary .views-field-name a {
 	color: #888888;
 	font-weight: bold;
-	padding: 0 12px 0 0;
-	min-width: 100px;
-	display: inline-block;
 }
 
 .view-clade-forum-summary .views-field-name a:hover,
@@ -41,56 +125,30 @@
 	color: #aaaaaa;
 }
 
-.view-clade-forum-summary .views-field-name a:after,
-.view-clade-post-summary .views-field-name a:after {
-	content: "|";
-	color: #cccccc;
-	float: right;
-}
-
 .view-clade-forum-summary .views-field-title,
 .view-clade-post-summary .views-field-title,
 .view-ibp-projects-summary .views-field-title {
 	font-weight: bold;
 }
 
-.view-clade-forum-summary .views-field-name-1,
-.view-clade-post-summary .views-field-name-1,
-.view-ibp-projects-summary .views-field-ibp-project-pi-uid,
-.view-ibp-projects-summary .views-field-ibp-project-collaborators-uid,
-.view-ibp-projects-summary .views-field-ibp-project-number-value {
-	float: right;
-}
-
-.view-ibp-projects-summary .views-field-ibp-project-number-value .field-content {
-	min-width: 50px;
-	margin: 0 0 0 10px;
-}
-
-.view-clade-forum-summary .views-field-comment-count,
-.view-clade-post-summary .views-field-comment-count,
-.view-ibp-projects-summary .views-field-ibp-project-number-value {
-	float: right;
-	text-align: right;
-	min-width: 50px;
-	padding: 0 0 0 10px;
-}
-
-.view-clade-forum-summary .views-field-comment-count .field-content,
-.view-clade-post-summary .views-field-comment-count .field-content {
+.view-clade-forum-summary .views-field-comment-count .has-comments,
+.view-clade-post-summary .views-field-comment-count .has-comments {
 	color: #00A3F7;
-	margin: 0 0 0 15px;
-	padding: 0 0 0 35px;
 	background-image: url(../images/forum-new.png);
-	background-position: left center;
+	background-position: 5px center;
 	background-repeat: no-repeat;
+	display: block;
+	text-align: right;
 }
 
-.view-clade-forum-summary .views-field-comment-count:before,
-.view-clade-post-summary .views-field-comment-count:before,
-.view-ibp-projects-summary .views-field-ibp-project-number-value:before {
-	content: "|";
-	color: #cccccc;
+.view-clade-forum-summary .views-field-comment-count .no-comments,
+.view-clade-post-summary .views-field-comment-count .no-comments {
+	color: #00A3F7;
+	background-image: url(../images/forum-default.png);
+	background-position: 5px center;
+	background-repeat: no-repeat;
+	display: block;
+	text-align: right;
 }
 
 .view-clade-forum-summary .view-content,
@@ -134,13 +192,6 @@
 	list-style: none;
 }
 
-.view-ibp-projects-summary .item-list ul li:after {
-	content: "|";
-	color: #cccccc;
-	font-weight: bold;
-	padding: 0 6px;
-}
-
 .view-ibp-projects-summary .item-list ul li a {
 	color: #888888;
 	font-weight: bold;
@@ -151,14 +202,6 @@
 	color: #888888;
 }
 
-.views-field-ibp-project-collaborators-uid {
-	padding: 0 3px;
-}
-
 .views-field-ibp-project-number-value .field-content:before {
 	content: "#";
-}
-
-.views-field-ibp-project-collaborators-uid div {
-	display: inline;
 }

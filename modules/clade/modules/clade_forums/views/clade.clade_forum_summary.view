@@ -91,7 +91,7 @@ $handler->override_option('fields', array(
       'strip_tags' => 0,
     ),
     'empty' => '',
-    'hide_empty' => 1,
+    'hide_empty' => 0,
     'empty_zero' => 1,
     'set_precision' => FALSE,
     'precision' => 0,
@@ -226,11 +226,7 @@ $handler->override_option('use_more', 1);
 $handler->override_option('use_more_always', 0);
 $handler->override_option('use_more_text', 'View all discussions');
 $handler->override_option('row_options', array(
-  'inline' => array(
-    'name' => 'name',
-    'title' => 'title',
-    'comment_count' => 'comment_count',
-  ),
+  'inline' => array(),
   'separator' => '',
   'hide_empty' => 0,
 ));

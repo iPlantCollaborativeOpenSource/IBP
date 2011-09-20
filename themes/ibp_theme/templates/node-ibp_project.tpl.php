@@ -153,6 +153,7 @@
 			</div>
 		</div>
 		
+		<?php if (count($keywords)) : ?>
 		<div class="keywords">
 			<div class="keywords-label">Traits</div>
 			<div class="keywords-items">
@@ -163,6 +164,7 @@
 				<?php endforeach; ?>
 			</div>
 		</div>
+		<?php endif; ?>
 		
   	<div class="node-body">
   		<div class="body-label"><?php print $node->content['#content_extra_fields']['body_field']['label']; ?></div>

@@ -21,7 +21,11 @@
   */
 ?>
 <?php
-	if ($num = preg_match_all('/field-item-\d+/', $output, $matches)) {
-		print "+ $num Others";
+	if ($output) {
+		if ($num = preg_match_all('/field-item-\d+/', $output, $matches)) {
+			print "+ $num Others";
+		} else {
+			print "+ 1 Other";
+		}
 	}
 ?>

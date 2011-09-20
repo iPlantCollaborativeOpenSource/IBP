@@ -21,7 +21,11 @@
   */
 ?>
 <?php
-	if (empty($view->args)) {
-		print $output;
+	if ($output) {
+		$class = "has-comments";
+	} else {
+		$class = "no-comments";
+		$output = "&nbsp;";
 	}
 ?>
+<span class="<?php print $class; ?>"><?php print $output; ?></span>
