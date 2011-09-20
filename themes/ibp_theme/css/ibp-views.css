@@ -210,3 +210,56 @@
 .views-field-ibp-project-number-value .field-content:before {
 	content: "#";
 }
+
+.view-events-calendar .calendar-calendar ul.links {
+	display: none;
+}
+
+.view-events-calendar .feed-icon {
+	margin-top: 3px;
+}
+
+.view-events-calendar .month-view .week {
+	display: none;
+}
+
+.view-content .calendar-calendar .date-prev,
+.view-content .calendar-calendar .date-next {
+	background: none;
+  position: absolute;
+  top: 8px;
+  width: auto;
+  z-index: 1;
+  font-size: 12px;
+}
+
+.view-content .calendar-calendar .date-prev {
+	text-align: right;
+	left: 0px;
+	right: auto;
+}
+
+.view-content .calendar-calendar .date-next {
+	text-align: left;
+	right: 0px;
+}
+
+.view-content .calendar-calendar .date-next a {
+	background-position: left center;
+	padding-right: 0;
+	padding-left: 18px;
+}
+
+.view-content .calendar-calendar .date-nav {
+	margin-bottom: -10px;
+}
+
+.view-content .calendar-calendar .date-heading {
+  background-color: #dfdfdf;
+	-o-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	padding: 5px 0;
+	text-shadow: 1px 1px 0px #eeeeee;
+}

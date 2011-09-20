@@ -441,3 +441,9 @@ function ibp_theme_preprocess_user_login(&$vars) {
 	$vars['form'] = drupal_render($vars['form']);
 	$vars['pass_reset_url'] = 'https://auth.iplantcollaborative.org/account_management/request_reset.py';
 }
+
+function ibp_theme_calendar_ical_icon($url) {
+  if ($image = theme('image', drupal_get_path('theme', 'ibp_theme') .'/images/ical.png', t('Add to calendar'), t('Add to calendar'))) {
+    return '<div style="text-align:right"><a href="'. check_url($url) .'" class="ical-icon" title="ical">'. $image .'</a></div>';
+  }
+}
