@@ -53,6 +53,7 @@ function ibphelper_menu() {
 function ibphelper_menu_alter(&$items)
 {
   unset($items['user/%user/imce']);
+  unset($items['clade/%clade/help']);
 }
 
 function ibphelper_theme() {

@@ -223,6 +223,12 @@
 	display: none;
 }
 
+.calendar-calendar th.days {
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: -1px;
+}
+
 .view-content .calendar-calendar .date-prev,
 .view-content .calendar-calendar .date-next {
 	background: none;
@@ -262,4 +268,9 @@
 	border-radius: 3px;
 	padding: 5px 0;
 	text-shadow: 1px 1px 0px #eeeeee;
+}
+
+.calendar-calendar td .inner div.day a {
+	color: #00A3F7;
+	text-decoration: underline;
 }

@@ -1,0 +1,6 @@
+; $Id$
+name = IBP Variety Releases
+description = "Adds variety release functionalities to crops/clades."
+package = "IBP"
+core = 6.x
+

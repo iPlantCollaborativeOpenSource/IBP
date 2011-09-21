@@ -19,7 +19,8 @@ function ibp_projects_perm() {
 			'create ibp_project',
 			'edit own ibp_project',
 			'edit any ibp_project',
-			'delete ibp_project',
+			'delete own ibp_project',
+			'delete any ibp_project',
 		);
 }
 
@@ -35,12 +36,16 @@ function ibp_projects_access($op, $node, $account) {
   	return user_access('create ibp_project');
   case 'update' :
   	if ($user->uid == $node->uid) {
-  		return user_access('edit own ibp_project');
+  		return user_access('edit own ibp_project') || user_access('edit any ibp_project');
   	} else {
   		return user_access('edit any ibp_project');
   	}
   case 'delete' :
-  	return user_access('delete ibp_project');
+		if ($user->uid == $node->uid) {
+			return user_access('delete own ibp_project') || user_access('delete any ibp_project');
+		} else {
+  		return user_access('delete any ibp_project');
+		}
   }
 }
 

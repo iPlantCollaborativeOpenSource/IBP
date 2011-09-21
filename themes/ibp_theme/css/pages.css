@@ -76,6 +76,7 @@ body.admin-menu {
 }
 
 #name-and-slogan /* Wrapper for website name and slogan */ {
+  display: none;
 }
 
 h1#site-name,

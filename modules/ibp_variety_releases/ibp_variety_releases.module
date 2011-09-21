@@ -1,0 +1,110 @@
+<?php
+
+function ibp_variety_releases_node_info() {
+  return array(
+		'ibp_variety_release' => array(
+			'name' => t('IBP Variety Releases'),
+			'module' => 'ibp_variety_releases',
+			'description' => 'A Variety Release within a crop or crops.',
+			'has_title' => TRUE,
+			'title_label' => 'Release Name',
+			'has_body' => TRUE,
+			'body_label' => 'Release Details',
+		),
+	);
+}
+
+function ibp_variety_releases_perm() {
+  return array(
+			'create ibp_variety_release',
+			'edit own ibp_variety_release',
+			'edit any ibp_variety_release',
+			'delete own ibp_variety_release',
+			'delete any ibp_variety_release',
+		);
+}
+
+/**
+ * Implementation of hook_access()
+ */
+function ibp_variety_releases_access($op, $node, $account) {
+  global $user;
+  switch ($op) {
+  case 'view' :
+  	return TRUE;
+  case 'create' :
+  	return user_access('create ibp_variety_release');
+  case 'update' :
+  	if ($user->uid == $node->uid) {
+  		return user_access('edit own ibp_variety_release') || user_access('edit any ibp_variety_release');
+  	} else {
+  		return user_access('edit any ibp_variety_release');
+  	}
+  case 'delete' :
+  	if ($user->uid == $node->uid) {
+  		return user_access('delete own ibp_variety_release') || user_access('delete any ibp_variety_release');
+  	} else {
+  		return user_access('delete any ibp_variety_release');
+  	}
+  }
+}
+
+function ibp_variety_releases_form(&$node, $form_state) {
+	$type = node_get_types('type', $node->type);
+	$form = array();
+	
+	$form['title'] = array(
+		'#title' => $type->title_label,
+		'#type' => 'textfield',
+		'#required' => TRUE,
+		'#default_value' => $node->nid ? $node->title : $form_state['values']['title'],
+		'#weight' => -20,
+	);
+	
+	$form['body'] = array(
+		'#title' => $type->body_label,
+		'#type' => 'textarea',
+		'#required' => TRUE,
+		'#default_value' => $node->nid ? $node->body : $form_state['values']['body'],
+	);
+	return $form;
+}
+
+function ibp_variety_releases_clade($op, $clade, $args=array()) {
+	if ($op == 'clade insert') {
+		$clade_menu = menu_get_item("clade/$clade->tid");
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/variety-releases',
+			'link_path' => "clade/$clade->tid/variety-releases",
+			'link_title' => $clade->name . ' variety releases',
+			'weight' => 11,
+			);
+		menu_link_save($menu);
+	}
+	// TODO delete?
+}
+
+function ibp_variety_releases_clade_details_items($clade) {
+	$items = array(
+	'variety_release_page' => array(
+		'data' => l(t('Variety Releases'), "clade/$clade->tid/variety-releases"),
+		'data-sort' => 3,
+		'class' => 'clade-details-item',
+		),
+	);
+	if (user_access('create ibp_variety_release')) {
+		$items['add_variety_release'] = array(
+			'data' => l(t('Add a new Variety Release'), "node/add/ibp-variety-release", array('query' => array('clades' => $clade->tid))),
+			'data-sort' => 13,
+			'class' => 'clade-details-item',
+		);
+	}
+	return $items;
+}
+
+
+function ibp_variety_releases_views_api() {
+  return array('api' => 2.0);
+}

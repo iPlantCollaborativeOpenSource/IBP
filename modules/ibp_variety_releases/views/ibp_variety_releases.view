@@ -1,6 +1,6 @@
 <?php
 $view = new view;
-$view->name = 'variety_releases';
+$view->name = 'ibp_variety_releases';
 $view->description = 'Variety Releases for Crop';
 $view->tag = 'ibp';
 $view->view_php = '';
@@ -89,7 +89,7 @@ $handler->override_option('filters', array(
   'type' => array(
     'operator' => 'in',
     'value' => array(
-      'variety_release' => 'variety_release',
+      'ibp_variety_release' => 'ibp_variety_release',
     ),
     'group' => '0',
     'exposed' => FALSE,

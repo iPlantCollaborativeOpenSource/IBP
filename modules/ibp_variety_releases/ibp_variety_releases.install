@@ -1,0 +1,13 @@
+<?php
+
+function ibp_variety_releases_install() {
+	variable_set("comment_ibp_variety_release", 0);
+
+	$vocab = taxonomy_vocabulary_load(variable_get('clade_vocabulary',0));
+	$vocab->nodes['ibp_variety_release'] = 'ibp_variety_release';
+	$values = (array) $vocab;
+	taxonomy_save_vocabulary($values);
+}
+
+function ibp_variety_releases_uninstall() {
+}
