@@ -170,6 +170,64 @@
   		<div class="body-label"><?php print $node->content['#content_extra_fields']['body_field']['label']; ?></div>
   		<?php print $node->content['body']['#value']; ?>
   	</div>
+  	
+  	<?php
+  		// proposals
+  		if ($ibp_project_proposal_file_rendered) : ?>
+	  		<h3>Project Proposal</h3>
+				<?php print $ibp_project_proposal_file_rendered; ?>
+  	<?php endif; ?>
+  	
+  	<?php
+  		// reports
+  		if ($ibp_project_report_file_rendered) : ?>
+	  		<h3>Project Reports</h3>
+				<?php print $ibp_project_proposal_file_rendered; ?>
+  	<?php endif; ?>
+  	
+  	<?php
+  		// publications
+  		if ($ibp_project_publication_file_rendered) : ?>
+	  		<h3>Project Publications</h3>
+				<?php print $ibp_project_proposal_file_rendered; ?>
+  	<?php endif; ?>
+  	
+  	<?php
+  		// products
+  		if ($ibp_project_product_file_rendered) : ?>
+	  		<h3>Project Products</h3>
+				<?php print $ibp_project_proposal_file_rendered; ?>
+  	<?php endif; ?>
+  	
+  	<?php
+  		// datasets
+  		if ($ibp_project_dataset_file_rendered) : ?>
+	  		<h3>Data sets for this project</h3>
+				<?php print $ibp_project_proposal_file_rendered; ?>
+  	<?php endif; ?>
+  	
+  	<?php if ($ibp_project_image_rendered) : ?>
+  		<h3>Media for this project</h3>
+  		<div class="project-media">
+  		<?php
+  			// media
+  			$first = 1;
+  			foreach ($ibp_project_image as $i => $image) {
+  				if ($i % 9 == 0) {
+  					if ($first) {
+  						$first = 0;
+  						print "<div>";
+  					} else {
+  						print "</div><div>";
+  					}
+  				}
+  				print $image['view'];
+  				print '<span class="image-desc">'.$image['data']['description'].'</span>';
+  			}
+			?>
+  		</div></div>
+  	<?php endif; ?>
+  	
   </div>
   
   <?php print $links; ?>

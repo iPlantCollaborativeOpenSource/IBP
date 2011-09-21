@@ -71,3 +71,78 @@
 .node-body p {
 	margin: 0.5em 0 1em;
 }
+
+.project-media a {
+	display: inline-block;
+	width: 60px;
+	height: 60px;
+	margin: 18px 18px 0 0;
+	-moz-box-shadow: 1px 1px 5px #333;
+	-webkit-box-shadow: 1px 1px 5px #333;
+	box-shadow: 1px 1px 5px #333;
+}
+
+.project-media span.image-desc {
+	display: none;
+}
+
+.project-media a:last-child {
+	margin: 18px 0 0 0;
+}
+
+.field-ibp-project-proposal-file,
+.field-ibp-project-report-file,
+.field-ibp-project-publication-file,
+.field-ibp-project-product-file,
+.field-ibp-project-dataset-file {
+	border-bottom: 1px solid #cacaca;
+}
+
+.field-ibp-project-proposal-file .field-label,
+.field-ibp-project-report-file .field-label,
+.field-ibp-project-publication-file .field-label,
+.field-ibp-project-product-file .field-label,
+.field-ibp-project-dataset-file .field-label {
+	display: none;
+}
+
+.field-ibp-project-proposal-file .field-item,
+.field-ibp-project-report-file .field-item,
+.field-ibp-project-publication-file .field-item,
+.field-ibp-project-product-file .field-item,
+.field-ibp-project-dataset-file .field-item {
+	border-width: 0 0 4px 0;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	padding: 6px 3px;
+}
+
+.field-ibp-project-proposal-file .field-item:last-child,
+.field-ibp-project-report-file .field-item:last-child,
+.field-ibp-project-publication-file .field-item:last-child,
+.field-ibp-project-product-file .field-item:last-child,
+.field-ibp-project-dataset-file .field-item:last-child {
+	-o-border-image: none;
+	-moz-border-image: none;
+	-webkit-border-image: none;
+	border-image: none;
+}
+
+.field-ibp-project-proposal-file .field-item img,
+.field-ibp-project-report-file .field-item img,
+.field-ibp-project-publication-file .field-item img,
+.field-ibp-project-product-file .field-item img,
+.field-ibp-project-dataset-file .field-item img {
+	float: left;
+}
+
+.field-ibp-project-proposal-file .field-item a,
+.field-ibp-project-report-file .field-item a,
+.field-ibp-project-publication-file .field-item a,
+.field-ibp-project-product-file .field-item a,
+.field-ibp-project-dataset-file .field-item a {
+	padding: 8px 0;
+	display: inline-block;
+}

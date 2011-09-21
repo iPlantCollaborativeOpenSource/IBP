@@ -72,6 +72,15 @@ function ibp_projects_form(&$node, $form_state) {
 	return $form;
 }
 
+function ibp_projects_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == 'ibp_project_node_form') {
+		if ($clade = clade_get_context()) {
+			$clade_vid = variable_get('clade_vocabulary',0);
+			$form['taxonomy'][$clade_vid]['#default_value'] = array($clade->tid);
+		}
+	}
+}
+
 function ibp_projects_form_ibp_project_node_form_after_build($form, &$form_state) {
 	$form['ibp_project_number']['#weight'] = -5;
 	$form['ibp_project_pi']['#weight'] = -4;

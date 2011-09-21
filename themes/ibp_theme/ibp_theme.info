@@ -50,6 +50,9 @@ stylesheets[all][]   = css/flags.css
 stylesheets[all][]   = js/fancybox/jquery.fancybox-1.3.4.css
 stylesheets[all][]   = css/jquery-ui-themes/smoothness/ui.all.css
 
+	; override some module css
+stylesheets[all][]   = css/calendar-multiday.css
+
   ; Set the conditional stylesheets that are processed by IE.
 conditional-stylesheets[if IE][all][]       = css/ie.css
 conditional-stylesheets[if lte IE 6][all][] = css/ie6.css

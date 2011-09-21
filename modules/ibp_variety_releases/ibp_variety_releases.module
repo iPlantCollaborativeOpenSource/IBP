@@ -70,6 +70,16 @@ function ibp_variety_releases_form(&$node, $form_state) {
 	return $form;
 }
 
+function ibp_variety_releases_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == 'ibp_variety_release_node_form') {
+		if ($clade = clade_get_context()) {
+			$clade_vid = variable_get('clade_vocabulary',0);
+			$form['taxonomy'][$clade_vid]['#value'] = array($clade->tid);
+			$form['taxonomy']['#type'] = 'hidden';
+		}
+	}
+}
+
 function ibp_variety_releases_clade($op, $clade, $args=array()) {
 	if ($op == 'clade insert') {
 		$clade_menu = menu_get_item("clade/$clade->tid");
