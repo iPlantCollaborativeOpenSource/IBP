@@ -167,8 +167,11 @@ a#back-to-top {
 
 form#ibphelper-my-pages-form {
 	position: absolute;
-	top: -8px;
+	top: 50%;
 	right: 18px;
+	margin-top: -10px;
+	line-height: 10px;
+	height: 10px;
 }
 
 input.ibphelper-my-pages-add,
