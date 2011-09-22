@@ -815,7 +815,7 @@ function clade_join_block() {
 	$clade = clade_get_context();
 	if ($clade) {
 		$block = array();
-		$block['subject'] = l($clade->name, sprintf('clade/%d', $clade->tid));
+		$block['subject'] = l($clade->name, "clade/$clade->tid");
 		$block['content'] = theme('clade_join', $clade);
 	}
 	return $block;
@@ -825,7 +825,7 @@ function clade_details_block() {
 	$clade = clade_get_context();
 	if ($clade) {
 		$block = array();
-		$block['subject'] = l($clade->name, sprintf('clade/%d', $clade->tid));
+		$block['subject'] = l($clade->name, "clade/$clade->tid");
 		$block['content'] = clade_details_block_content($clade);
 		return $block;
 	}
@@ -2099,5 +2099,8 @@ function clade_preprocess_clade_join(&$vars) {
 			$vars['message'] = t('Become a member of this community to contribute and stay updated.');
 			$vars['link'] = l(t('Enroll in this community'), "clade/$clade->tid/members/join", array('attributes' => array('class' => 'clade-join-link')));
 		}
+	} else {
+		$vars['message'] = t('Login to join this community. Contribute and stay updated!');
+		$vars['link'] = l(t('Login to join this community'), "user/login", array('attributes' => array('class' => 'clade-join-link'), 'query' => array("destination"=>"clade/$clade->tid/members/join")));
 	}
 }
