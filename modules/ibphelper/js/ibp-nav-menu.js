@@ -8,14 +8,17 @@ Drupal.behaviors.ibptools_nav_menu = function(context) {
 	menu.find('li.ibtools_nav_menu_item.expanded')
 			.find('ul.ibtools_nav_submenu').show();
 	
-	menu.find('li').bind('click', function() {
+	menu.find('a').bind('click', function() {
 		var $this = $(this);
-		if ($this.find('ul').length > 0) {
-			if (! $this.hasClass('expanded')) {
-				$this.find('ul').slideDown();
-				$this.addClass('expanded')
-				return false;
+		var li = $this.parent();
+		if (li.find('ul').length > 0) {
+			if (li.hasClass('expanded')) {
+				li.find('ul').slideUp(function() {li.removeClass('expanded');});
+			} else {
+				li.find('ul').slideDown();
+				li.addClass('expanded')
 			}
+			return false;
 		}
 	});
 }
