@@ -70,6 +70,7 @@
 	padding: 12px 15px 12px 9px;
 }
 
+.menu_block_wrapper ul li.active-trail,
 .menu_block_wrapper ul li.expanded ul li.active-trail {
 	background-color: #319af3;
 	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
@@ -77,6 +78,7 @@
 	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
 }
 
+.menu_block_wrapper ul li.active-trail a,
 .menu_block_wrapper ul li.expanded ul li.active-trail a {
 	color: #ffffff;
 	background-image: url(../../../themes/ibp_theme/images/arrow_right_white.png);
