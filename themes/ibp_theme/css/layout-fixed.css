@@ -51,8 +51,10 @@ body.admin-menu {
 #header .section {
 }
 
-#search-box {
-	float: left;
+#logo /* Wrapping link for logo */ {
+  float: left; /* LTR */
+  margin: 0 0 -22px 0;
+  padding: 0;
 }
 
 .region-header {
@@ -61,12 +63,10 @@ body.admin-menu {
 
 #messages-wrapper {
 	position: relative;
-  top: -8px;
 }
 
 #main-topper {
 	position: relative;
-	top: -8px;
 }
 
 /*
@@ -77,7 +77,6 @@ body.admin-menu {
 	clear: both;
 	width: 992px;			/* width of whole page */
 	overflow: hidden;		/* This chops off any overhanging divs */
-	top: -8px;
 }
 
 .maintenance_page #messages-wrapper,
@@ -241,110 +240,7 @@ body.admin-menu {
 	float: left;
   width: 100%;
   position: relative;
-  top: -18px;
   margin: 0;
-}
-
-#navigation #block-menu-primary-links {
-	float: left; /* LTR */
-  padding: 0;
-  width: 100%;
-}
-
-#navigation #block-menu-primary-links ul /* Primary and secondary links */ {
-	float: right;
-  margin: 0;
-  padding: 0;
-  text-align: left; /* LTR */
-  list-style: none;
-}
-
-#navigation #block-menu-primary-links li /* A simple method to get navigation links to appear in one line. */ {
-  float: left; /* LTR */
-  height: 46px;
-  padding: 0; /* LTR */
-  margin: 0 1px 0 0;
-  list-style: none;
-}
-
-#navigation #block-menu-primary-links li a,
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a {
-	color: #00a3f7;
-	display: block;
-  padding: 12px; /* LTR */
-	font-weight: bold;
-	text-decoration: none;
-	font-family: Arial, sans-serif;
-	font-size: 14px;
-	word-spacing: -1px;
-	text-shadow: -1px -1px 1px #333333;
-}
-
-#navigation #block-menu-primary-links li.expanded ul {
-	display: none;
-}
-
-#navigation #block-menu-primary-links li.active-trail,
-#navigation #block-menu-primary-links li:hover {
-	text-align: center;
-	background-color: #3c3c3c;
-	-moz-border-radius: 3px 3px 0 0;
-	-webkit-border-radius: 3px 3px 0 0;
-	border-radius: 3px 3px 0 0;
-}
-
-#navigation #block-menu-primary-links li.active-trail a {
-	color: #919191;
-	text-shadow: none;
-}
-
-#navigation #block-menu-primary-links li.active-trail.expanded ul {
-	display: block;
-	position: absolute;
-	left: 0;
-	top: 46px;
-	height: 45px;
-	width: 100%;
-	background: #3c3c3c;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-}
-
-#navigation #block-menu-primary-links li.active-trail.expanded ul li {
-  margin: 8px 5px 0px; /* LTR */
-  height: 37px;
-}
-
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a {
-  padding: 6px 8px; /* LTR */
-}
-
-#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a,
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a:hover {
-	background: #545454;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-}
-
-#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a {
-	text-shadow: none;
-	color: #919191;
-}
-
-#navigation #block-menu-primary-links li.active-trail.expanded ul li ul {
-	display: none;
-}
-
-#navigation .subnavigation {
-	width: 100%;
-	background: #3c3c3c;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	margin-top: 46px;
-	height: 45px;
 }
 
 #page-bottom {
@@ -354,7 +250,7 @@ body.admin-menu {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
-  margin-top: 3px;
+  margin-top: 12px;
 }
 
 #page-bottom .section {
@@ -365,30 +261,16 @@ body.admin-menu {
 	float: right;
 	position: relative;
 	right: 20px;
-	height: 24px;
-	-moz-border-radius: 0 0 3px 3px;
-	-webkit-border-radius: 0 0 3px 3px;
-	border-radius: 0 0 3px 3px;
-	background-color: #363636;
-	padding: 8px 10px 10px;
-	text-align: center;
 }
 
-#top-bar .item-list {
+#top-bar #loginlinks {
 	float: left;
-	margin-top: 3px;
-}
-
-#top-bar .item-list ul {
 	margin: 0;
 	padding: 0;
 }
 
-#top-bar .item-list ul li {
+#search-box {
 	float: left;
-	list-style: none;
-	padding: 0;
-	margin: 0 0.5em 0 0;
 }
 
 /*

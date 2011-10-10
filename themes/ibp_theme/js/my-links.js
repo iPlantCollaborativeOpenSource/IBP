@@ -3,12 +3,11 @@
 		function() {
 			var mylinks_trg = $('#my-links');
 			function show_my_links() {
-				$('#my-links ul').slideDown('fast');
+				$('#my-links .item-list').slideDown('fast');
 				mylinks_trg.addClass('my-links-visible');
 			}
 			function hide_my_links() {
-				$('#my-links ul').hide('fast');
-				mylinks_trg.removeClass('my-links-visible');
+				$('#my-links .item-list').slideUp('fast', function(){mylinks_trg.removeClass('my-links-visible');});
 			}
 			
 			mylinks_trg.bind('mouseenter', function() {

@@ -101,14 +101,14 @@ function ibp_theme_loginlinks($user) {
 		$mylinks[] = l(t('My Issue Tracker'), 'issues');
 		$mylinks[] = l(t('My Account'), 'user');
 		$items[] = array(
-			'data' => theme('item_list', $mylinks, t('My Links'), 'ul'),
+			'data' => '<h3>'.t('My Links').'</h3>'.theme('item_list', $mylinks, NULL, 'ul'),
 			'id' => 'my-links'
 			);
 		drupal_add_js(drupal_get_path('theme', 'ibp_theme') . 'js/my-links.js', 'theme');
-		$items[] = l(t('Log out'), 'logout');
+		$items[] = l(t('Log out'), 'logout', array('attributes' => array('class' => 'login-link')));
 	} else {
-		$items[] = l(t('Register for an account'), 'user/register', array('attributes'=>array('target'=>'_blank')));
-		$items[] = l(t('Log in'), 'user/login', array('query' => drupal_get_destination()));
+		$items[] = l(t('Register for an account'), 'user/register', array('attributes'=>array('class' => 'login-link','target'=>'_blank')));
+		$items[] = l(t('Log in'), 'user/login', array('attributes'=>array('class' => 'login-link'), 'query' => drupal_get_destination()));
 	}
 	return theme('item_list', $items, NULL, 'ul', array('class' => 'loginlinks'));
 }

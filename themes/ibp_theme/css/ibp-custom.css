@@ -1,36 +1,155 @@
-#top-bar .loginlinks {
+#top-bar {
 	text-shadow: -1px -1px 1px #333333;
-	font-size: 10pt;
+	font-size: 12px;
+	height: 42px;
+	background-color: #555555;
+	border-color: #141414;
+	border-style: solid;
+	border-width: 0px 1px 1px;
+	-moz-border-radius: 0 0 3px 3px;
+	-o-border-radius: 0 0 3px 3px;
+	-webkit-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+	padding: 0 1px 1px;
 }
 
-#top-bar .loginlinks .loginstatus {
+#top-bar ul,
+#top-bar ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#top-bar ul.loginlinks > li {
+	float: left;
+	height: 42px;
+	background-color: #505050;
+	background-image: -moz-linear-gradient(#555555, #444444);
+	background-image: -o-linear-gradient(#555555, #444444);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#444444));
+	background-image: -webkit-linear-gradient(#555555, #444444);
+	border-color: #292929 #292929 #292929 #606060;
+	border-style: solid;
+	border-width: 0 1px 0 1px;
+}
+
+#top-bar ul.loginlinks > li.first {
+	border-width: 0 1px 0 0;
+}
+
+#top-bar ul.loginlinks > li.last {
+	border-width: 0 0 0 1px;
+}
+
+#top-bar .loginstatus {
 	color: #919191;
-	padding-left: 16px;
+	padding: 12px 12px 12px 16px;
 	background-image: url(../images/lock.png);
 	background-repeat: no-repeat;
+	background-position: left center;
+	display: block;
+	line-height: 18px;
+	margin: 0 6px 0 18px
 }
 
-#top-bar .loginlinks .loginstatus strong {
+#top-bar .login-link {
+	padding: 12px 18px;
+	display: block;
+	line-height: 18px;
+}
+
+#top-bar .loginstatus strong {
 	color: #efefef;
 }
 
-#top-bar ul.loginlinks li:after {
-	content: "|";
-	padding-left: 0.5em;
-	color: #6c6c6c;
+#my-links .item-list {
+	padding: 0;
+	margin: 0;
 }
 
-#top-bar .item-list ul li.last:after {
-	content: "";
+#my-links h3 {
+	display: block;
+	font-weight: normal;
+	font-size: 12px;
+	color: #00a3f7;
+	cursor: pointer;
+	padding: 6px 16px 12px;
+	margin: 6px 0 0 0;
+	line-height: 18px;
+}
+
+#my-links h3:after {
+	content: url(../images/arrow_down_blue.png);
+	position: relative;
+	left: 6px;
+}
+
+#my-links .item-list {
+	display: none;
+	position: absolute;
+	top: 44px;
+	z-index: 100000;
+	overflow: hidden;
+	padding: 0 6px 6px;
+	margin: 0 -6px -6px;
+}
+
+#my-links .item-list ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background-color: #505050;
+	
+	background-image: -moz-linear-gradient(#494949, #5a5a5a);
+	background-image: -o-linear-gradient(#494949, #5a5a5a);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#494949), to(#5a5a5a));
+	background-image: -webkit-linear-gradient(#494949, #5a5a5a);
+
+	-moz-box-shadow: 1px 1px 1px #000000;
+	-webkit-box-shadow: 1px 1px 1px #000000;
+	box-shadow: 0px 0px 6px #000000;
+}
+
+#my-links .item-list ul li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+}
+
+#my-links .item-list ul li a {
+	display: block;
+	padding: 3px 16px;
+}
+
+#my-links .item-list ul li a:hover {
+	background-color: #6a6a6a;
+}
+
+#my-links.my-links-visible h3 {
+	padding: 6px 16px 14px;
+	
+	background-image: -moz-linear-gradient(#353535, #494949);
+	background-image: -o-linear-gradient(#353535, #494949);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#353535), to(#494949));
+	background-image: -webkit-linear-gradient(#353535, #494949);
+	
+	-moz-box-shadow: 1px 1px 1px #000000;
+	-webkit-box-shadow: 1px 1px 1px #000000;
+	box-shadow: 1px 1px 1px #000000;
+	
+	-moz-border-radius: 3px 3px 0 0;
+	-webkit-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
 }
 
 #search-box {
-	background: #ffffff;
-	border: 1px solid #919191;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	margin-top: -2px;
+	background-color: #505050;
+	background-image: -moz-linear-gradient(#555555, #444444);
+	background-image: -o-linear-gradient(#555555, #444444);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#444444));
+	background-image: -webkit-linear-gradient(#555555, #444444);
+	padding: 8px 12px 8px 0;
 }
 
 #search-box .form-item {
@@ -40,15 +159,21 @@
 
 #search-box input[type=text] {
 	border: 0;
+	margin: 0;
 	background: #ffffff;
 	float: left;
 	font-size: 16px;
 	height: 24px;
 	line-height: 24px;
+	-moz-border-radius: 3px 0 0 3px;
+	-o-border-radius: 3px 0 0 3px;
+	-webkit-border-radius: 3px 0 0 3px;
+	border-radius: 3px 0 0 3px;
 }
 
 #search-box input[type=submit] {
 	border: 0;
+	margin: 0;
 	background: white;
 	background-image: url(../images/search.png);
 	background-repeat: no-repeat;
@@ -59,74 +184,10 @@
 	font-size: 0px;
 	text-indent: -9999em;
 	float: right;
-}
-
-#my-links .item-list {
-	padding: 0;
-	margin: 0;
-}
-
-#my-links h3 {
-	display: inline-block;
-	font-weight: normal;
-	font-size: 10pt;
-	color: #00a3f7;
-	cursor: pointer;
-	padding-right: 14px;
-	background-repeat: no-repeat;
-	background-position: 100% 0.5em;
-	margin: -0.5em 0 0;
-	padding: 0.5em 0.5em 1em;
-}
-
-#my-links h3:after {
-	content: url(../images/arrow_down_blue.png);
-}
-
-#my-links .item-list ul {
-	display: none;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	position: absolute;
-	top: 37px;
-	z-index: 100000;
-	background-color: #5a5a5a;
-	-moz-box-shadow: 1px 1px 1px #000000;
-	-webkit-box-shadow: 1px 1px 1px #000000;
-	box-shadow: 1px 1px 1px #000000;
-}
-
-#my-links .item-list ul li {
-	list-style: none;
-	float: none;
-	margin: 0;
-	padding: 0;
-	text-align: left;
-}
-
-#my-links .item-list ul li a {
-	display: block;
-	padding: 0.25em 1em 0.25em 0.5em;
-}
-
-#my-links .item-list ul li a:hover {
-	background-color: #6a6a6a;
-}
-
-#top-bar ul.loginlinks li ul li:after {
-	content: '';
-	padding-left: 0;
-}
-
-
-#my-links.my-links-visible h3 {
-	background-image: -moz-linear-gradient(#353535, #5a5a5a 60%, #5a5a5a);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#353535), color-stop(0.6, #5a5a5a), to(#5a5a5a));
-	background-image: -webkit-linear-gradient(#353535, #5a5a5a 60%, #5a5a5a);
-	-moz-box-shadow: 1px 1px 1px #000000;
-	-webkit-box-shadow: 1px 1px 1px #000000;
-	box-shadow: 1px 1px 1px #000000;
+	-moz-border-radius: 0 3px 3px 0;
+	-o-border-radius: 0 3px 3px 0;
+	-webkit-border-radius: 0 3px 3px 0;
+	border-radius: 0 3px 3px 0;
 }
 
 a#back-to-top {

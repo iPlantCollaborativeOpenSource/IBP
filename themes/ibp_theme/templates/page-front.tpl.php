@@ -152,7 +152,7 @@
       <?php endif; ?>
 			
 			<div id="top-bar">
-				<?php print theme('loginlinks', $user); ?>
+				<div id="loginlinks"><?php print theme('loginlinks', $user); ?></div>
 				<?php if ($search_box): ?>
 					<div id="search-box"><?php print $search_box; ?></div>
 				<?php endif; ?>
@@ -170,11 +170,10 @@
       <?php endif; ?>
 
     </div></div><!-- /.section, /#header -->
-
-		<div id="messages-wrapper"><?php print $messages; ?></div>
 		
 		<div id="main-topper">
 			<div class="introduction-wrapper clearfix">
+				<div id="messages-wrapper"><?php print $messages; ?></div>
 				<div class="introduction">
 					The IBP is a sustainable, web-based, one-stop-shop for information,
 					analytical tools and related services to design and carry out integrated

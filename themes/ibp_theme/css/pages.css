@@ -66,9 +66,6 @@ body.admin-menu {
 }
 
 #logo /* Wrapping link for logo */ {
-  float: left; /* LTR */
-  margin: 0;
-  padding: 0;
 }
 
 #logo img {
@@ -173,9 +170,6 @@ h1.title {
 	background-image: -moz-linear-gradient(#FFFFFF, #EBEBEB);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#EBEBEB));
 	background-image: -webkit-linear-gradient(#FFFFFF, #EBEBEB);
-	-moz-border-radius: 3px 3px 0 0;
-	-webkit-border-radius: 3px 3px 0 0;
-	border-radius: 3px 3px 0 0;
 	font-size: 24pt;
 	line-height: 24pt;
 	padding: 14px 168px 14px 20px;

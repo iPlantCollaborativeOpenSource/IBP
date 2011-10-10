@@ -151,7 +151,7 @@
       <?php endif; ?>
 			
 			<div id="top-bar">
-				<?php print theme('loginlinks', $user); ?>
+				<div id="loginlinks"><?php print theme('loginlinks', $user); ?></div>
 				<?php if ($search_box): ?>
 					<div id="search-box"><?php print $search_box; ?></div>
 				<?php endif; ?>
@@ -167,8 +167,6 @@
       <?php endif; ?>
 
     </div></div><!-- /.section, /#header -->
-
-		<div id="messages-wrapper"><?php print $messages; ?></div>
 		
 		<div id="main-topper"><div class="section clearfix">
 			<?php if ($title): ?>
@@ -200,6 +198,8 @@
 								<?php print $help; ?>
 				
 								<?php print $content_top; ?>
+								
+								<div id="messages-wrapper"><?php print $messages; ?></div>
 				
 								<div id="content-area">
 									<?php print $content; ?>
