@@ -97,10 +97,15 @@ li a.active {
 #navigation #block-menu-primary-links li:hover a,
 #navigation #block-menu-primary-links li a:hover {
 	background-color: #505050;
+	background-image: url(../images/nav-bar-bg.png);
+	background-repeat: repeat-x;
+	background-position: top center;
+	background-image: -ms-linear-gradient(#555555, #444444);
 	background-image: -moz-linear-gradient(#555555, #444444);
 	background-image: -o-linear-gradient(#555555, #444444);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#444444));
 	background-image: -webkit-linear-gradient(#555555, #444444);
+	background-image: linear-gradient(#555555, #444444);
 	-moz-border-radius: 3px 3px 0 0;
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 3px 3px 0 0;
@@ -165,10 +170,15 @@ li a.active {
 	margin-top: 45px;
 	height: 45px;
 	background-color: #505050;
+	background-image: url(../images/nav-bar-bg.png);
+	background-repeat: repeat-x;
+	background-position: bottom center;
+	background-image: -ms-linear-gradient(#444444, #3f3f3f);
 	background-image: -moz-linear-gradient(#444444, #3f3f3f);
 	background-image: -o-linear-gradient(#444444, #3f3f3f);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#3f3f3f));
 	background-image: -webkit-linear-gradient(#444444, #3f3f3f);
+	background-image: linear-gradient(#444444, #3f3f3f);
 	-moz-border-radius: 3px 3px 0 0;
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 3px 3px 0 0;

@@ -24,10 +24,15 @@
 	float: left;
 	height: 42px;
 	background-color: #505050;
-	background-image: -moz-linear-gradient(#555555, #444444);
-	background-image: -o-linear-gradient(#555555, #444444);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#444444));
-	background-image: -webkit-linear-gradient(#555555, #444444);
+	background-image: url(../images/top-bar-bg.png);
+	background-repeat: repeat-x;
+	background-position: bottom center;
+	background-image: -ms-linear-gradient(#555, #444);
+	background-image: -moz-linear-gradient(#555, #444);
+	background-image: -o-linear-gradient(#555, #444);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555), to(#444));
+	background-image: -webkit-linear-gradient(#555, #444);
+	background-image: linear-gradient(#555, #444);
 	border-color: #292929 #292929 #292929 #606060;
 	border-style: solid;
 	border-width: 0 1px 0 1px;
@@ -98,13 +103,18 @@
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	background-color: #505050;
-	
+	background-color: #5a5a5a;
+	background-image: url(../images/my-links-bg.png);
+	background-repeat: repeat-x;
+	background-position: bottom center;
+	background-image: -ms-linear-gradient(#494949, #5a5a5a);
 	background-image: -moz-linear-gradient(#494949, #5a5a5a);
 	background-image: -o-linear-gradient(#494949, #5a5a5a);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#494949), to(#5a5a5a));
 	background-image: -webkit-linear-gradient(#494949, #5a5a5a);
 
+
+	background-image: linear-gradient(#494949, #5a5a5a);
 	-moz-box-shadow: 1px 1px 1px #000000;
 	-webkit-box-shadow: 1px 1px 1px #000000;
 	box-shadow: 0px 0px 6px #000000;
@@ -128,11 +138,16 @@
 
 #my-links.my-links-visible h3 {
 	padding: 6px 16px 14px;
-	
+	background-color: #5a5a5a;
+	background-image: url(../images/my-links-bg.png);
+	background-repeat: repeat-x;
+	background-position: top center;
+	background-image: -ms-linear-gradient(#353535, #494949);
 	background-image: -moz-linear-gradient(#353535, #494949);
 	background-image: -o-linear-gradient(#353535, #494949);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#353535), to(#494949));
 	background-image: -webkit-linear-gradient(#353535, #494949);
+	background-image: linear-gradient(#353535, #494949);
 	
 	-moz-box-shadow: 1px 1px 1px #000000;
 	-webkit-box-shadow: 1px 1px 1px #000000;
@@ -145,10 +160,18 @@
 
 #search-box {
 	background-color: #505050;
-	background-image: -moz-linear-gradient(#555555, #444444);
-	background-image: -o-linear-gradient(#555555, #444444);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555555), to(#444444));
-	background-image: -webkit-linear-gradient(#555555, #444444);
+	background-image: url(../images/top-bar-bg.png);
+	background-repeat: repeat-x;
+	background-position: bottom center;
+	background-image: -ms-linear-gradient(#555, #444);
+background-image: -moz-linear-gradient(#555, #444);
+background-image: -o-linear-gradient(#555, #444);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555), to(#444));
+background-image: -webkit-linear-gradient(#555, #444);
+
+
+background-image: linear-gradient(#555, #444);
+
 	padding: 8px 12px 8px 0;
 }
 
@@ -176,6 +199,8 @@
 	margin: 0;
 	background: white;
 	background-image: url(../images/search.png);
+	filter: none;
+
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 	width: 20px;
@@ -253,6 +278,8 @@ input.ibphelper-my-pages-remove {
 	font-size: 11px;
 	cursor: pointer;
 	text-shadow: none;
+	filter: none;
+
 }
 
 input.ibphelper-my-pages-add,
@@ -320,9 +347,15 @@ h2.clade-page-mini-form-title {
 	text-shadow: -1px -1px 1px #3e3e3e;
 	margin: 8px 12px 8px 0px;
 	background-color: #3199f2;
+	background-image: -ms-linear-gradient(#36a1fc, #2b91e7);
 	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -o-linear-gradient(#36a1fc, #2b91e7);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
 	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+
+
+	background-image: linear-gradient(#36a1fc, #2b91e7);
+
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;

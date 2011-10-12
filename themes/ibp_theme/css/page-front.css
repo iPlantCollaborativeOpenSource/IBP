@@ -31,9 +31,14 @@ ul.tabs li:first-child a {
 
 #main-topper {
 	background-color: #EBEBEB;
-	background-image: -moz-linear-gradient(#FFFFFF, #EBEBEB);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#EBEBEB));
-	background-image: -webkit-linear-gradient(#FFFFFF, #EBEBEB);
+	background-image: -ms-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -moz-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -o-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#EBEBEB));
+background-image: -webkit-linear-gradient(#FFFFFF, #EBEBEB);
+
+
+background-image: linear-gradient(#FFFFFF, #EBEBEB);
 	border-bottom: 1px solid #ffffff;
 }
 

@@ -4,8 +4,11 @@
 	border-style: solid;
 	background: #f4f4f4;
 	background-image: -moz-linear-gradient(#f4f4f4, #ffffff);
+	background-image: -o-linear-gradient(#f4f4f4, #ffffff);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ffffff));
 	background-image: -webkit-linear-gradient(#f4f4f4, #ffffff);
+	background-image: -ms-linear-gradient(#f4f4f4, #ffffff);
+	background-image: linear-gradient(#f4f4f4, #ffffff);
 	margin: 0;
 	padding: 0.5em 0.25em 1em 0.5em;
 }

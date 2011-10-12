@@ -112,9 +112,14 @@ h2.title a {
 	padding: 0 18px;
 	line-height: 32px;
 	background-color: #3199f2;
-	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
-	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -ms-linear-gradient(#36a1fc, #2b91e7);
+background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+background-image: -o-linear-gradient(#36a1fc, #2b91e7);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+
+
+background-image: linear-gradient(#36a1fc, #2b91e7);
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -122,9 +127,14 @@ h2.title a {
 
 .field-field-tool-file a:hover {
 	background-color: #51a9f4;
-	background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
-	background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -ms-linear-gradient(#57b1fc, #4aa1ea);
+background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
+background-image: -o-linear-gradient(#57b1fc, #4aa1ea);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
+background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
+
+
+background-image: linear-gradient(#57b1fc, #4aa1ea);
 }
 
 .field-field-tool-file img {

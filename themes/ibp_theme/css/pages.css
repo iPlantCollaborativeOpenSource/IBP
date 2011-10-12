@@ -167,9 +167,14 @@ h3.title /* Comment title */ {
 
 h1.title {
 	background-color: #EBEBEB;
-	background-image: -moz-linear-gradient(#FFFFFF, #EBEBEB);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#EBEBEB));
-	background-image: -webkit-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -ms-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -moz-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -o-linear-gradient(#FFFFFF, #EBEBEB);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#EBEBEB));
+background-image: -webkit-linear-gradient(#FFFFFF, #EBEBEB);
+
+
+background-image: linear-gradient(#FFFFFF, #EBEBEB);
 	font-size: 24pt;
 	line-height: 24pt;
 	padding: 14px 168px 14px 20px;
@@ -425,9 +430,14 @@ ul.links li {
 
 #forum table tbody tr {
 	background-color: #f4f4f4;
-	background-image: -moz-linear-gradient(#f4f4f4, #ffffff);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ffffff));
-	background-image: -webkit-linear-gradient(#f4f4f4, #ffffff);
+	background-image: -ms-linear-gradient(#f4f4f4, #ffffff);
+background-image: -moz-linear-gradient(#f4f4f4, #ffffff);
+background-image: -o-linear-gradient(#f4f4f4, #ffffff);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f4f4f4), to(#ffffff));
+background-image: -webkit-linear-gradient(#f4f4f4, #ffffff);
+
+
+background-image: linear-gradient(#f4f4f4, #ffffff);
 	border-top: 1px solid #ffffff;
 	border-bottom: 1px solid #e3e3e3;
 }
@@ -456,18 +466,25 @@ ul.links li {
 	background-color: #ffffff;
 	border: none;
 	background-image: url(../images/add.png),
+		-ms-linear-gradient(#ffffff, #f7f7f7);
+	background-image: url(../images/add.png),
 		-moz-linear-gradient(#ffffff, #f7f7f7);
+	background-image: url(../images/add.png),
+		-o-linear-gradient(#ffffff, #f7f7f7);
 	background-image: url(../images/add.png),
 		-webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f7f7f7));
 	background-image: url(../images/add.png),
 		-webkit-linear-gradient(#ffffff, #f7f7f7);
+	background-image: url(../images/add.png);
 	background-repeat: no-repeat;
 	background-position: 3px 60%;
 	padding: 3px 3px 3px 15px;
 	-moz-box-shadow: 1px 1px 2px #d7d7d7;
+	-o-box-shadow: 1px 1px 2px #d7d7d7;
 	-webkit-box-shadow: 1px 1px 2px #d7d7d7;
 	box-shadow: 1px 1px 2px #d7d7d7;
 	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	font-weight: bold;
