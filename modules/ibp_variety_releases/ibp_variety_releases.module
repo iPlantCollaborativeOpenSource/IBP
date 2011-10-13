@@ -93,6 +93,9 @@ function ibp_variety_releases_clade($op, $clade, $args=array()) {
 			);
 		menu_link_save($menu);
 	}
+	else if ($op == 'clade node types') {
+		return 'ibp_variety_release';
+	}
 	// TODO delete?
 }
 

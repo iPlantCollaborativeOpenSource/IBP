@@ -73,7 +73,11 @@
 
 .menu_block_wrapper a.active a.menu-expander,
 .menu_block_wrapper li.expanded li a.active a.menu-expander,
-.menu_block_wrapper li.expanded li.leaf a.active a.menu-expander {
+.menu_block_wrapper li.leaf a.active-trail a.menu-expander,
+.menu_block_wrapper li.leaf a.active a.menu-expander,
+.menu_block_wrapper li.expanded li.leaf a.active-trail a.menu-expander,
+.menu_block_wrapper li.expanded li.leaf a.active a.menu-expander,
+.menu_block_wrapper a.active a.menu-expander {
 	border-color: #71b9f7;
 	background-image: url(../../../themes/ibp_theme/images/arrow_right_white.png);
 }
@@ -117,8 +121,12 @@
 	background-image: linear-gradient(#fafafa, #eaeaea);
 }
 
+.menu_block_wrapper ul li.active-trail.leaf,
 .menu_block_wrapper ul li.active-trail.active,
-.menu_block_wrapper ul li.expanded ul li.active-trail.active {
+.menu_block_wrapper ul li.expanded ul li.active-trail.active,
+.menu_block_wrapper ul li.active-trail.leaf:hover,
+.menu_block_wrapper ul li.active-trail.active:hover,
+.menu_block_wrapper ul li.expanded ul li.active-trail.active:hover {
 	background-color: #319af3;
 	background-image: url(../images/sidebar-sel-bg.png);
 	background-repeat: repeat-x;
@@ -132,6 +140,7 @@
 }
 
 .menu_block_wrapper ul li.active-trail a.active,
+.menu_block_wrapper ul li.leaf.active-trail a,
 .menu_block_wrapper ul li.expanded ul li.active-trail a.active {
 	color: #ffffff;
 	border-color: #0b6fc4;

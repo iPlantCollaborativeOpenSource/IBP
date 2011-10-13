@@ -143,14 +143,18 @@ body.admin-menu {
 }
 
 .two-sidebars .region-sidebar-first {
-	width: 512px;
+	width: 234px;
 	left: 240px;
 }
 
-.two-sidebars .region-sidebar-second,
 .sidebar-second .region-sidebar-second{
-	width: 240px;
-	left: 992px;
+	width: 234px;
+	left: 994px;
+}
+
+.two-sidebars .region-sidebar-second {
+	width: 234px;
+	left: 760px;
 }
 
 .sidebar-first #columns,

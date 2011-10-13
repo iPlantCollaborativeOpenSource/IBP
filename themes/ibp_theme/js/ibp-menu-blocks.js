@@ -3,6 +3,7 @@ Drupal.behaviors.ibp_menu_blocks = function(context) {
 		var menu = $(this);
 		menu.find('li:not(.active-trail).expanded').removeClass('expanded');
 		menu.find('li:not(.active-trail) ul').hide();
+		menu.find('li.active-trail').filter(':last').addClass('active').children('a').addClass('active');
 		$('a', menu).each(function(i,o) {
 			var a = $(o);
 			var exp = $('<a class="menu-expander">').attr('href', a.attr('href'));

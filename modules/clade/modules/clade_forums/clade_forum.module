@@ -64,17 +64,28 @@ function clade_forum_clade($op, $clade) {
 	}
 	else if ($op == 'determine context') {
 		$path = $_GET['q'];
-		$original_map = arg(NULL, $path);
-		$parts = array_slice($original_map, 0, MENU_MAX_PARTS);
-		list($ancestors, $placeholders) = menu_get_ancestors($parts);
-		if ($router_item = db_fetch_array(db_query_range('SELECT * FROM {menu_router} WHERE path IN (' . implode(',', $placeholders) . ') ORDER BY fit DESC', $ancestors, 0, 1))) {
-			$path = $router_item['path'];
-			if (strpos($path, 'node/add/forum') === 0) {
-				if ($clade = clade_load(clade_forum_clade_from_forum(arg(3)))) {
-					return $clade;
+		if (strpos($path, 'node/add/forum') === 0) {
+			if ($clade = clade_load(clade_forum_clade_from_forum(arg(3)))) {
+				return $clade;
+			}
+		} else if (strpos($path, 'node/') === 0) {
+			$nid = arg(1);
+			if (is_numeric($nid)) {
+				$node = node_load(arg(1));
+				if ($node->type == 'forum') {
+					$clade_vid = variable_get('clade_vocabulary',0);
+					foreach ($node->taxonomy as $tid => $term) {
+						if ($term->vid == $clade_vid) {
+							$clade = clade_get_clade($tid);
+							return $clade;
+						}
+					}
 				}
 			}
 		}
+	}
+	else if ($op == 'clade node types') {
+		return 'forum';
 	}
 }
 

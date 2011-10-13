@@ -91,6 +91,12 @@ function clade_hook_info() {
 		);
 }
 
+function clade_clade($op, $clade) {
+	if ($op == 'clade node types') {
+		return 'clade_page';
+	}
+}
+
 function clade_taxonomy($op, $type, $array = NULL) {
 	if ($type == "term" && $array['vid'] == variable_get('clade_vocabulary', 0)) {
 		switch ($op) {
@@ -161,12 +167,19 @@ function clade_determine_context() {
 
 function clade_determine_context_for_node($node) {
 	$context = NULL;
-	if ($node->taxonomy) {
-		$clade_vid = variable_get('clade_vocabulary', 0);
-		foreach ($node->taxonomy as $term) {
-			if ($term->vid == $clade_vid) {
-				$context = clade_get_clade($term->tid);
-				break;
+	$clade_types = clade_get_node_types();
+	if ($clade_types[$node->type]) {
+		$types = node_get_types();
+		$context = module_invoke($types[$node->type]->module, 'clade', 'determine context', NULL);
+		if ($context == null) {
+			if ($node->taxonomy) {
+				$clade_vid = variable_get('clade_vocabulary', 0);
+				foreach ($node->taxonomy as $term) {
+					if ($term->vid == $clade_vid) {
+						$context = clade_get_clade($term->tid);
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -333,6 +346,15 @@ function clade_menu() {
 			'title' => 'Clade settings',
 			'description' => 'Clade admin settings page',
 			'page callback' => 'clade_admin_page',
+			'access callback' => 'user_access',
+			'access arguments' => array('edit any clade'),
+		);
+
+	$items['admin/settings/clade/node-types'] = array(
+			'title' => 'Clade Node Types',
+			'description' => 'Clade node types settings page',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('clade_admin_node_types'),
 			'access callback' => 'user_access',
 			'access arguments' => array('edit any clade'),
 		);
@@ -1516,7 +1538,59 @@ function clade_clade_suggestions_form_submit($form, &$form_state) {
 	}
 }
 
-//TODO
+function clade_admin_node_types() {
+	$desc = <<<desc
+Certain pages fall under a Clade's "context".  When a Clade's context is active,
+certain blocks, permissions, etc. become active for that Clade.  For example,
+certain permissions may be available to Clade members or managers, but only
+for those Clades that they are a member or manager of.  The context is activated
+by viewing certain Clade pages or content posted in that Clade.  By default,
+some content types will always activate a Clade's context, e.g. content types
+provided by Clade-aware modules.  This can also be activated manually for specific
+content types.
+desc;
+	$form['description'] = array(
+		'#value' => '<p>'.t($desc).'</p>',
+	);
+	
+	$form['node_types'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Content types'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+  
+	$types = node_get_types('names');
+	$clade_types = module_invoke_all('clade', 'clade node types');
+	$default_types = array();
+	foreach ($clade_types as $type) {
+		$default_types[] = $types[$type];
+		unset($types[$type]);
+	}
+  
+  $form['node_types']['clade_node_types'] = array(
+    '#type' => 'checkboxes',
+    '#description' => t('Select content types you want to include in a Clade context.  When viewing these content types, the first Clade term the content is tagged with (if any) will become the active Clade context.'),
+    '#default_value' => variable_get('clade_node_types', array()),
+    '#options' => $types,
+  );
+  
+  $form['node_types']['default_node_types'] = array(
+  	'#value' => '<p>'.t('Default content types that will automatically activate a Clade context are').':</p>'.theme('item_list', $default_types),
+  );
+	
+  return system_settings_form($form);
+}
+
+function clade_get_node_types() {
+	$clade_default_types = module_invoke_all('clade', 'clade node types');
+	$clade_node_types = variable_get('clade_node_types', array());
+	foreach ($clade_default_types as $default) {
+		$clade_node_types[$default] = 1;
+	}
+	return $clade_node_types;
+}
+
 function clade_reorder_form(&$form_state) {
 	
 	$clades = taxonomy_get_tree(variable_get('clade_vocabulary', 0));

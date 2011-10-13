@@ -172,41 +172,43 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
   	drupal_add_js($nodetype_js_path);
   }
 
-	if ($node->type == 'training_page') {
-		// don't show training types in taxonomy links
-		$vocabs = taxonomy_get_vocabularies();
-		$training_vocab = 0;
-		$clade_vocab = variable_get('clade_vocabulary',0);
-		foreach ($vocabs as $v) {
-			if ($v->name == 'Training types') {
-				$training_vocab = $v->vid;
-			}
-		}
-		$training_terms = array_keys(taxonomy_node_get_terms_by_vocabulary($node, $training_vocab));
-		$links = array();
-		foreach ($node->taxonomy as $tid => &$term) {
-			if ($term->vid == $training_vocab) {
-				continue;
-			} else if ($term->vid == $clade_vocab) {
-				$links[] = array(
-						'title' => $term->name,
-						'href' => 'training/' . $training_terms[0] . '/' . $term->tid,
-						'attributes' => array(
-							'rel' => 'tag', 
-							'title' => strip_tags($term->description),
-						));
-			} else {
-				$links[] = array(
-						'title' => $term->name,
-						'href' => taxonomy_term_path($term),
-						'attributes' => array(
-							'rel' => 'tag', 
-							'title' => strip_tags($term->description),
-						));
-			}
-		}
-		$vars['terms'] = theme('links', $links, array('class' => 'links inline terms'));
-	} else if ($node->type == 'ibp_tool') {
+// 	if ($node->type == 'training_page') {
+// 		// don't show training types in taxonomy links
+// 		$vocabs = taxonomy_get_vocabularies();
+// 		$training_vocab = 0;
+// 		$clade_vocab = variable_get('clade_vocabulary',0);
+// 		foreach ($vocabs as $v) {
+// 			if ($v->name == 'Training types') {
+// 				$training_vocab = $v->vid;
+// 			}
+// 		}
+// 		$training_terms = array_keys(taxonomy_node_get_terms_by_vocabulary($node, $training_vocab));
+// 		$links = array();
+// 		foreach ($node->taxonomy as $tid => &$term) {
+// 			if ($term->vid == $training_vocab) {
+// 				continue;
+// 			} else if ($term->vid == $clade_vocab) {
+// 				$links[] = array(
+// 						'title' => $term->name,
+// 						'href' => 'training/' . $training_terms[0] . '/' . $term->tid,
+// 						'attributes' => array(
+// 							'rel' => 'tag', 
+// 							'title' => strip_tags($term->description),
+// 						));
+// 			} else {
+// 				$links[] = array(
+// 						'title' => $term->name,
+// 						'href' => taxonomy_term_path($term),
+// 						'attributes' => array(
+// 							'rel' => 'tag', 
+// 							'title' => strip_tags($term->description),
+// 						));
+// 			}
+// 		}
+// 		$vars['terms'] = theme('links', $links, array('class' => 'links inline terms'));
+// 	}
+
+	if ($node->type == 'ibp_tool') {
 		drupal_add_js(drupal_get_path('theme','ibp_theme').'/js/ibp_tool.js');
 	}
 }

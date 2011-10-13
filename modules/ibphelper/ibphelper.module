@@ -11,24 +11,24 @@ function ibphelper_perm() {
 
 function ibphelper_menu() {
 	return array(
-		'admin/settings/ibphelper' => array(
-			'access arguments' => array('admin ibphelper'),
-			'page callback' => 'drupal_get_form',
-			'page arguments' => array('ibphelper_admin_form'),
-			'title' => 'IBP Helper',
-		),
+// 		'admin/settings/ibphelper' => array(
+// 			'access arguments' => array('admin ibphelper'),
+// 			'page callback' => 'drupal_get_form',
+// 			'page arguments' => array('ibphelper_admin_form'),
+// 			'title' => 'IBP Helper',
+// 		),
 		'user/%user/my-ibp-pages' => array(
 			'access callback' => 'ibphelper_my_pages_access',
 			'page callback' => 'ibphelper_my_pages',
 			'title' => 'My Saved Pages'
 		),
-		'training/%' => array(
-			'access arguments' => array('access content'),
-			'page callback' => 'ibphelper_ibp_training',
-			'page arguments' => array(1),
-			'title callback' => 'ibphelper_ibp_training_title',
-			'title arguments' => array(1),
-		),
+// 		'training/%' => array(
+// 			'access arguments' => array('access content'),
+// 			'page callback' => 'ibphelper_ibp_training',
+// 			'page arguments' => array(1),
+// 			'title callback' => 'ibphelper_ibp_training_title',
+// 			'title arguments' => array(1),
+// 		),
 		'clade/%clade/crop-information' => array(
 			'type' => MENU_LOCAL_TASK,
 			'weight' => 25,
@@ -89,83 +89,83 @@ function ibphelper_my_pages() {
 	}
 }
 
-function ibphelper_admin_form() {
-	$form = array();
-	
-	$vocs = taxonomy_get_vocabularies();
-	$options = array(t('Choose one'));
-	foreach ($vocs as $voc) {
-		$options[$voc->vid] = $voc->name;
-	}
-	
-	$form['ibphelper_tools_vocabulary'] = array(
-		'#title' => t('IB Tools Vocabulary'),
-		'#description' => t('Select the Vocabulary to use in the IB Tools Navigation Menu block'),
-		'#type' => 'select',
-		'#options' => $options,
-		'#default_value' => variable_get('ibphelper_tools_vocabulary', 0),
-		);
-	
-	return system_settings_form($form);
-}
-
-function ibphelper_block($op = 'list', $delta = 0, $edit = array()) {
-	$block = array();
-	if ($op == 'list') {
-		$block[0] = array(
-			'info' => t('IB Tools Navigation Menu')
-			);
-		$block[1] = array(
-			'info' => t('IBP Training Navigation Menu')
-			);
-	} else if ($op == 'view') {
-		switch ($delta) {
-		case 0 :
-			drupal_add_js(drupal_get_path('module', 'ibphelper') . '/js/ibp-nav-menu.js');
-			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
-			$block['subject'] = t('IB Tools');
-			
-			if ($vid = variable_get('ibphelper_tools_vocabulary', 0)) {			
-				$block['content'] = ibphelper_ibtools_nav_menu();
-			}
-			break;
-
-		case 1 :
-			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
-			$block['subject'] = t('Training navigation');
-			if ($vid = variable_get('clade_vocabulary', 0)) {
-				$tree = taxonomy_get_tree($vid);
-				$items = array();
-				$cur = arg(2);
-				foreach ($tree as $term) {
-					$item = array(
-						'data' => l($term->name, "training/".arg(1)."/$term->tid"),
-						);
-					if ($cur == $term->tid) {
-						$item['class'] = 'active';
-					}
-					$items[] = $item;
-				}
-				$block['content'] = theme("item_list", $items, NULL, 'ul', array('class' => 'ibp_training_menu'));
-			}
-			break;
-		}
-	}
-	return $block;
-}
-
-function ibphelper_ibtools_nav_menu($pid = 0) {
-	$menu = taxonomy_get_tree(variable_get('ibphelper_tools_vocabulary', 0), $pid, -1, 1);
-	$items = array();
-	foreach ($menu as $m) {
-		$item = l($m->name, "taxonomy/term/$m->tid");
-		if ($subitems = ibphelper_ibtools_nav_menu($m->tid)) {
-			$item .= $subitems;
-		}
-		$items[] = array('data' => $item, 'class' => $pid ? 'ibtools_nav_submenu_item' : 'ibtools_nav_menu_item', 'title' => $m->description);
-	}
-	return theme('item_list', $items, NULL, 'ul', array('class' => $pid ? 'ibtools_nav_submenu' : 'ibtools_nav_menu'));
-}
+// function ibphelper_admin_form() {
+// 	$form = array();
+// 	
+// 	$vocs = taxonomy_get_vocabularies();
+// 	$options = array(t('Choose one'));
+// 	foreach ($vocs as $voc) {
+// 		$options[$voc->vid] = $voc->name;
+// 	}
+// 	
+// 	$form['ibphelper_tools_vocabulary'] = array(
+// 		'#title' => t('IB Tools Vocabulary'),
+// 		'#description' => t('Select the Vocabulary to use in the IB Tools Navigation Menu block'),
+// 		'#type' => 'select',
+// 		'#options' => $options,
+// 		'#default_value' => variable_get('ibphelper_tools_vocabulary', 0),
+// 		);
+// 	
+// 	return system_settings_form($form);
+// }
+// 
+// function ibphelper_block($op = 'list', $delta = 0, $edit = array()) {
+// 	$block = array();
+// 	if ($op == 'list') {
+// 		$block[0] = array(
+// 			'info' => t('IB Tools Navigation Menu')
+// 			);
+// 		$block[1] = array(
+// 			'info' => t('IBP Training Navigation Menu')
+// 			);
+// 	} else if ($op == 'view') {
+// 		switch ($delta) {
+// 		case 0 :
+// 			drupal_add_js(drupal_get_path('module', 'ibphelper') . '/js/ibp-nav-menu.js');
+// 			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
+// 			$block['subject'] = t('IB Tools');
+// 			
+// 			if ($vid = variable_get('ibphelper_tools_vocabulary', 0)) {			
+// 				$block['content'] = ibphelper_ibtools_nav_menu();
+// 			}
+// 			break;
+// 
+// 		case 1 :
+// 			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
+// 			$block['subject'] = t('Training navigation');
+// 			if ($vid = variable_get('clade_vocabulary', 0)) {
+// 				$tree = taxonomy_get_tree($vid);
+// 				$items = array();
+// 				$cur = arg(2);
+// 				foreach ($tree as $term) {
+// 					$item = array(
+// 						'data' => l($term->name, "training/".arg(1)."/$term->tid"),
+// 						);
+// 					if ($cur == $term->tid) {
+// 						$item['class'] = 'active';
+// 					}
+// 					$items[] = $item;
+// 				}
+// 				$block['content'] = theme("item_list", $items, NULL, 'ul', array('class' => 'ibp_training_menu'));
+// 			}
+// 			break;
+// 		}
+// 	}
+// 	return $block;
+// }
+// 
+// function ibphelper_ibtools_nav_menu($pid = 0) {
+// 	$menu = taxonomy_get_tree(variable_get('ibphelper_tools_vocabulary', 0), $pid, -1, 1);
+// 	$items = array();
+// 	foreach ($menu as $m) {
+// 		$item = l($m->name, "taxonomy/term/$m->tid");
+// 		if ($subitems = ibphelper_ibtools_nav_menu($m->tid)) {
+// 			$item .= $subitems;
+// 		}
+// 		$items[] = array('data' => $item, 'class' => $pid ? 'ibtools_nav_submenu_item' : 'ibtools_nav_menu_item', 'title' => $m->description);
+// 	}
+// 	return theme('item_list', $items, NULL, 'ul', array('class' => $pid ? 'ibtools_nav_submenu' : 'ibtools_nav_menu'));
+// }
 
 function ibphelper_nodeapi(&$node, $op, $teaser, $page) {
 	if ($op == 'view') {
@@ -484,68 +484,67 @@ function ibphelper_imagecache_default_presets() {
 	return $presets;
 }
 
-function ibphelper_taxonomy($op, $type, $array = NULL) {
-	if ($type == "term") {
-		$vocabulary = taxonomy_vocabulary_load($array['vid']);
-		if ($vocabulary->name == 'Training types') {
-			module_load_include('inc', 'pathauto', 'pathauto');
-			switch ($op) {
-				case "insert":
-					// create path alias
-					$alias = 'training/'.pathauto_cleanstring($array['name']);
-					path_set_alias('training/'.$array['tid'],$alias);
-					break;
-				
-				case "update":
-					// update path alias
-					path_set_alias('training/'.$array['tid']); // delete old path
-					$alias = 'training/'.pathauto_cleanstring($array['name']);
-					path_set_alias('training/'.$array['tid'], $alias);
-					break;
-					
-				case "delete":
-					// delete path alias
-					path_set_alias('training/'.$array['tid']);
-					break;	
-			}
-		}
-	}
-}
-
-
-function ibphelper_ibp_training($category, $crop = NULL) {
-	$args = array($category);
-	if ($crop) {
-		$args[] = $crop;
-	}
-	$view = views_get_view('training');
-	$output = $view->preview('default', $args);
-	if ($view->result) {
-		return $output;
-	} else {
-		return "<h3>".t('No training materials available.')."</h3>";
-	}
-}
-
-function ibphelper_ibp_training_title($category) {
-	return taxonomy_get_term($category)->name;
-}
-
-function ibphelper_taxonomy_menu_path() {
-	$output = array(
-		'ibphelper_taxonomy_menu_path_custom' => t('IBP Custom'),
-		);
-	return $output;
-}
-
-function ibphelper_taxonomy_menu_path_custom($vid,$tid) {
-	$vocabulary = taxonomy_vocabulary_load($vid);
-	if ($vocabulary->name == 'Training types') {
-		return "training/$tid";
-	} else {
-		return taxonomy_term_path(taxonomy_get_term($tid));
-	}
-}
+// function ibphelper_taxonomy($op, $type, $array = NULL) {
+// 	if ($type == "term") {
+// 		$vocabulary = taxonomy_vocabulary_load($array['vid']);
+// 		if ($vocabulary->name == 'Training types') {
+// 			module_load_include('inc', 'pathauto', 'pathauto');
+// 			switch ($op) {
+// 				case "insert":
+// 					// create path alias
+// 					$alias = 'training/'.pathauto_cleanstring($array['name']);
+// 					path_set_alias('training/'.$array['tid'],$alias);
+// 					break;
+// 				
+// 				case "update":
+// 					// update path alias
+// 					path_set_alias('training/'.$array['tid']); // delete old path
+// 					$alias = 'training/'.pathauto_cleanstring($array['name']);
+// 					path_set_alias('training/'.$array['tid'], $alias);
+// 					break;
+// 					
+// 				case "delete":
+// 					// delete path alias
+// 					path_set_alias('training/'.$array['tid']);
+// 					break;	
+// 			}
+// 		}
+// 	}
+// }
+// 
+// function ibphelper_ibp_training($category, $crop = NULL) {
+// 	$args = array($category);
+// 	if ($crop) {
+// 		$args[] = $crop;
+// 	}
+// 	$view = views_get_view('training');
+// 	$output = $view->preview('default', $args);
+// 	if ($view->result) {
+// 		return $output;
+// 	} else {
+// 		return "<h3>".t('No training materials available.')."</h3>";
+// 	}
+// }
+// 
+// function ibphelper_ibp_training_title($category) {
+// 	return taxonomy_get_term($category)->name;
+// }
+// 
+// function ibphelper_taxonomy_menu_path() {
+// 	$output = array(
+// 		'ibphelper_taxonomy_menu_path_custom' => t('IBP Custom'),
+// 		);
+// 	return $output;
+// }
+// 
+// function ibphelper_taxonomy_menu_path_custom($vid,$tid) {
+// 	$vocabulary = taxonomy_vocabulary_load($vid);
+// 	if ($vocabulary->name == 'Training types') {
+// 		return "training/$tid";
+// 	} else {
+// 		return taxonomy_term_path(taxonomy_get_term($tid));
+// 	}
+// }
 
 function ibphelper_views_api() {
   return array('api' => 2.0);
