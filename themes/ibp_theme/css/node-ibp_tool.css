@@ -6,10 +6,39 @@ h2.title a {
 	margin-top: 1em;
 }
 
+.node.ibp-tool.in-development {
+	border: 1px solid #9edba3;
+	margin: -10px -20px;
+	padding: 10px 20px;
+	position: relative;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.node.ibp-tool.in-development .in-development-message {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: .5em 1em;
+	background-color: #47bb50;
+	font-weight: bold;
+	font-size: 1.15em;
+	color: #ffffff;
+	text-shadow: -1px -1px 1px #141414;
+	opacity: .8;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 0 0 0 3px;
+	text-transform: uppercase;
+}
+
 .tool-properties {
 	float: left;
 	width: 365px;
-	margin: 0 10px 10px 0;
+	margin: 0 0 10px 0;
 }
 
 .tool-screenshots {

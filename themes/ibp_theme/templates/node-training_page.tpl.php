@@ -71,7 +71,7 @@
  * @see zen_process()
  */
 ?>
-<div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix">
+<div id="node-<?php print $node->nid; ?>" class="node <?php print $classes; ?> clearfix">
 
   <?php if ($unpublished): ?>
     <div class="unpublished"><?php print t('Unpublished'); ?></div>

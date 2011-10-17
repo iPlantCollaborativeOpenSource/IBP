@@ -115,7 +115,6 @@
   <?php print $head; ?>
   <?php print $styles; ?>
   <?php print $scripts; ?>
-	<link rel="stylesheet" href="<?php print path_to_theme().'/css/page-front.css'; ?>" />
 </head>
 <body class="<?php print $classes; ?>">
 

@@ -6,6 +6,7 @@
 function ibphelper_perm() {
 	return array(
 		'admin ibphelper',
+		'access ibp tool development files',
 		);
 }
 

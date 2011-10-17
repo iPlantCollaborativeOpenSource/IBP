@@ -71,7 +71,7 @@
  * @see zen_process()
  */
 ?>
-<div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix">
+<div id="node-<?php print $node->nid; ?>" class="node <?php print $classes; ?> clearfix">
 
 	<?php print theme('image', path_to_theme() .'/images/front-image.jpg','','',array('usemap'=>'#front-map')); ?>
 	<map name="front-map" id="front-map">

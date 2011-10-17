@@ -71,7 +71,7 @@
  * @see zen_process()
  */
 ?>
-<div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix">
+<div id="node-<?php print $node->nid; ?>" class="node <?php print $classes; ?> clearfix">
   <?php print $user_picture; ?>
 
   <?php if (!$page && $title): ?>
@@ -112,7 +112,15 @@
 			?>
     </div>
     
-    <?php print $field_tool_file_rendered; ?>
+    <?php
+    	if ($in_development) {
+    		if (user_access('access ibp tool development files')) {
+					print $field_tool_file_rendered;
+				}
+    	} else {
+    		print $field_tool_file_rendered;
+    	}
+    ?>
     
   </div>
 	
@@ -120,4 +128,8 @@
 	
   <?php print $links; ?>
   <?php print $terms; ?>
+  
+  <div class="in-development-message">
+		<?php print t('In development'); ?>
+  </div>
 </div><!-- /.node -->

@@ -71,7 +71,7 @@
  * @see zen_process()
  */
 ?>
-<div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?>">
+<div id="node-<?php print $node->nid; ?>" class="node <?php print $classes; ?>">
   <?php print $user_picture; ?>
 
   <?php if (!$page && $title): ?>
