@@ -115,6 +115,13 @@
   <?php print $head; ?>
   <?php print $styles; ?>
   <?php print $scripts; ?>
+  <script type="text/javascript">
+    YUI_config = {
+        filter:       "min",
+        root:         "<?php print url('sites/all/libraries/yui/build') .'/'; ?>",
+        base:         "<?php print url('sites/all/libraries/yui/build') .'/'; ?>"
+    };
+  </script>
 </head>
 <body class="<?php print $classes; ?>">
 
