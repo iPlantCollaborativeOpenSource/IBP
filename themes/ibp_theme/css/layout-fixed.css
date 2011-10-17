@@ -46,6 +46,7 @@ body.admin-menu {
  * Header
  */
 #header {
+	position: relative;
 }
 
 #header .section {
@@ -53,8 +54,13 @@ body.admin-menu {
 
 #logo /* Wrapping link for logo */ {
   float: left; /* LTR */
-  margin: 0 0 -22px 0;
-  padding: 0;
+  margin: 10px 0 0px 10px;
+}
+
+#name-and-slogan {
+	float: left;
+	width: 175px;
+	margin: 10px 0 0px 10px;
 }
 
 .region-header {
@@ -256,9 +262,8 @@ body.admin-menu {
 }
 
 #top-bar {
-	float: right;
-	position: relative;
-	right: 20px;
+	position: absolute;
+	right: 5px;
 }
 
 #top-bar #loginlinks {

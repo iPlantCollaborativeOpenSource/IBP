@@ -114,8 +114,8 @@
   <title><?php print $head_title; ?></title>
   <?php print $head; ?>
   <?php print $styles; ?>
-  <link rel="stylesheet" href="<?php print drupal_get_path('theme','ibp_theme').'/css/page-front.css'; ?>" />
   <?php print $scripts; ?>
+	<link rel="stylesheet" href="<?php print path_to_theme().'/css/page-front.css'; ?>" />
 </head>
 <body class="<?php print $classes; ?>">
 
@@ -135,9 +135,9 @@
         <div id="name-and-slogan">
           <?php if ($site_name): ?>
             <?php if ($title): ?>
-              <div id="site-name"><strong>
+              <div id="site-name">
                 <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
-              </strong></div>
+              </div>
             <?php else: /* Use h1 when the content title is empty */ ?>
               <h1 id="site-name">
                 <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
@@ -162,114 +162,56 @@
       
 			<div id="navigation">
 				<?php print $navigation; ?>
-				<div class="subnavigation">
-					<h3><?php print t('Providing resources and research communities for crop scientists in developing countries'); ?></h3>
-				</div>
+				<div class="subnavigation"></div>
 			</div><!-- /#navigation -->
 
     </div></div><!-- /.section, /#header -->
 		
-		<div id="main-topper">
-			<div class="introduction-wrapper clearfix">
-				<div id="messages-wrapper"><?php print $messages; ?></div>
-				<div class="introduction">
-					The IBP is a sustainable, web-based, one-stop-shop for information,
-					analytical tools and related services to design and carry out integrated
-					breeding projects. IBP will boost crop productivity and resilience for
-					smallholders in drought-prone environments by exploiting the economies
-					of scale afforded by collective access to cutting-edge breeding
-					technologies and informatics hitherto unavailable to breeders in
-					developing countries.
-				</div>
-				<div class="front-image">
-					<img alt="front image" src="<?php print drupal_get_path('theme','ibp_theme') . '/images/front-image-1.png'; ?>" />
-				</div>
-				<div class="action clearfix">
-					<?php if ($logged_in) { ?>
-						<?php
-							if (module_exists('content_profile')) {
-								$profile = content_profile_load('profile', $user->uid);
-							}
-						?>
-						<span>Welcome, <?php print ($profile ? check_plain($profile->field_profile_first_name[0]['value'] . ' ' . $profile->field_profile_last_name[0]['value']) : $user->name); ?>!</span>
-						<?php print l(t('Go to My Communities'), 'community', array('attributes' => array('class' => 'button'))); ?>
-					<?php } else { ?>
-						<span>Get started today by registering for a free account.</span>
-						<?php print l(t('Register for an account'), 'user/register', array('attributes' => array('class' => 'button'))); ?>
-					<?php } ?>
-				</div>
-
-			</div>
-		</div>
-		
-    <div id="front-wrapper">
-    	<div class="section clearfix">
-    		<div class="column thirty">
-    			<div class="column-inner">
-    				<div class="column-header">
-							<h3>Education</h3>
-							<h4>Learn more about our focus crops</h4>
+    <div id="main-wrapper">
+    	<div id="main">
+				<div id="columns">
+					<div id="content-wrapper">
+						<div id="content">
+							<div class="section">
+								<?php if ($mission): ?>
+									<div id="mission"><?php print $mission; ?></div>
+								<?php endif; ?>
+				
+								<?php print $highlight; ?>
+				
+								<?php print $help; ?>
+				
+								<?php print $content_top; ?>
+								
+								<div id="messages-wrapper"><?php print $messages; ?></div>
+				
+								<div id="content-area">
+									<?php print $content; ?>
+								</div>
+				
+								<?php print $content_bottom; ?>
+				
+								<?php if ($feed_icons): ?>
+									<div class="feed-icons"><?php print $feed_icons; ?></div>
+								<?php endif; ?>
+							</div>
 						</div>
-						<?php
-							$viewname = "crop_info_pages";
-							print views_embed_view($viewname);
-						?>
 					</div>
-    		</div>
-    		<div class="column forty">
-    			<div class="column-inner">
-						<div class="column-header">
-							<h3>Tools & Services</h3>
-							<h4>Learn more about our features</h4>
-						</div>
-						<div class="column-section">
-							<p>
-								We have provided a complete and robust set of tools to aid any
-								task. Out tools will help you accomplish several tasks including
-								genotyping, project management and statistical analysis.
-							</p>
-							<p><?php print l(t('View Tools'), 'tools', array('attributes' => array('class' => 'go'))); ?></p>
-						</div>
-						<div class="column-section">
-							<p>
-								We can help you avoid bottlenecks with your sevice providers.  We
-								work closely with many industry laboratories and service companies
-								to provide a complete, low-cost support system.
-							</p>
-							<p><?php print l(t('View Services'), 'services', array('attributes' => array('class' => 'go'))); ?></p>
-						</div>
-    			</div>
-    		</div>
-    		<div class="column thirty">
-    			<div class="column-inner">
-						<div class="column-header">
-							<h3>Communities</h3>
-							<h4>See what's going on in your field</h4>
-						</div>
-						<?php
-							$viewname = "clade_all_clades";
-							print views_embed_view($viewname, 'block_1');
-						?>
-					</div>
-    		</div>
+					<?php print $sidebar_first; ?>
+					<?php print $sidebar_second; ?>
+				</div><!-- /.section, /#content -->
     	</div>
-    	
-    	<div class="credits section clearfix">
-    		<h3>IBP is a collaborative effort.  Various features of this site were brought to you by the following groups:</h3>
-    		<div class="picture"><img alt="ICRISAT Logo" title="International Crops Research Insititute for the Semi-Arid Tropics" src="<?php print drupal_get_path('theme','ibp_theme').'/images/icrisat-logo.png'; ?>" /></div>
-    		<div class="picture"><img alt="IRRI Logo" title="International Rice Research Institute" src="<?php print drupal_get_path('theme','ibp_theme').'/images/irri-logo.png'; ?>" /></div>
-    		<div class="picture"><img alt="CIMMYT Logo" title="International Maize and Wheat Improvement Center" src="<?php print drupal_get_path('theme','ibp_theme').'/images/cimmyt-logo.png'; ?>" /></div>
-    		<div class="picture"><img alt="iPlant Logo" title="iPlant Collaborative" src="<?php print drupal_get_path('theme','ibp_theme').'/images/iplant.logo50.jpg'; ?>" /></div>
-    	</div>
-    </div>
+    </div><!-- /#main, /#main-wrapper -->
     
-		<div id="page-bottom"><div class="section">
-			<?php if ($tabs): ?>
-				<div class="tabs"><?php print $tabs; ?></div>
-			<?php endif; ?>
+		<?php if ($tabs): ?>
+			<div class="tabs"><?php print $tabs; ?></div>
+		<?php endif; ?>
 
-			<?php print $page_bottom; ?>
-		</div></div>
+		<?php if ($page_bottom): ?>
+			<div id="page-bottom"><div class="section">
+				<?php print $page_bottom; ?>
+			</div></div>
+		<?php endif; ?>
 		
 		<a href="#" id="back-to-top">Back to top</a>
 

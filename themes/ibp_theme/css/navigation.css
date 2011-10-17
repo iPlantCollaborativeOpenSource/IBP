@@ -52,7 +52,7 @@ li a.active {
 #navigation #block-menu-primary-links ul /* Primary and secondary links */ {
 	float: right;
   margin: 0;
-  padding: 0 3px 0 0;
+  padding: 0 5px 0 0;
   text-align: left; /* LTR */
   list-style: none;
 }

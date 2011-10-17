@@ -155,6 +155,10 @@ function ibp_theme_preprocess_page(&$vars, $hook) {
 function ibp_theme_preprocess_node(&$vars, $hook) {
 	$node = $vars['node'];
 	
+	if (drupal_is_front_page()) {
+		$vars['template_files'][] = 'node-front';
+	}
+	
   // Optionally, run node-type-specific preprocess functions, like
   // ibp_theme_preprocess_node_page() or ibp_theme_preprocess_node_story().
   $function = __FUNCTION__ . '_' . $node->type;
