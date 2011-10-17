@@ -41,6 +41,7 @@
  */
 ?>
 <div class="profile">
+<!-- 
 	<?php print $profile['user_picture']; ?>
 	<div class="profile-item profile-name">
 		<?php print $account->profile_first_name . ' ' . $account->profile_last_name; ?>
@@ -55,10 +56,22 @@
 			<span class="institution"><?php print $account->profile_institution; ?></span>
 		<?php endif; ?>
 	</div>
+	<?php if (! $account->private_profile_phone): ?>
+		<?php print $account->profile_phone; ?>
+	<?php endif; ?>
+	<?php if (! $account->private_profile_mobile): ?>
+		<?php print $account->profile_mobile; ?>
+	<?php endif; ?>
 	<?php endif; ?>
 	<?php if ($communities) : ?>
 	<div class="profile-item profile-communities">
 		<?php print $communities; ?>
 	</div>
 	<?php endif; ?>
+ -->
+	<?php print $user_profile; ?>
 </div>
+
+<pre>
+<?php print_r($account); ?>
+</pre>

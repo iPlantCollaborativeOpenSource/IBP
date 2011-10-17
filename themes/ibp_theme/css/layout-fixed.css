@@ -79,12 +79,6 @@ body.admin-menu {
 	overflow: hidden;		/* This chops off any overhanging divs */
 }
 
-.maintenance_page #messages-wrapper,
-.maintenance_page #main-topper,
-.maintenance_page #main-wrapper {
-	top: 16px;
-}
-
 .maintenance_page #columns {
 	min-height: 200px;
 }

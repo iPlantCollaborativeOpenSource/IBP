@@ -1,11 +1,76 @@
-.profile .picture {
-	float: left;
+.profile:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	font-size: 0px;
 }
 
-.profile-item {
+.profile .picture {
+	float: left;
+	margin: 0 20px 20px 0;
+}
+
+.profile .content-profile-display,
+.profile .crop-community-memberships {
+	margin-left: 220px;
+}
+
+.profile .field-field-profile-first-name,
+.profile .field-field-profile-first-name div,
+.profile .field-field-profile-middle-name,
+.profile .field-field-profile-middle-name div,
+.profile .field-field-profile-last-name,
+.profile .field-field-profile-last-name div,
+.profile .field-field-profile-country,
+.profile .field-field-profile-country div,
+.profile .field-field-profile-affiliation,
+.profile .field-field-profile-affiliation div {
+	display: inline;
+	font-weight: bold;
+}
+
+.profile .field-field-profile-designation,
+.profile .field-field-profile-designation div {
+	display: inline;
+}
+
+.profile .field-field-profile-first-name,
+.profile .field-field-profile-first-name div,
+.profile .field-field-profile-middle-name,
+.profile .field-field-profile-middle-name div,
+.profile .field-field-profile-last-name,
+.profile .field-field-profile-last-name div {
+	font-size: 18px;
+}
+
+.profile .field-field-profile-country,
+.profile .field-field-profile-country div {
+	color: #999999;
+}
+
+.profile .field-field-profile-city,
+.profile .field-field-profile-city div,
+.profile .field-field-profile-state,
+.profile .field-field-profile-state div,
+.profile .field-field-profile-zip,
+.profile .field-field-profile-zip div {
+	display: inline;
+}
+
+.profile .field-field-profile-address,
+.profile .field-field-profile-address div {
+	line-height: 1.5em;
+	margin-bottom: -.25em;
+}
+
+.profile .field-label-inline-first:after {
+	content: ": ";
+}
+
+.profile .profile-section {
 	font-size: 1.1em;
 	line-height: 2em;
-	margin-left: 220px;
 	padding: 6px 0;
 	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
 	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
@@ -14,7 +79,7 @@
 	border-width: 0 0 4px 0;
 }
 
-.profile-item:last-child {
+.profile .profile-category:last-child div:last-child {
 	border: none;
 	-moz-border-image: none;
 	-o-border-image: none;
@@ -22,7 +87,7 @@
 	border-image: none;
 }
 
-.profile-name {
+.profile .profile-category .profile-profile_name {
 	font-size: 1.5em;
 	font-weight: bold;
 }

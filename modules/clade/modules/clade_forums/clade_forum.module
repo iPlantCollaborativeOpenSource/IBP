@@ -37,7 +37,7 @@ function clade_forum_clade_forum_title($clade) {
 	return "$clade->name Community Forum";
 }
 
-function clade_forum_clade($op, $clade) {
+function clade_forum_clade($op, $clade = NULL) {
 	if ($op == 'clade load') {
 		$sql = "SELECT fid FROM {clade_forum} WHERE tid = %d";
 		$clade->forum = db_result(db_query($sql, $clade->tid));

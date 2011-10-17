@@ -91,7 +91,7 @@ function clade_hook_info() {
 		);
 }
 
-function clade_clade($op, $clade) {
+function clade_clade($op, $clade = NULL) {
 	if ($op == 'clade node types') {
 		return 'clade_page';
 	}

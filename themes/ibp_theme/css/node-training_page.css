@@ -90,21 +90,3 @@ div.objective div.obj span {
 .subsection {
 	margin-bottom: 1em;
 }
-
-.filefield-file {
-	padding: 8px 0;
-	margin-bottom: 0.25em;
-	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
-	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
-	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
-	border-image: url(../images/dot-border.png) 4 4 repeat;
-	border-width: 0 0 4px 0;
-}
-
-.filefield-file img {
-	float: left;
-}
-
-.filefield-file a {
-	line-height: 32px;
-}

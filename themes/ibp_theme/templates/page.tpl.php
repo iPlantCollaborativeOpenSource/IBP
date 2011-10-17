@@ -159,12 +159,10 @@
 
       <?php print $header; ?>
       
-			<?php if ($navigation): ?>
-        <div id="navigation">
-          <?php print $navigation; ?>
-          <div class="subnavigation"></div>
-        </div><!-- /#navigation -->
-      <?php endif; ?>
+			<div id="navigation">
+				<?php print $navigation; ?>
+				<div class="subnavigation"></div>
+			</div><!-- /#navigation -->
 
     </div></div><!-- /.section, /#header -->
 		

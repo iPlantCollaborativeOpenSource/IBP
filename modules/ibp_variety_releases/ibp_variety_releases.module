@@ -80,7 +80,7 @@ function ibp_variety_releases_form_alter(&$form, &$form_state, $form_id) {
 	}
 }
 
-function ibp_variety_releases_clade($op, $clade, $args=array()) {
+function ibp_variety_releases_clade($op, $clade = NULL, $args=array()) {
 	if ($op == 'clade insert') {
 		$clade_menu = menu_get_item("clade/$clade->tid");
 		$menu = array(

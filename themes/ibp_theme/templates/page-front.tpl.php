@@ -160,14 +160,12 @@
 
       <?php print $header; ?>
       
-			<?php if ($navigation): ?>
-        <div id="navigation">
-          <?php print $navigation; ?>
-          <div class="subnavigation">
-						<h3><?php print t('Providing resources and research communities for crop scientists in developing countries'); ?></h3>
-          </div>
-        </div><!-- /#navigation -->
-      <?php endif; ?>
+			<div id="navigation">
+				<?php print $navigation; ?>
+				<div class="subnavigation">
+					<h3><?php print t('Providing resources and research communities for crop scientists in developing countries'); ?></h3>
+				</div>
+			</div><!-- /#navigation -->
 
     </div></div><!-- /.section, /#header -->
 		
@@ -188,7 +186,12 @@
 				</div>
 				<div class="action clearfix">
 					<?php if ($logged_in) { ?>
-						<span>Welcome, <?php profile_load_profile($user); print ($user->profile_first_name ? $user->profile_first_name . ' ' . $user->profile_last_name : $user->name); ?>!</span>
+						<?php
+							if (module_exists('content_profile')) {
+								$profile = content_profile_load('profile', $user->uid);
+							}
+						?>
+						<span>Welcome, <?php print ($profile ? check_plain($profile->field_profile_first_name[0]['value'] . ' ' . $profile->field_profile_last_name[0]['value']) : $user->name); ?>!</span>
 						<?php print l(t('Go to My Communities'), 'community', array('attributes' => array('class' => 'button'))); ?>
 					<?php } else { ?>
 						<span>Get started today by registering for a free account.</span>

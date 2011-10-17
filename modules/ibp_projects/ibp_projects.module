@@ -100,7 +100,7 @@ function ibp_projects_form_validate($form, &$form_state) {
 	}
 }
 
-function ibp_projects_clade($op, $clade, $args=array()) {
+function ibp_projects_clade($op, $clade = NULL, $args=array()) {
 	if ($op == 'clade insert') {
 		$clade_menu = menu_get_item("clade/$clade->tid");
 		$menu = array(

@@ -237,6 +237,38 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 				actions_do($aid, $dummy, $context);
 			}
 		}
+	} else if ($form_id == 'user_profile_form') {
+		$form['account']['name']['#attributes']['readonly'] = 'readonly';
+		$form['account']['name']['#value'] = $form['account']['name']['#default_value'];
+		$form['account']['mail']['#attributes']['readonly'] = 'readonly';
+		$form['account']['mail']['#value'] = $form['account']['mail']['#default_value'];
+
+		unset(
+			$form['account']['name']['#description'],
+			$form['account']['mail']['#description'],
+			$form['account']['pass']
+		);
+		
+		$info = <<<info
+		<div class="status">
+			The Integrated Breeding Platform takes advantage of iPlant central authentication.
+		</div>
+		<div class="status">
+			To make changes to your username and/or email address, you must send an email to
+			<a href="mailto:support@iplantcollaborative.org?subject=Request change to iPlant account information">support@iplantcollaborative.org</a>
+			and request the change.
+		</div>
+		<div class="status">
+			To change you password, please submit an <a href="https://auth.iplantcollaborative.org/account_management/request_reset.py">iPlant password reset request</a>.
+		</div>
+info;
+		$form['account']['info'] = array(
+			'#value' => $info,
+			'#weight' => 1,
+		);
+		
+		$form['account']['status']['#weight'] = 5;
+		$form['account']['roles']['#weight'] = 5;
 	} else if ($form_id == 'contact_mail_user') {
 		global $user;
 		drupal_set_title('Contact ' . $user->profile_first_name . ' ' . $user->profile_last_name);
@@ -248,6 +280,7 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 				$form['taxonomy'][$vid]['#required'] = 1;
 			}
 		}
+//	} else if ($form_id == 'profile_node_form') {
 	}
 }
 
@@ -334,6 +367,14 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 			while ($page = db_fetch_object($pages)) {
 				$account->ibp_pages[$page->pid] = $page;
 			}
+			if (module_exists('content_profile')) {
+				$profile = content_profile_load('profile', $account->uid);
+				$account->profile = $profile;
+			}
+		} else if ($op == "after_update") {
+			if (module_exists('content_profile') && (!$account->profile || ! $account->profile->nid)) {
+				_ibphelper_ldap_create_profile($account);
+			}
 		} else if ($op == "save" || $op == "update") {
 			if ($account->ibp_pages) {
 				foreach ($account->ibp_pages as $page) {
@@ -352,6 +393,51 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 		} else if ($op == "delete") {
 			$sql = "DELETE FROM ibphelper_user_pages WHERE uid = %d";
 			db_query($sql, $account->uid);
+		}
+	}
+}
+
+/*
+ * This is inspired by the ldapdata sync methods, but that only works with profiles, not content profiles.
+ * Another option, possibly for the future, is in this thread:
+ * http://drupal.org/node/646640
+ * http://drupal.org/files/issues/646640-27.patch
+ */
+function _ibphelper_ldap_create_profile(&$account) {
+	if (module_exists('ldapdata') && module_exists('content_profile')) {
+		global $_ldapdata_ldap;
+
+		// Setup the global $_ldapdata_ldap object.
+		if (!_ldapdata_init($account))
+			return;
+		// See http://drupal.org/node/91786 about user_node().
+		// User can be edited by the user or by other authorized users.
+		$authmap = user_get_authmaps($account->name);
+		if (!isset($authmap['ldapauth']) || (_ldapdata_ldap_info($account, 'mapping_type') == LDAPDATA_MAP_NOTHING)) {
+			return;
+		}
+		$bind_info = _ldapdata_edition($account);
+		if (!$_ldapdata_ldap->connect($bind_info['dn'], $bind_info['pass'])) {
+			watchdog('ldapdata', "User load: user %name's data could not be read in the LDAP directory", array('%name' => $account->name), WATCHDOG_WARNING);
+			return;
+		}
+		if ($entry = $_ldapdata_ldap->retrieveAttributes($account->ldap_dn)) {
+			$fn = @$entry['givenname'][0];
+			$ln = @$entry['sn'][0];
+			if ($fn && $ln) {
+				drupal_set_message("Welcome to the Integrated Breeding Platform, $fn $ln!");
+				if (module_exists('content_profile')) {
+					$profile = content_profile_load('profile', $account->uid);
+					if (! $profile) {
+						$profile = new stdClass;
+						$profile->type = 'profile';
+						$profile->uid = $account->uid;
+					}
+					$profile->field_profile_first_name[0]['value'] = $fn;
+					$profile->field_profile_last_name[0]['value'] = $ln;
+					node_save($profile);
+				}
+			}
 		}
 	}
 }
@@ -596,7 +682,7 @@ function ibphelper_crop_info_query_access($node) {
 	return FALSE;
 }
 
-function ibphelper_clade($op, $clade) {
+function ibphelper_clade($op, $clade = NULL) {
 	if ($op == 'clade insert') {
 		$clade_menu = menu_get_item("clade/$clade->tid");
 		$menu = array(
@@ -638,4 +724,20 @@ function ibphelper_clade_details_items($clade) {
 			'class' => 'clade-details-item',
 			),
 		);
+}
+
+function ibphelper_profile_alter(&$account) {
+	unset($account->content['summary'], $account->content['LDAP authentication']);
+	if (module_exists('content_profile')) {
+		$content_profile = &$account->content['content_profile'];
+		if ($content_profile['content_profile_profile']['#theme'] == 'content_profile_display_add_link') {
+			$content_profile['#prefix'] = '<div id="content-profile-view" class="profile-category"><div>';
+			$content_profile['#suffix'] = '</div></div>';
+			$content_profile['#weight'] = 100;
+		} else {
+			unset($account->content['Profile Information']);
+			$content_profile['#weight'] = 0;
+		}
+		unset($content_profile['content_profile_profile']['#prefix'], $content_profile['content_profile_profile']['#suffix']);
+	}
 }

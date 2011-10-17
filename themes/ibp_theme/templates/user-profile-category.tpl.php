@@ -24,10 +24,9 @@
  * @see template_preprocess_user_profile_category()
  */
 ?>
-<?php if ($title) : ?>
-  <h3><?php print $title; ?></h3>
-<?php endif; ?>
-
-<dl<?php print $attributes; ?>>
+<div<?php print $attributes; ?>>
+	<?php if ($title) : ?>
+		<h3><?php print $title; ?></h3>
+	<?php endif; ?>
   <?php print $profile_items; ?>
-</dl>
+</div>

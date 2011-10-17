@@ -489,3 +489,30 @@ a.external-link {
 	border: 2px solid white;
 	box-shadow: 3px 3px 6px #666;
 }
+
+.filefield-file {
+	padding: 8px 0;
+	margin-bottom: 0.25em;
+	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
+	-webkit-border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-image: url(../images/dot-border.png) 4 4 repeat;
+	border-width: 0 0 4px 0;
+}
+
+.field-type-filefield .field-label {
+	font-size: 16px;
+	color: #3E3E3E;
+	border-bottom: 1px solid #CECECE;
+	text-shadow: -1px -1px 0 white;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+}
+
+.filefield-file img {
+	float: left;
+}
+
+.filefield-file a {
+	line-height: 32px;
+}

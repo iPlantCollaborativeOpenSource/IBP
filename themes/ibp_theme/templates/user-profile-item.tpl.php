@@ -22,5 +22,7 @@
  * @see template_preprocess_user_profile_item()
  */
 ?>
-<dt<?php print $attributes; ?>><?php print $title; ?></dt>
-<dd<?php print $attributes; ?>><?php print $value; ?></dd>
+<?php if ($title) : ?>
+	<h4<?php print $attributes; ?>><?php print $title; ?></h4>
+<?php endif; ?>
+<div<?php print $attributes; ?>><?php print $value; ?></div>

@@ -272,46 +272,61 @@ function ibp_theme_preprocess_views_view(&$vars){
 	}
 }
 
+function ibp_theme_preprocess_user_profile_category(&$vars) {
+	$attributes = array(
+		'class' => strtolower(str_replace(" ", "-", $vars['element']['#title'])),
+	);
+	$vars['attributes'] .= drupal_attributes($attributes);
+	unset($vars['title']);
+}
+
 function ibp_theme_preprocess_user_profile(&$vars) {
 	global $user;
 	$account = $vars['account'];
 	if ($account->uid == $user->uid) {
 		drupal_set_title(t('My profile'));
 	}
-	else if (module_exists('profile')) {
-		profile_load_profile($account);
-		$name = $account->profile_first_name;
-		if ($account->profile_middle_name) {
-			$name .= ' ' . $account->profile_middle_name;
+	else if (module_exists('content_profile')) {
+		$profile = content_profile_load('profile', $account->uid);
+		if ($profile) {
+			$name = $profile->field_profile_first_name[0]['value'];
+			$name .= ' ' . $profile->field_profile_last_name[0]['value'];
 		}
-		$name .= ' ' . $account->profile_last_name;
-		drupal_set_title($name .'\'s Profile');
+		if (! $name) {
+			$name = $account->name;
+		}
+		drupal_set_title(check_plain($name) .'\'s Profile');
 	}
-	
-	if (module_exists('clade_subscriptions')) {
-		$vars['communities'] = implode(', ',
-				array_map(
-					function($c) {
-						$tid = $c['tid'];
-						$clade = l($c['name'], "clade/$tid");
-						if ($c['is_admin']) {
-							$clade .= '*';
-						}
-						return $clade;
-					},
-				$account->clades)
-			);
-	}
-	
 	drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/user_profile.css', 'theme');
 }
 
-function ibp_theme_user_flag($account) {
-	if (module_exists('profile') && module_exists('countries_api')) {
-		profile_load_profile($object);
+function ibp_theme_preprocess_content_field(&$vars) {
+	$field_name = $vars['field_name'];
+	$items = &$vars['items'];
+	if ($field_name == 'field_profile_country') {
+		$country = $items[0]['value'];
 		$countries = $countries = countries_api_get_array('printable_name', 'iso2');
-		if ($countries[$account->profile_country]) {
-			$flag = theme('flag', $countries[$account->profile_country]);
+		if ($countries[$country]) {
+			$flag = theme('flag', $countries[$country]);
+		}
+		$items[0]['view'] = $flag . $country . ':';
+	}
+	else if ($field_name == 'field_profile_address') {
+		$items[0]['view'] = str_replace("\n", "<br/>", $items[0]['view']);
+	}
+}
+
+function ibp_theme_preprocess_content_profile_display_view(&$vars) {
+	unset($vars['title']);
+}
+
+function ibp_theme_user_flag($account) {
+	if (module_exists('content_profile') && module_exists('countries_api')) {
+		$profile = content_profile_load('profile', $account->uid);
+		$countries = $countries = countries_api_get_array('printable_name', 'iso2');
+		$profile_country = $profile->field_profile_country[0]['value'];
+		if ($profile_country && $countries[$profile_country]) {
+			$flag = theme('flag', $countries[$profile_country]);
 		}
 	}
 	return $flag;
@@ -323,19 +338,20 @@ function ibp_theme_flag($code) {
 
 function ibp_theme_username($object) {
 	if ($object->uid && $object->name) {
-		if (module_exists('profile')) {
-			profile_load_profile($object);
-			$name = $object->profile_first_name;
-			if ($object->profile_middle_name) {
-				$name .= ' ' . $object->profile_middle_name;
+		if (module_exists('content_profile')) {
+			$profile = content_profile_load('profile', $object->uid);
+			$name = $profile->field_profile_first_name[0]['value'];
+			if ($profile->field_profile_middle_name[0]['value']) {
+				$name .= ' ' . $profile->field_profile_middle_name[0]['value'];
 			}
-			$name .= ' ' . $object->profile_last_name;
+			$name .= ' ' . $profile->field_profile_last_name[0]['value'];
 			$name = trim($name);
 			
 			if (module_exists('countries_api')) {
 				$countries = $countries = countries_api_get_array('printable_name', 'iso2');
-				if ($countries[$object->profile_country]) {
-					$flag = theme('flag', $countries[$object->profile_country]);
+				$profile_country = $profile->field_profile_country[0]['value'];
+				if ($profile_country && $countries[$profile_country]) {
+					$flag = theme('flag', $countries[$profile_country]);
 				}
 			}
 		}
@@ -442,6 +458,7 @@ function _ibp_theme_filefield_icon_path($file) {
 function ibp_theme_preprocess_user_login(&$vars) {
 	$vars['form'] = drupal_render($vars['form']);
 	$vars['pass_reset_url'] = 'https://auth.iplantcollaborative.org/account_management/request_reset.py';
+	drupal_add_js('(function($) { $(document).ready(function() { $("#edit-name").focus(); }); })(jQuery);', 'inline');
 }
 
 function ibp_theme_calendar_ical_icon($url) {

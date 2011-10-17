@@ -818,3 +818,23 @@ function clade_subscriptions_remove_admin_submit($form, &$form_state) {
 		drupal_set_message(t('There was an error removing !user from @clade managers.  Please try again.', array('!user' => theme('username', $account), '@clade' => $clade->name)));
 	}
 }
+
+function clade_profile_alter(&$account) {
+	$communities = array();
+	foreach ($account->clades as $clade) {
+		$tid = $clade['tid'];
+		$name = $clade['name'];
+		if ($clade['is_admin']) {
+			$name .= "*";
+		}
+		$communities[] = l($name, "clade/$tid");
+	}
+	if ($communities) {
+		$account->content['Communities'] = array(
+			'#type'=>'user_profile_category',
+			'#title' => t('Crop Community Memberships'),
+			'communities' => array('#type' => 'user_profile_item', '#value' => implode(', ', $communities)),
+			'#weight' => 20,
+		);
+	}
+}
