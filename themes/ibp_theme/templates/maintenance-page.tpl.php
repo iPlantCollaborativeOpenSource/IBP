@@ -35,9 +35,9 @@
         <div id="name-and-slogan">
           <?php if ($site_name): ?>
             <?php if ($title): ?>
-              <div id="site-name"><strong>
+              <div id="site-name">
                 <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
-              </strong></div>
+              </div>
             <?php else: /* Use h1 when the content title is empty */ ?>
               <h1 id="site-name">
                 <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
@@ -64,9 +64,6 @@
 			<?php if ($title): ?>
 				<h1 class="title">
 					<?php print $title; ?>
-					<?php if ($my_pages_form): ?>
-						<?php print $my_pages_form; ?>
-					<?php endif; ?>
 				</h1>
 			<?php endif; ?>
 			<?php print $breadcrumb; ?>
@@ -105,23 +102,23 @@
 					</div>
 					<?php print $sidebar_first; ?>
 					<?php print $sidebar_second; ?>
-				</div><!-- /.section, /#content -->
+				</div>
     	</div>
     </div><!-- /#main, /#main-wrapper -->
 
-    <?php if ($footer || $footer_message): ?>
-      <div id="footer"><div class="section">
-
-        <?php if ($footer_message): ?>
-          <div id="footer-message"><?php print $footer_message; ?></div>
-        <?php endif; ?>
-
-        <?php print $footer; ?>
-
-      </div></div><!-- /.section, /#footer -->
-    <?php endif; ?>
-
   </div></div><!-- /#page, /#page-wrapper -->
+
+	<?php if ($footer || $footer_message): ?>
+		<div id="footer"><div class="section">
+
+			<?php if ($footer_message): ?>
+				<div id="footer-message"><?php print $footer_message; ?></div>
+			<?php endif; ?>
+
+			<?php print $footer; ?>
+
+		</div></div><!-- /.section, /#footer -->
+	<?php endif; ?>
 
   <?php print $page_closure; ?>
 
