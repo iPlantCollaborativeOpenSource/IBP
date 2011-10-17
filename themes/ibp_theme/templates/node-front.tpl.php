@@ -75,7 +75,7 @@
 
 	<?php print theme('image', path_to_theme() .'/images/front-image-2.png','','',array('usemap'=>'front-map')); ?>
 	<map name="front-map" id="front-map">
-		<area shape="rect" coords="15,25,255,285" href="<?php print url("node/166"); ?>" title="Got to Crop Information" />
+		<area shape="rect" coords="15,25,255,285" href="<?php print url("node/166"); ?>" title="Go to Crop Information" />
 		<area shape="rect" coords="255,25,496,285" href="<?php print url("node/82"); ?>" title="Go to Breeding activities" />
 		<area shape="rect" coords="495,25,735,285" href="<?php print url("node/149"); ?>" title="Go to Capacity building" />
 		<area shape="rect" coords="735,25,975,285" href="<?php print url("community"); ?>" title="Go to Crop networks" />
