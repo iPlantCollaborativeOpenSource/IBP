@@ -12,11 +12,11 @@
  * Body
  */
 body {
-	background-image: url(../images/ibp-background.png);
+	background-image: url(../images/ibp-background.jpg);
 	background-color: #fbf9f3;
 	background-attachment: scroll;
 	background-position: 50% 0;
-	background-repeat: repeat-x;
+	background-repeat: no-repeat;
 }
 
 body.admin-menu {

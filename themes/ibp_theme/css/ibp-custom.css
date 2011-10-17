@@ -490,7 +490,7 @@ a.external-link {
 	box-shadow: 3px 3px 6px #666;
 }
 
-.filefield-file {
+.field-field-file-attachment .filefield-file {
 	padding: 8px 0;
 	margin-bottom: 0.25em;
 	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;
@@ -500,7 +500,7 @@ a.external-link {
 	border-width: 0 0 4px 0;
 }
 
-.field-type-filefield .field-label {
+.field-field-file-attachment .field-label {
 	font-size: 16px;
 	color: #3E3E3E;
 	border-bottom: 1px solid #CECECE;
@@ -509,10 +509,10 @@ a.external-link {
 	margin-bottom: 5px;
 }
 
-.filefield-file img {
+.field-field-file-attachment .filefield-file img {
 	float: left;
 }
 
-.filefield-file a {
+.field-field-file-attachment .filefield-file a {
 	line-height: 32px;
 }
