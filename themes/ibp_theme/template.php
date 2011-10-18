@@ -104,7 +104,7 @@ function ibp_theme_loginlinks($user) {
 			'data' => '<h3>'.t('My Links').'</h3>'.theme('item_list', $mylinks, NULL, 'ul'),
 			'id' => 'my-links'
 			);
-		drupal_add_js(path_to_theme() . 'js/my-links.js', 'theme');
+		drupal_add_js(drupal_get_path('theme','ibp_theme') . 'js/my-links.js', 'theme');
 		$items[] = l(t('Log out'), 'logout', array('attributes' => array('class' => 'login-link')));
 	} else {
 		$items[] = l(t('Register for an account'), 'user/register', array('attributes'=>array('class' => 'login-link','target'=>'_blank')));
@@ -123,7 +123,7 @@ function ibp_theme_loginlinks($user) {
  */
 function ibp_theme_preprocess(&$vars, $hook) {
 	if (drupal_is_front_page()) {
-		drupal_add_css(path_to_theme() . '/css/page-front.css', 'theme');
+		drupal_add_css(drupal_get_path('theme','ibp_theme') . '/css/page-front.css', 'theme');
 	}
 }
 // */
@@ -165,11 +165,11 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
   }
   
   // add css per node type
-  $nodetype_css_path = path_to_theme().'/css/node-'.$node->type.'.css';
+  $nodetype_css_path = drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css';
   if (file_exists($nodetype_css_path)) {
   	drupal_add_css($nodetype_css_path, 'theme');
   }
-  $nodetype_js_path = path_to_theme().'/js/node-'.$node->type.'.js';
+  $nodetype_js_path = drupal_get_path('theme','ibp_theme').'/js/node-'.$node->type.'.js';
   if (file_exists($nodetype_js_path)) {
   	drupal_add_js($nodetype_js_path, 'theme');
   }
@@ -180,7 +180,7 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
 			$vars['in_development'] = TRUE;
 			
 		}
-		drupal_add_js(path_to_theme().'/js/ibp_tool.js');
+		drupal_add_js(drupal_get_path('theme','ibp_theme').'/js/ibp_tool.js');
 	}
 }
 // */
@@ -268,7 +268,7 @@ function ibp_theme_preprocess_user_profile(&$vars) {
 		}
 		drupal_set_title(check_plain($name) .'\'s Profile');
 	}
-	drupal_add_css(path_to_theme().'/css/user_profile.css', 'theme');
+	drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/user_profile.css', 'theme');
 }
 
 function ibp_theme_preprocess_content_field(&$vars) {
@@ -370,8 +370,8 @@ function ibp_theme_preprocess_faq_category_questions_top(&$variables) {
 	static $added = FALSE;
 	if (! $added) {
 		$added = TRUE;
-		drupal_add_css(path_to_theme() . '/css/ibp_faq.css', 'theme');
-		drupal_add_js(path_to_theme() . '/js/ibp_faq.js', 'theme');
+		drupal_add_css(drupal_get_path('theme','ibp_theme') . '/css/ibp_faq.css', 'theme');
+		drupal_add_js(drupal_get_path('theme','ibp_theme') . '/js/ibp_faq.js', 'theme');
 	}
 }
 
@@ -393,7 +393,7 @@ function ibp_theme_filefield_icon($file) {
 }
 
 function _ibp_theme_filefield_icon_path($file) {
-	$dir = path_to_theme() . '/images/filefield/';
+	$dir = drupal_get_path('theme','ibp_theme') . '/images/filefield/';
 	$dashed_mime = strtr($file['filemime'], array('/' => '-'));
 	
 	$path = $dir.$dashed_mime.'.png';
@@ -433,7 +433,7 @@ function ibp_theme_preprocess_user_login(&$vars) {
 }
 
 function ibp_theme_calendar_ical_icon($url) {
-  if ($image = theme('image', path_to_theme() .'/images/ical.png', t('Add to calendar'), t('Add to calendar'))) {
+  if ($image = theme('image', drupal_get_path('theme','ibp_theme') .'/images/ical.png', t('Add to calendar'), t('Add to calendar'))) {
     return '<div style="text-align:right"><a href="'. check_url($url) .'" class="ical-icon" title="ical">'. $image .'</a></div>';
   }
 }
