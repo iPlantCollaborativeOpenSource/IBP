@@ -47,6 +47,11 @@ div.teaser-comment-form {
 	top: 0.5em;
 }
 
+.teaser-comment div.author,
+.teaser-comment div.meta {
+	font-size: 0.9em;
+}
+
 .teaser-comment ul.links {
 	margin: 0 6px 6px 0;
 	padding: 0;

@@ -65,6 +65,7 @@
 }
 
 .node .submitted /* The "posted by" information */ {
+	font-size: .9em;
 }
 
 .node .terms /* Node terms (taxonomy) */ {

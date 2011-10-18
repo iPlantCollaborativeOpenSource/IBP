@@ -59,6 +59,7 @@
 }
 
 .comment .submitted /* The "posted by" information */ {
+	font-size: .9em;
 }
 
 .comment .content /* Comment's content wrapper */ {

@@ -15,12 +15,12 @@ body {
 	background-image: url(../images/ibp-background.jpg);
 	background-color: #fbf9f3;
 	background-attachment: scroll;
-	background-position: 50% 0;
+	background-position: center top;
 	background-repeat: no-repeat;
 }
 
 body.admin-menu {
-	background-position: 50% 21px;
+	background-position: center 21px;
 }
 
 #page-wrapper {

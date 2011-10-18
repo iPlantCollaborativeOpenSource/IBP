@@ -437,3 +437,32 @@ function ibp_theme_calendar_ical_icon($url) {
     return '<div style="text-align:right"><a href="'. check_url($url) .'" class="ical-icon" title="ical">'. $image .'</a></div>';
   }
 }
+
+function ibp_theme_node_submitted($node) {
+	return t('Submitted by !username on @datetime',
+		array(
+			'!username' => theme('username', $node),
+			'@datetime' => _ibp_theme_submitted_dateformat($node->created),
+		)
+	);
+}
+
+function ibp_theme_comment_submitted($comment) {
+	return t('Submitted by !username on @datetime',
+		array(
+			'!username' => theme('username', $comment),
+			'@datetime' => _ibp_theme_submitted_dateformat($comment->timestamp),
+		)
+	);
+}
+
+function ibp_theme_teaser_comment_submitted($comment) {
+	return t('posted on @date',
+		array(
+			'@date'=> _ibp_theme_submitted_dateformat($comment->timestamp),
+		));
+}
+
+function _ibp_theme_submitted_dateformat($timestamp) {
+	return format_date($timestamp, 'custom', 'F j, Y g:iA');
+}
