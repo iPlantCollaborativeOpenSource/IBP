@@ -105,10 +105,11 @@ h2.title a {
 }
 
 .field-field-tool-file a {
-	display: inline-block;
+	display: block;
 	color: #ffffff;
-	text-shadow: -1px -1px 1px #3e3e3e;
+	text-shadow: -1px -1px 0px #3e3e3e;
 	font-weight: bold;
+	font-size: 1.1em;
 	padding: 0 18px;
 	line-height: 32px;
 	background-color: #3199f2;
@@ -119,6 +120,7 @@ h2.title a {
 	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
 	background-image: linear-gradient(#36a1fc, #2b91e7);
 	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
 }
@@ -133,8 +135,8 @@ h2.title a {
 	background-image: linear-gradient(#57b1fc, #4aa1ea);
 }
 
+.in-development .field-field-tool-file a,
 .tool-in-development {
-	margin: 0 5px 5px 0;
 	padding: 0 18px;
 	line-height: 32px;
 	background-color: #e8880b;
@@ -145,13 +147,27 @@ h2.title a {
 	background-image: -webkit-linear-gradient(#f6a741, #e8880b);
 	background-image: linear-gradient(#f6a741, #e8880b);
 	font-weight: bold;
-	font-size: 1.15em;
+	font-size: 1.1em;
 	color: #ffffff;
-	text-shadow: -1px -1px 0px #141414;
+	text-shadow: -1px -1px 0px #3e3e3e;
 	-moz-border-radius: 3px;
 	-o-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
+}
+
+.tool-in-development {
+	margin: 0 5px 5px 0;
+}
+
+.in-development .field-field-tool-file a:hover {
+	background-color: #f49821;
+	background-image: -ms-linear-gradient(#f7b662, #f49821);
+	background-image: -moz-linear-gradient(#f7b662, #f49821);
+	background-image: -o-linear-gradient(#f7b662, #f49821);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f7b662), to(#f49821));
+	background-image: -webkit-linear-gradient(#f7b662, #f49821);
+	background-image: linear-gradient(#f7b662, #f49821);
 }
 
 .field-field-tool-file img {
