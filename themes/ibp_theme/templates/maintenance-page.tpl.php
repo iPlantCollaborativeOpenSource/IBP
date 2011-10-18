@@ -28,7 +28,7 @@
     <div id="header"><div class="section clearfix">
 
       <?php if ($logo): ?>
-        <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" /></a>
+        <a id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" /></a>
       <?php endif; ?>
 			
       <?php if ($site_name || $site_slogan): ?>
@@ -36,7 +36,7 @@
           <?php if ($site_name): ?>
             <?php if ($title): ?>
               <div id="site-name">
-                <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home"><span><?php print $site_name; ?></span></a>
+                <a><span><?php print $site_name; ?></span></a>
               </div>
             <?php else: /* Use h1 when the content title is empty */ ?>
               <h1 id="site-name">

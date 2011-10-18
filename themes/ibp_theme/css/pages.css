@@ -85,7 +85,8 @@ div#site-name /* The name of the website */ {
 }
 
 #site-name a:link,
-#site-name a:visited {
+#site-name a:visited,
+#site-name span {
 	color: #eeeeee;
   text-decoration: none;
 }
