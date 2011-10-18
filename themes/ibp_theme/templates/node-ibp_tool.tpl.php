@@ -114,8 +114,10 @@
     
     <?php
     	if ($in_development) {
-    		if (user_access('access ibp tool development files')) {
+    		if (user_access('access ibp tool development files') && $field_tool_file_rendered) {
 					print $field_tool_file_rendered;
+				} else {
+					print '<div class="tool-in-development">' . t('This tool is in development') . '</div>';
 				}
     	} else {
     		print $field_tool_file_rendered;
@@ -129,7 +131,4 @@
   <?php print $links; ?>
   <?php print $terms; ?>
   
-  <div class="in-development-message">
-		<?php print t('In development'); ?>
-  </div>
 </div><!-- /.node -->

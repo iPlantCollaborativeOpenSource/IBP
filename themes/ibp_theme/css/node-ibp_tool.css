@@ -6,35 +6,6 @@ h2.title a {
 	margin-top: 1em;
 }
 
-.node.ibp-tool.in-development {
-	border: 1px solid #9edba3;
-	margin: -10px -20px;
-	padding: 10px 20px;
-	position: relative;
-	-moz-border-radius: 3px;
-	-o-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-}
-
-.node.ibp-tool.in-development .in-development-message {
-	position: absolute;
-	top: 0;
-	right: 0;
-	padding: .5em 1em;
-	background-color: #47bb50;
-	font-weight: bold;
-	font-size: 1.15em;
-	color: #ffffff;
-	text-shadow: -1px -1px 1px #141414;
-	opacity: .8;
-	-moz-border-radius: 3px;
-	-o-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 0 0 0 3px;
-	text-transform: uppercase;
-}
-
 .tool-properties {
 	float: left;
 	width: 365px;
@@ -142,13 +113,11 @@ h2.title a {
 	line-height: 32px;
 	background-color: #3199f2;
 	background-image: -ms-linear-gradient(#36a1fc, #2b91e7);
-background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
-background-image: -o-linear-gradient(#36a1fc, #2b91e7);
-background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
-background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
-
-
-background-image: linear-gradient(#36a1fc, #2b91e7);
+	background-image: -moz-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -o-linear-gradient(#36a1fc, #2b91e7);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#36a1fc), to(#2b91e7));
+	background-image: -webkit-linear-gradient(#36a1fc, #2b91e7);
+	background-image: linear-gradient(#36a1fc, #2b91e7);
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
 	border-radius: 3px;
@@ -157,20 +126,41 @@ background-image: linear-gradient(#36a1fc, #2b91e7);
 .field-field-tool-file a:hover {
 	background-color: #51a9f4;
 	background-image: -ms-linear-gradient(#57b1fc, #4aa1ea);
-background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
-background-image: -o-linear-gradient(#57b1fc, #4aa1ea);
-background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
-background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -moz-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -o-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#57b1fc), to(#4aa1ea));
+	background-image: -webkit-linear-gradient(#57b1fc, #4aa1ea);
+	background-image: linear-gradient(#57b1fc, #4aa1ea);
+}
 
-
-background-image: linear-gradient(#57b1fc, #4aa1ea);
+.tool-in-development {
+	margin: 0 5px 5px 0;
+	padding: 0 18px;
+	line-height: 32px;
+	background-color: #e8880b;
+	background-image: -ms-linear-gradient(#f6a741, #e8880b);
+	background-image: -moz-linear-gradient(#f6a741, #e8880b);
+	background-image: -o-linear-gradient(#f6a741, #e8880b);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f6a741), to(#e8880b));
+	background-image: -webkit-linear-gradient(#f6a741, #e8880b);
+	background-image: linear-gradient(#f6a741, #e8880b);
+	font-weight: bold;
+	font-size: 1.15em;
+	color: #ffffff;
+	text-shadow: -1px -1px 0px #141414;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 
 .field-field-tool-file img {
 	display: none;
 }
 
-.field-field-tool-file {
+.field-field-tool-file,
+.tool-in-development
+{
 	float: right;
 	clear: right;
 }
