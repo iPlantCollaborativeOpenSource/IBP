@@ -185,13 +185,20 @@ background-image: linear-gradient(#555, #444);
 	margin: 0;
 	background: #ffffff;
 	float: left;
-	font-size: 16px;
+	font-size: 12px;
 	height: 24px;
+	width: 128px;
 	line-height: 24px;
+	padding-left: 6px;
 	-moz-border-radius: 3px 0 0 3px;
 	-o-border-radius: 3px 0 0 3px;
 	-webkit-border-radius: 3px 0 0 3px;
 	border-radius: 3px 0 0 3px;
+}
+
+#search-box input.default {
+	color: #999999;
+	font-style: italic;
 }
 
 #search-box input[type=submit] {
