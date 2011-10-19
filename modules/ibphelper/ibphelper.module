@@ -81,7 +81,7 @@ function ibphelper_my_pages() {
 		}
 		$pages = array();
 		foreach ($account->ibp_pages as $page) {
-			$pages[] = l($page->title, $page->url);
+			$pages[] = t('!link (@url)', array('!link' => l($page->title, $page->url), '@url' => url($page->url, array('absolute'=>TRUE))));
 		}
 		if ($pages) {
 			$mypages = theme('item_list', $pages, NULL, 'ul', array('class' => 'ibp-my-pages'));
