@@ -95,11 +95,12 @@ function ibp_theme_loginlinks($user) {
 	if ($user->uid) {
 		$items[] = t("<span class='loginstatus'>You are logged in as <strong>@user</strong></span>", array("@user" => $user->name));
 		// TODO My Links
+		
+		$menu_data = menu_tree_all_data('menu-my-links');
 		$mylinks = array();
-		$mylinks[] = l(t('My Saved Pages'), "user/$user->uid/my-ibp-pages");
-		$mylinks[] = l(t('My Communities'), 'community');
-		$mylinks[] = l(t('My Issue Tracker'), 'issues');
-		$mylinks[] = l(t('My Account'), 'user');
+		foreach ($menu_data as $link) {
+			$mylinks[] = l($link['link']['link_title'], $link['link']['link_path']);
+		}
 		$items[] = array(
 			'data' => '<h3>'.t('My Links').'</h3>'.theme('item_list', $mylinks, NULL, 'ul'),
 			'id' => 'my-links'

@@ -170,6 +170,10 @@ h2.title a {
 	background-image: linear-gradient(#f7b662, #f49821);
 }
 
+.in-development .field-field-tool-file .field-items {
+	margin: 0 0 0 190px;
+}
+
 .field-field-tool-file img {
 	display: none;
 }
@@ -179,6 +183,16 @@ h2.title a {
 {
 	float: right;
 	clear: right;
+}
+
+.field-field-file-attachment {
+	clear: both;
+	
+}
+
+.field-field-file-attachment .field-label {
+	font-size: 1em;
+	color: #7b7b7b;
 }
 
 .views-row {

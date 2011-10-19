@@ -18,10 +18,12 @@ function ibphelper_menu() {
 // 			'page arguments' => array('ibphelper_admin_form'),
 // 			'title' => 'IBP Helper',
 // 		),
-		'user/%user/my-ibp-pages' => array(
+		'user/my-ibp-pages' => array(
 			'access callback' => 'ibphelper_my_pages_access',
 			'page callback' => 'ibphelper_my_pages',
-			'title' => 'My Saved Pages'
+			'title' => 'My Saved Pages',
+			'type' => MENU_NORMAL_ITEM,
+			'menu_name' => 'menu-my-links',
 		),
 // 		'training/%' => array(
 // 			'access arguments' => array('access content'),

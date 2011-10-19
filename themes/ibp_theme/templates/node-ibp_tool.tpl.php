@@ -114,13 +114,17 @@
     
     <?php
     	if ($in_development) {
-    		if (user_access('access ibp tool development files') && $field_tool_file_rendered) {
-					print $field_tool_file_rendered;
-				} else {
-					print '<div class="tool-in-development">' . t('This tool is in development') . '</div>';
+				print '<div class="tool-in-development">' . t('This tool is in development') . '</div>';
+				if (user_access('access ibp tool development files') && $field_tool_file_rendered) {
+					$rendered_updated = str_replace('<div class="field-label">Downloads</div>', '<div class="field-label">Development downloads</div>', $field_tool_file_rendered);
+					print $rendered_updated;
+				}
+				if (user_access('access ibp tool development files') && $field_file_attachment_rendered) {
+					print $field_file_attachment_rendered;
 				}
     	} else {
-    		print $field_tool_file_rendered;
+				print $field_tool_file_rendered;
+				print $field_file_attachment_rendered;
     	}
     ?>
     
