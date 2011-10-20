@@ -281,14 +281,9 @@ body.admin-menu {
  */
 #footer {
 	clear: both;
-	text-align: center;
 	margin-top: 45px;
-	background-color: #f3efe4;
-	padding-top: 12px;
-	height: 31px;
+	padding: 20px;
 	width: 100%;
-	color: #a29a81;
-	font-size: 10pt;
 }
 
 #footer .section {

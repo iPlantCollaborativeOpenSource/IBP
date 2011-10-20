@@ -319,6 +319,10 @@ ul.links li {
  * Footer
  */
 #footer {
+	text-align: center;
+	background-color: #f3efe4;
+	color: #a29a81;
+	font-size: 0.775em;
 }
 
 #footer .section {
@@ -326,6 +330,10 @@ ul.links li {
 
 #footer-message /* Wrapper for the footer message from Drupal's "Site information"
                    and for any blocks placed in the footer region */ {
+}
+
+#footer-message p {
+	margin: 0;
 }
 
 .region-page-bottom {
