@@ -16,3 +16,22 @@
 	margin: 0.25em 0;
 	font-size: 1em;
 }
+
+.view-clade-members-faces .views-row {
+	display: inline-block;
+	width: 100px;
+	margin: 0 6px;
+	text-align: center;
+	vertical-align: top;
+	font-size: .9em;
+}
+
+.view-clade-members-faces .views-field-name {
+	display: inline;
+}
+
+.view-clade-members-faces .views-field-is-admin {
+	display: inline;
+	color: #999999;
+	font-style: italic;
+}

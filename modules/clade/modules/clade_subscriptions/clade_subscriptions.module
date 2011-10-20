@@ -94,28 +94,29 @@ function clade_subscriptions_theme() {
 			'original hook' => 'views_view_table',
 			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
 			),
-		'views_view_unformatted__clade_members_faces' => array(
-			'arguments' => array(
-				'view' => NULL,
-				'options' => NULL,
-				'rows' => NULL,
-				'title' => NULL
-				),
-			'template' => 'views-view-unformatted--clade-members-faces',
-			'original hook' => 'views_view_unformatted',
-			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
-			),
-		'views_view_fields__clade_members_faces' => array(
-			'arguments' => array(
-				'view' => NULL,
-				'options' => NULL,
-				'rows' => NULL,
-				'output' => NULL,
-				),
-			'template' => 'views-view-fields--clade-members-faces',
-			'original hook' => 'views_view_fields',
-			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
-			),
+// 		'views_view_unformatted__clade_members_faces' => array(
+// 			'arguments' => array(
+// 				'view' => NULL,
+// 				'options' => NULL,
+// 				'rows' => NULL,
+// 				'title' => NULL
+// 				),
+// 			'template' => 'views-view-unformatted--clade-members-faces',
+// 			'original hook' => 'views_view_unformatted',
+// 			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+// 			),
+// 		'views_view_fields__clade_members_faces' => array(
+// 			'arguments' => array(
+// 				'view' => NULL,
+// 				'options' => NULL,
+// 				'rows' => NULL,
+// 				'output' => NULL,
+// 				'fields' => NULL,
+// 				),
+// 			'template' => 'views-view-fields--clade-members-faces',
+// 			'original hook' => 'views_view_fields',
+// 			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
+// 			),
 		'clade_subscriptions_subscribe_email' => array(
 			'arguments' => array(
 				'clade_name' => NULL,
@@ -169,9 +170,44 @@ function clade_subscriptions_form_alter(&$form, &$form_state, $form_id) {
 	}
 }
 
-function clade_subscriptions_preprocess_views_view_fields__clade_members_faces(&$vars) {
-	drupal_add_css(drupal_get_path('module', 'clade_subscriptions') . '/css/clade_subscriptions_views.css');
-}
+// function clade_subscriptions_preprocess_views_view_fields__clade_members_faces(&$vars) {
+// 	drupal_add_css(drupal_get_path('module', 'clade_subscriptions') . '/css/clade_subscriptions_views.css');
+// 	$view = $vars['view'];
+// 
+//   // Loop through the fields for this view.
+//   $inline = FALSE;
+//   $vars['fields'] = array(); // ensure it's at least an empty array.
+//   foreach ($view->field as $id => $field) {
+//     // render this even if set to exclude so it can be used elsewhere.
+//     $field_output = $view->style_plugin->get_field($view->row_index, $id);
+//     $empty = $field_output !== 0 && empty($field_output);
+//     if (empty($field->options['exclude']) && (!$empty || empty($field->options['hide_empty']))) {
+//       $object = new stdClass();
+// 
+//       $object->content = $field_output;
+//       if (isset($view->field[$id]->field_alias) && isset($vars['row']->{$view->field[$id]->field_alias})) {
+//         $object->raw = $vars['row']->{$view->field[$id]->field_alias};
+//       }
+//       else {
+//         $object->raw = NULL; // make sure it exists to reduce NOTICE
+//       }
+//       $object->inline = !empty($vars['options']['inline'][$id]);
+//       $object->inline_html = $object->inline ? 'span' : 'div';
+//       if (!empty($vars['options']['separator']) && $inline && $object->inline && $object->content) {
+//         $object->separator = filter_xss_admin($vars['options']['separator']);
+//       }
+// 
+//       $inline = $object->inline;
+// 
+//       $object->handler = &$view->field[$id];
+//       $object->element_type = $object->handler->element_type();
+// 
+//       $object->class = views_css_safe($id);
+//       $object->label = check_plain($view->field[$id]->label());
+//       $vars['fields'][$id] = $object;
+//     }
+//   }
+// }
 
 function clade_subscriptions_clade_details_items($clade) {
 	global $user;
