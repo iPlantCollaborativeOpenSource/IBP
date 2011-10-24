@@ -93,7 +93,11 @@ function ibp_theme_theme(&$existing, $type, $theme, $path) {
 function ibp_theme_loginlinks($user) {
 	$items = array();
 	if ($user->uid) {
-		$items[] = t("<span class='loginstatus'>You are logged in as <strong>@user</strong></span>", array("@user" => $user->name));
+		$name = $user->name;
+		if (strlen($name) > 20) {
+			$name = substr($name, 0, 20) . '...';
+		}
+		$items[] = t("<span class='loginstatus'>You are logged in as <strong>@user</strong></span>", array("@user" => $name));
 		// TODO My Links
 		
 		$menu_data = menu_tree_all_data('menu-my-links');

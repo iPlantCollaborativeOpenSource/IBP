@@ -6,10 +6,10 @@ Drupal.behaviors.ibp_menu_blocks = function(context) {
 		menu.find('li.active-trail').filter(':last').addClass('active').children('a').addClass('active');
 		$('a', menu).each(function(i,o) {
 			var a = $(o);
-			var exp = $('<a class="menu-expander">').attr('href', a.attr('href'));
+			var exp = $('<span class="menu-expander"/>').data('href', a.attr('href'));
 			a.append(exp);
 		});
-		menu.find('a.menu-expander').bind('click', function(e) {
+		menu.find('span.menu-expander').bind('click', function(e) {
 			e.stopPropagation();
 			var $this = $(this);
 			var li = $this.parent().parent(),
@@ -23,6 +23,7 @@ Drupal.behaviors.ibp_menu_blocks = function(context) {
 				}
 				return false;
 			}
+			window.location = $this.data('href');
 		});
 	});
 }

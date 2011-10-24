@@ -55,6 +55,7 @@ body.admin-menu {
 #logo /* Wrapping link for logo */ {
   float: left; /* LTR */
   margin: 10px 0 0px 10px;
+  width: 110px;
 }
 
 #name-and-slogan {
@@ -241,8 +242,11 @@ body.admin-menu {
  * Navigation
  */
 #navigation {
+/*
 	float: left;
   width: 100%;
+*/
+	clear: both;
   position: relative;
   margin: 0;
 }
@@ -262,8 +266,9 @@ body.admin-menu {
 }
 
 #top-bar {
-	position: absolute;
-	right: 5px;
+	float: right;
+	margin: 0 5px 0 0;
+	max-width: 675px;
 }
 
 #top-bar #loginlinks {

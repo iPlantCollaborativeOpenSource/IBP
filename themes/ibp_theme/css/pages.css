@@ -60,6 +60,8 @@ body.admin-menu {
  * Header
  */
 #header {
+	background-image: url(../images/header-bg.jpg);
+	background-color: #313131;
 }
 
 #header .section {

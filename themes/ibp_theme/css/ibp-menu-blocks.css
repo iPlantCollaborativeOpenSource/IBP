@@ -1,6 +1,7 @@
 .menu_block_wrapper ul,
 .menu_block_wrapper ul li {
 	list-style: none;
+	list-style-image: none;
 	margin: 0;
 	padding: 0;
 }
@@ -41,7 +42,7 @@
 	position: relative;
 }
 
-.menu_block_wrapper a.menu-expander {
+.menu_block_wrapper span.menu-expander {
 	position: absolute;
 	top: 0px;
 	right: -17px;
@@ -56,28 +57,28 @@
 	background-position: center center;
 }
 
-.menu_block_wrapper li.expanded a.menu-expander,
-.menu_block_wrapper li.expanded li.expanded a.menu-expander {
+.menu_block_wrapper li.expanded span.menu-expander,
+.menu_block_wrapper li.expanded li.expanded span.menu-expander {
 	background-image: url(../images/arrow_down_grey.png);
 }
 
-.menu_block_wrapper li.expanded li a.menu-expander,
-.menu_block_wrapper li.expanded li.leaf a.menu-expander {
+.menu_block_wrapper li.expanded li span.menu-expander,
+.menu_block_wrapper li.expanded li.leaf span.menu-expander {
 	background-image: url(../images/arrow_right_grey.png);
 }
 
-.menu_block_wrapper li.expanded a.active a.menu-expander,
-.menu_block_wrapper li.expanded li.expanded a.active a.menu-expander {
+.menu_block_wrapper li.expanded a.active span.menu-expander,
+.menu_block_wrapper li.expanded li.expanded a.active span.menu-expander {
 	background-image: url(../../../themes/ibp_theme/images/arrow_down_white.png);
 }
 
-.menu_block_wrapper a.active a.menu-expander,
-.menu_block_wrapper li.expanded li a.active a.menu-expander,
-.menu_block_wrapper li.leaf a.active-trail a.menu-expander,
-.menu_block_wrapper li.leaf a.active a.menu-expander,
-.menu_block_wrapper li.expanded li.leaf a.active-trail a.menu-expander,
-.menu_block_wrapper li.expanded li.leaf a.active a.menu-expander,
-.menu_block_wrapper a.active a.menu-expander {
+.menu_block_wrapper a.active span.menu-expander,
+.menu_block_wrapper li.expanded li a.active span.menu-expander,
+.menu_block_wrapper li.leaf a.active-trail span.menu-expander,
+.menu_block_wrapper li.leaf a.active span.menu-expander,
+.menu_block_wrapper li.expanded li.leaf a.active-trail span.menu-expander,
+.menu_block_wrapper li.expanded li.leaf a.active span.menu-expander,
+.menu_block_wrapper a.active span.menu-expander {
 	border-color: #71b9f7;
 	background-image: url(../../../themes/ibp_theme/images/arrow_right_white.png);
 }
@@ -95,7 +96,6 @@
 }
 
 .menu_block_wrapper ul li.expanded ul {
-	text-align: right;
 	background-color: #e0e0e0;
 	background-image: -ms-linear-gradient(#eeeeee, #fafafa);
 	background-image: -moz-linear-gradient(#eeeeee, #fafafa);
@@ -119,6 +119,10 @@
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#eaeaea));
 	background-image: -webkit-linear-gradient(#fafafa, #eaeaea);
 	background-image: linear-gradient(#fafafa, #eaeaea);
+}
+
+.menu_block_wrapper ul li.expanded ul li a {
+	text-align: right;
 }
 
 .menu_block_wrapper ul li.active-trail.leaf,
