@@ -23,6 +23,10 @@ body.admin-menu {
 	background-position: center 21px;
 }
 
+body.devel-site {
+	border: 5px solid #ffff00;
+}
+
 #page-wrapper {
 }
 

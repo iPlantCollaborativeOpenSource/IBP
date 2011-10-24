@@ -130,6 +130,12 @@ function ibp_theme_preprocess(&$vars, $hook) {
 	if (drupal_is_front_page()) {
 		drupal_add_css(drupal_get_path('theme','ibp_theme') . '/css/page-front.css', 'theme');
 	}
+	
+	if ($hook == 'page') {
+		if ($_SERVER['SERVER_NAME'] && $_SERVER['SERVER_NAME'] != 'www.integratedbreeding.net') {
+			$vars['classes_array'][] = 'devel-site';
+		}
+	}
 }
 // */
 
