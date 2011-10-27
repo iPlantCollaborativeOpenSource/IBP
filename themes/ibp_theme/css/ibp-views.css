@@ -20,7 +20,7 @@
 .view-clade-forum-summary .views-row:last-child,
 .view-clade-post-summary .views-row:last-child,
 .view-ibp-projects-summary .views-row:last-child {
-	border: none;
+	border-width: 0;
 	-moz-border-image: none;
 	-o-border-image: none;
 	-webkit-border-image: none;

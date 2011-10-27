@@ -443,7 +443,7 @@ function clade_subscriptions_unsubscribe_user($clade_id, $account) {
 	$params = array(
 		'clade_name' => $clade->name,
 		'to_name' => $account->name,
-		'from_name' => t('The !clade_name Clade Managers', array('!clade_name' => $clade->name)),
+		'from_name' => t('The @clade_name Clade Managers', array('@clade_name' => $clade->name)),
 		);
 	drupal_mail(
 		'clade_subscriptions',
@@ -467,7 +467,7 @@ function clade_subscriptions_delete_subscription($clade_id, $uid) {
 function clade_subscriptions_mail($key, &$message, $params) {
 	$message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
 	if ($key === 'subscribe') {
-		$message['subject'] = t('Welcome to the @clade Clade!', array('@clade' => $params['clade_name']));
+		$message['subject'] = t('Welcome to the @clade Clade', array('@clade' => $params['clade_name']));
 		$message['body'] = theme('clade_subscriptions_subscribe_email', $params['clade_name'], $params['clade_homepage_link'], $params['to_name'], $params['from_name']);
 	} else if ($key === 'unsubscribe') {
 		$message['subject'] = t('You have left the @clade Clade', array('@clade' => $params['clade_name']));
