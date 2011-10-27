@@ -380,9 +380,16 @@ function clade_subscriptions_subscribe_user($clade_id, $account) {
 			'clade_name' => $clade->name,
 			'clade_homepage_link' => l(t('Clade homepage'), "clade/{$clade->tid}", array('absolute' => TRUE)),
 			'to_name' => $account->name,
-			'from_name' => t('The !clade_name Clade Managers', array('!clade_name' => $clade->name)),
+			'from_name' => t('The @clade_name Clade Managers', array('@clade_name' => $clade->name)),
 			);
-		drupal_mail('clade_subscriptions', 'subscribe', $account->mail, $account->language, $params, "My-Plant $clade->name Clade Managers <no-reply@my-plant.org>");
+		drupal_mail(
+			'clade_subscriptions',
+			'subscribe',
+			$account->mail,
+			$account->language,
+			$params,
+			t('@clade_name Managers <@site_mail>', array('@clade_name' => $clade->name, '@site_mail' => variable_get('site_mail', '')))
+		);
 
 		return array('type' => 'subscribed',
 													'message' => t('You are now a member of %group.', array('%group' => $clade->name)));
@@ -438,7 +445,14 @@ function clade_subscriptions_unsubscribe_user($clade_id, $account) {
 		'to_name' => $account->name,
 		'from_name' => t('The !clade_name Clade Managers', array('!clade_name' => $clade->name)),
 		);
-	drupal_mail('clade_subscriptions', 'unsubscribe', $account->mail, $account->language, $params, "My-Plant $clade->name Clade Managers <no-reply@my-plant.org>");
+	drupal_mail(
+		'clade_subscriptions',
+		'unsubscribe',
+		$account->mail,
+		$account->language,
+		$params,
+		t('@clade_name Managers <@site_mail>', array('@clade_name' => $clade->name, '@site_mail' => variable_get('site_mail', '')))
+	);
 }
 
 function clade_subscriptions_delete_subscription($clade_id, $uid) {

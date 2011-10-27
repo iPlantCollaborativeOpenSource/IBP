@@ -2,7 +2,9 @@
 	Dear <?php echo $to ?>,
 </p>
 <p>
-	This message is confirmation that you have left the <?php echo $clade_name ?> Clade.
+	<?php
+		print t('This message is confirmation that you have left the @clade_name Clade.',array('@clade_name'=>$clade_name));
+	?>
 </p>
 <p>
 	Sincerely,<br/>
