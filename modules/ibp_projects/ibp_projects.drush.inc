@@ -56,7 +56,7 @@ function ibp_projects_project_setup_menus() {
 				'router_path' => 'clade/%/projects',
 				'link_path' => "clade/$clade->tid/projects",
 				'link_title' => $clade->name . ' projects',
-				'weight' => 11,
+				'weight' => 15,
 				);
 			menu_link_save($menu);
 		}

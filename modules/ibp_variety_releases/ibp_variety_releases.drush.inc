@@ -56,7 +56,7 @@ function ibp_variety_releases_setup_menus() {
 				'router_path' => 'clade/%/variety-releases',
 				'link_path' => "clade/$clade->tid/variety-releases",
 				'link_title' => $clade->name . ' variety releases',
-				'weight' => 11,
+				'weight' => 14,
 				);
 			menu_link_save($menu);
 		}

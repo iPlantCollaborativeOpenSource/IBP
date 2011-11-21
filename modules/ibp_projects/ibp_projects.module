@@ -109,7 +109,7 @@ function ibp_projects_clade($op, $clade = NULL, $args=array()) {
 			'router_path' => 'clade/%/projects',
 			'link_path' => "clade/$clade->tid/projects",
 			'link_title' => $clade->name . ' projects',
-			'weight' => 11,
+			'weight' => 15,
 			);
 		menu_link_save($menu);
 	}

@@ -151,7 +151,7 @@ function clade_clade_homepage_default_handlers() {
 	$handler->handler = 'panel_context';
 	$handler->weight = 0;
 	$handler->conf = array(
-		'title' => 'Clade panel',
+		'title' => 'Clade home panel',
 		'no_blocks' => 0,
 		'pipeline' => 'standard',
 		'css_id' => '',
@@ -302,7 +302,7 @@ function clade_clade_homepage_default_handlers() {
 	$handler->handler = 'panel_context';
 	$handler->weight = 0;
 	$handler->conf = array(
-		'title' => 'Clade panel',
+		'title' => 'Clade digest panel',
 		'no_blocks' => 0,
 		'pipeline' => 'standard',
 		'css_id' => '',
