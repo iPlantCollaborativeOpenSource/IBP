@@ -4,7 +4,7 @@ function ibphelper_drush_command() {
 	$items = array();
 	
 	$items['ibphelper-menus'] = array(
-		'callback' => 'ibphelper_project_setup_menus',
+		'callback' => 'ibphelper_setup_menus',
 		'description' => 'Set up some menus stuff for crops',
 		'aliases' => array('ibphmenu'),
 	);
@@ -19,7 +19,7 @@ function ibphelper_drush_help($section) {
   }
 }
 
-function ibphelper_project_setup_menus() {
+function ibphelper_setup_menus() {
 	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
 	foreach ($clades as $clade) {
 		$clade_menu = menu_get_item("clade/$clade->tid");

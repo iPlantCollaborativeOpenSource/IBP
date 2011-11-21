@@ -523,7 +523,8 @@ a.external-link {
 div.panel-pane div.panel-hide-hover,
 div.panel-pane:hover div.panel-hide {
 	position: static;
-	margin-top: -2em;
+	margin-top: -1.5em;
+	font-size: 12px;
 }
 
 div.panel-pane div.admin-links ul {
@@ -540,4 +541,8 @@ div.panel-pane div.admin-links li a {
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;
+}
+
+div.panel-pane div.admin-links li a:hover {
+	color: #00A3F7;
 }

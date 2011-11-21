@@ -293,6 +293,7 @@ info;
 			$form['taxonomy'][$clade_vid]['#type'] = 'value';
 			unset($form['taxonomy'][$clade_vid]['#options'],$form['taxonomy'][$clade_vid]['#theme']);
 		}
+		unset($form['menu']);
 	}
 }
 
