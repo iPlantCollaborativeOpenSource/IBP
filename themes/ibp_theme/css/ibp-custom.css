@@ -519,3 +519,25 @@ a.external-link {
 .field-field-file-attachment .filefield-file a {
 	line-height: 32px;
 }
+
+div.panel-pane div.panel-hide-hover,
+div.panel-pane:hover div.panel-hide {
+	position: static;
+	margin-top: -2em;
+}
+
+div.panel-pane div.admin-links ul {
+	margin: 0;
+	padding: 0;
+}
+
+div.panel-pane div.admin-links li {
+	margin: 0;
+	padding: 0 0 2px 0;
+}
+
+div.panel-pane div.admin-links li a {
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+}

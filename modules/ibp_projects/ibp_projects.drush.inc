@@ -43,15 +43,22 @@ function ibp_projects_setup_content_type() {
 function ibp_projects_project_setup_menus() {
 	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
 	foreach ($clades as $clade) {
-		$clade_menu = menu_get_item("clade/$clade->tid");
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/projects',
-			'link_path' => "clade/$clade->tid/projects",
-			'link_title' => $clade->name . ' projects',
-			'weight' => 11,
-			);
-		menu_link_save($menu);
+		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/projects"))) {
+			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/projects"));
+			if ($existing) {
+				// already exists
+				continue;
+			}
+			$clade_menu = menu_get_item("clade/$clade->tid");
+			$menu = array(
+				'menu_name' => 'primary-links',
+				'plid' => $clade_menu['mlid'],
+				'router_path' => 'clade/%/projects',
+				'link_path' => "clade/$clade->tid/projects",
+				'link_title' => $clade->name . ' projects',
+				'weight' => 11,
+				);
+			menu_link_save($menu);
+		}
 	}
 }

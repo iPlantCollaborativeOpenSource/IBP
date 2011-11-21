@@ -43,15 +43,22 @@ function ibp_variety_releases_setup_content_type() {
 function ibp_variety_releases_setup_menus() {
 	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
 	foreach ($clades as $clade) {
-		$clade_menu = menu_get_item("clade/$clade->tid");
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/variety-releases',
-			'link_path' => "clade/$clade->tid/variety-releases",
-			'link_title' => $clade->name . ' variety releases',
-			'weight' => 11,
-			);
-		menu_link_save($menu);
+		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/variety-releases"))) {
+			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/variety-releases"));
+			if ($existing) {
+				// already exists
+				continue;
+			}
+			$clade_menu = menu_get_item("clade/$clade->tid");
+			$menu = array(
+				'menu_name' => 'primary-links',
+				'plid' => $clade_menu['mlid'],
+				'router_path' => 'clade/%/variety-releases',
+				'link_path' => "clade/$clade->tid/variety-releases",
+				'link_title' => $clade->name . ' variety releases',
+				'weight' => 11,
+				);
+			menu_link_save($menu);
+		}
 	}
 }

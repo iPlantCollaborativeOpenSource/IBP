@@ -4,6 +4,7 @@
 }
 
 .clade-page-file {
+	clear: both;
 	border-width: 4px 0 0 0;
 	-o-border-image: url(../images/dot-border.png) 4 4 repeat;
 	-moz-border-image: url(../images/dot-border.png) 4 4 repeat;

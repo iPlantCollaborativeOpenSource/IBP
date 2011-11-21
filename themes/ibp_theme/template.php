@@ -103,7 +103,11 @@ function ibp_theme_loginlinks($user) {
 		$menu_data = menu_tree_all_data('menu-my-links');
 		$mylinks = array();
 		foreach ($menu_data as $link) {
-			$mylinks[] = l($link['link']['link_title'], $link['link']['link_path']);
+			$options = array();
+			if (strpos($link['link']['href'],'http') === 0) {
+				$options['attributes']['target']='_blank';
+			}
+			$mylinks[] = l($link['link']['link_title'], $link['link']['link_path'], $options);
 		}
 		$items[] = array(
 			'data' => '<h3>'.t('My Links').'</h3>'.theme('item_list', $mylinks, NULL, 'ul'),

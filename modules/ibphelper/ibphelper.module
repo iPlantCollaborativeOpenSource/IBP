@@ -284,6 +284,15 @@ info;
 			}
 		}
 //	} else if ($form_id == 'profile_node_form') {
+	} else if ($form_id == 'crop_homepage_node_form') {
+		if ($clade_id = $_GET['clades']) {
+			$clade = clade_get_clade($clade_id);
+			$clade_vid = variable_get('clade_vocabulary',0);
+			$form['taxonomy'][$clade_vid]['#default_value'] = array($clade->tid);
+			$form['taxonomy'][$clade_vid]['#value'] = array($clade->tid);
+			$form['taxonomy'][$clade_vid]['#type'] = 'value';
+			unset($form['taxonomy'][$clade_vid]['#options'],$form['taxonomy'][$clade_vid]['#theme']);
+		}
 	}
 }
 
@@ -711,8 +720,16 @@ function ibphelper_clade($op, $clade = NULL) {
 			'plid' => $clade_menu['mlid'],
 			'router_path' => 'clade/%/variety-releases',
 			'link_path' => "clade/$clade->tid/variety-releases",
-			'link_title' => $clade->name . ' Variety Releases',
+			'link_title' => $clade->name . ' variety releases',
 			'weight' => 12,
+			);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/digest',
+			'link_path' => "clade/$clade->tid/digest",
+			'link_title' => $clade->name . ' digest',
+			'weight' => 9,
 			);
 		menu_link_save($menu);
 	}
