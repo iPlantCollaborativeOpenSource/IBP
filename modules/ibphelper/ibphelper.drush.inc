@@ -65,5 +65,19 @@ function ibphelper_setup_menus() {
 				menu_link_save($menu);
 			}
 		}
+		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/publications"))) {
+			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/publications"));
+			if (! $existing) {
+				$menu = array(
+					'menu_name' => 'primary-links',
+					'plid' => $clade_menu['mlid'],
+					'router_path' => 'clade/%/publications',
+					'link_path' => "clade/$clade->tid/publications",
+					'link_title' => $clade->name . ' publications',
+					'weight' => 11,
+					);
+				menu_link_save($menu);
+			}
+		}
 	}
 }

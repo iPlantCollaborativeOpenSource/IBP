@@ -87,6 +87,9 @@ function ibp_theme_theme(&$existing, $type, $theme, $path) {
   $hooks['user_flag'] = array(
     'arguments' => array('account' => NULL),
 		);
+	$hooks['definition_list'] = array(
+		'arguments' => array('vars' => NULL),
+	);
   return $hooks;
 }
 
@@ -267,22 +270,6 @@ function ibp_theme_preprocess_user_profile_category(&$vars) {
 }
 
 function ibp_theme_preprocess_user_profile(&$vars) {
-	global $user;
-	$account = $vars['account'];
-	if ($account->uid == $user->uid) {
-		drupal_set_title(t('My profile'));
-	}
-	else if (module_exists('content_profile')) {
-		$profile = content_profile_load('profile', $account->uid);
-		if ($profile) {
-			$name = $profile->field_profile_first_name[0]['value'];
-			$name .= ' ' . $profile->field_profile_last_name[0]['value'];
-		}
-		if (! $name) {
-			$name = $account->name;
-		}
-		drupal_set_title(check_plain($name) .'\'s Profile');
-	}
 	drupal_add_css(drupal_get_path('theme','ibp_theme').'/css/user_profile.css', 'theme');
 }
 
@@ -480,4 +467,214 @@ function ibp_theme_teaser_comment_submitted($comment) {
 
 function _ibp_theme_submitted_dateformat($timestamp) {
 	return format_date($timestamp, 'custom', 'F j, Y g:iA');
+}
+
+function ibp_theme_definition_list($vars) {
+	$terms = $vars['terms'];
+	$title = $vars['title'];
+	$attributes = $vars['attributes'];
+	
+	$output = '<div class="definition-list">';
+	if (isset($title)) {
+		$output .= '<h3>'.$title.'</h3>';
+	}
+	
+	if (!empty($terms)) {
+    $output .= "<dl" . drupal_attributes($attributes) . '>';
+    $num_terms = count($terms);
+    foreach ($terms as $i => $term) {
+      $dt_attributes = array();
+      $dd_attributes = array();
+      $data = '';
+      $term_title = '';
+      if (is_object($term)) {
+      	$term = (array) $term;
+      }
+			foreach ($term as $key => $value) {
+				if ($key == 'data') {
+					$data = $value;
+				}
+				elseif ($key == 'title') {
+					$term_title = $value;
+				}
+				elseif ($key == 'dt_attributes') {
+					foreach ($value as $m => $n) {
+						$dt_attributes[$m] = $n;
+					}
+				}
+				elseif ($key == 'dd_attributes') {
+					foreach ($value as $m => $n) {
+						$dd_attributes[$m] = $n;
+					}
+				}
+			}
+      if ($i == 0) {
+        $dt_attributes['class'] = empty($dt_attributes['class']) ? 'first' : $dt_attributes['class'] . ' first';
+        $dd_attributes['class'] = empty($dd_attributes['class']) ? 'first' : $dd_attributes['class'] . ' first';
+      }
+      if ($i == $num_terms - 1) {
+        $dt_attributes['class'] = empty($dt_attributes['class']) ? 'last' : $dt_attributes['class'] . ' last';
+        $dd_attributes['class'] = empty($dd_attributes['class']) ? 'last' : $dd_attributes['class'] . ' last';
+      }
+      if ($i % 2 == 0) {
+      	$dt_attributes['class'] = empty($dt_attributes['class']) ? 'even' : $dt_attributes['class'] . ' even';
+        $dd_attributes['class'] = empty($dd_attributes['class']) ? 'even' : $dd_attributes['class'] . ' even';
+      } else {
+      	$dt_attributes['class'] = empty($dt_attributes['class']) ? 'odd' : $dt_attributes['class'] . ' odd';
+        $dd_attributes['class'] = empty($dd_attributes['class']) ? 'odd' : $dd_attributes['class'] . ' odd';
+      }
+      $output .= '<dt' . drupal_attributes($dt_attributes) . '>'. $term_title .'&nbsp;</dt>';
+      $output .= '<dd' . drupal_attributes($dd_attributes) . '>' . $data . "&nbsp;</dd>";
+    }
+    $output .= "</dl>";
+  }
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * @param $node
+ * @param $base
+ * @param $teaser
+ * @return unknown_type
+ */
+function ibp_theme_biblio_tabular($node, $base = 'biblio', $teaser = false) {
+
+  if (module_exists('popups')){
+     popups_add_popups();
+  }
+  $tid = $node->biblio_type;
+  $style_name = biblio_get_style();
+  $style_function = "biblio_style_$style_name"."_author_options";
+  module_load_include('inc','biblio',"biblio_style_$style_name");
+  $fields = _biblio_get_field_information($node->biblio_type, TRUE);
+  _biblio_localize_fields($fields);
+  $terms[] = array(
+  	'title' => t('Title'),
+  	'dt_attributes' => array('class' => 'biblio-row-title biblio-field-title-title'),
+  	'data' => filter_xss($node->title, biblio_get_allowed_tags()),
+  	'dd_attributes' => array('class' => 'biblio-field-contents biblio-field-contents-title')
+  );
+  $terms[] = array(
+  	'title' => t('Publication Type'),
+    'dt_attributes' => array('class' => 'biblio-row-title biblio-field-title-type'),
+    'data' => isset($node->biblio_type_name) ? _biblio_localize_type($node->biblio_type, $node->biblio_type_name) : $node->biblio_type,
+    'dd_attributes' => array('class' => 'biblio-field-contents biblio-field-contents-type')
+  );
+
+  if ($node->biblio_url) {
+    $attrib = (variable_get('biblio_links_target_new_window', null)) ? array('target' => '_blank') : array();
+    $node->biblio_url = l($node->biblio_url, $node->biblio_url, $attrib);
+  }
+  if ($node->biblio_doi) {
+    $doi_url = '';
+    $attrib = (variable_get('biblio_links_target_new_window', null)) ? array('target' => '_blank') : array();
+    if ( ($doi_start = strpos($node->biblio_doi, '10.')) !== FALSE) {
+      $doi = substr($node->biblio_doi, $doi_start);
+      $doi_url .= 'http://dx.doi.org/'. $doi;
+    }
+    $node->biblio_doi = l($node->biblio_doi, $doi_url, $attrib);
+  }
+
+  foreach ($fields as $key => $row) {
+    // handling the contributor categories like any other field orders them correctly by weight
+    if ($row['type'] == 'contrib_widget' && !empty($node->biblio_contributors[$row['fid']][0]['name']) ) {
+      $author_options = $style_function();
+      $author_options['numberOfAuthorsTriggeringEtAl'] = 100; //set really high so we see all authors
+      $data = theme('biblio_format_authors', $node->biblio_contributors[$row['fid']], $author_options, $inline);
+    }
+    else if (empty ($node->$row['name']) || $row['name'] == 'biblio_coins') continue;
+    else {
+      switch ($row['name']) {
+        case 'biblio_keywords' :
+         $data = _biblio_keyword_links($node->$row['name'], $base);
+          break;
+        case 'biblio_url' :
+        case 'biblio_doi' :
+          // check_plain is not need on these since they have gone through
+          // the l() function which does a check_plain
+          $data = $node-> $row['name'];
+          break;
+        default :
+          if ($row['type'] == 'textarea') {
+            $data = check_markup($node-> $row['name'], $node->format, FALSE);
+          }
+          else {
+            $data = check_plain($node-> $row['name']);
+          }
+      }
+    }
+    $terms[] = array(
+			'title' => t($row['title']),
+      'dt_attributes' => array(
+        'class' => 'biblio-row-title biblio-field-title-'.str_replace('_', '-', str_replace('biblio_', '', $row['name']))
+      ),
+      'data' => $data,
+      'dd_attributes' => array(
+        'class' => 'biblio-field-contents biblio-field-contents-'.str_replace('_', '-', str_replace('biblio_', '', $row['name']))
+			)
+    );
+  }
+
+
+  if (strlen(trim($node->body)) && user_access('view full text')) {
+    $terms[] = array(
+      'title' => t('Full Text'),
+      'dt_attributes' => array('valign' => 'top'),
+      'data' =>  check_markup($node->body, $node->format, FALSE)
+    );
+
+  }
+  $output = '<div id="biblio-node">';
+  $output .= filter_xss($node->biblio_coins, array('span'));
+  $header = array();
+  $output .= theme('definition_list', array('terms' => $terms));
+  $output .= '</div>';
+  return $output;
+}
+
+function ibp_theme_biblio_entry($node, $base = 'biblio', $style = 'classic', $inline = false) {
+  $output  = "\n".'<div class="biblio-entry">' . "\n" ;
+  $output  .= '<div class="biblio-style-'. $style . '">' . "\n" ;
+  if (!$node->status) {
+    $output .= '<div id="node-'.$node->nid.'" class="node node-unpublished">';
+  }
+  // first add the styled entry...
+  $output .= theme('biblio_style', $node, $base, $style, $inline);
+
+  // now add the various links
+  if ($node->biblio_abst_e) {
+    $output .= '<span class="biblio-abstract-link">';
+    $output .= l(" Abstract", "node/$node->nid") ."\n";
+    $output .= '</span>';
+  }
+  $annotation_field = variable_get('biblio_annotations', 'none');
+  if ($annotation_field != 'none' && $node-> $annotation_field) {
+    $output .= '<div class="biblio-annotation">';
+    $output .= check_markup($node->$annotation_field, $node->format, FALSE);
+    $output .= '</div>';
+  }
+
+  if (biblio_access('export', $node)) {
+    $output .= theme('biblio_export_links',$node);
+  }
+
+  if (biblio_access('download', $node)) {
+    // add links to attached files (if any)
+    $output .= theme('biblio_download_links',$node);
+  }
+  
+  // taxonomy
+  if (module_exists('taxonomy')) {
+    $terms = taxonomy_link('taxonomy terms', $node);
+    $output .= theme('links', $terms);
+  }
+  
+  if (!$node->status) {
+    $output .= '</div>';
+  }
+
+  $output .= "\n</div></div>";
+
+  return $output;
 }

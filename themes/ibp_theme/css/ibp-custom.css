@@ -416,17 +416,6 @@ ul.terms.links li {
 	background-position: left center;
 }
 
-a.edit-link {
-	font-weight: normal;
-	font-style: italic;
-	font-size: 12px;
-	color: #888888;
-}
-
-a.edit-link:hover {
-	color: #00a3f7;
-}
-
 body.cke_show_borders,
 body.cke_panel_frame {
 	background-image: none;
@@ -520,10 +509,44 @@ a.external-link {
 	line-height: 32px;
 }
 
+div.views-row a.edit-link,
+div.views-row .views-field-edit-node a {
+	opacity: 0;
+	font-weight: normal;
+	font-style: italic;
+	font-size: 12px;
+	color: #888888;
+}
+
+div.views-row:hover a.edit-link,
+div.views-row:hover .views-field-edit-node a {
+	opacity: 1;
+}
+
+div.views-row a.edit-link:hover,
+div.views-row .views-field-edit-node a {
+	color: #00a3f7;
+}
+
+div.views-row a.edit-link:before,
+div.views-row .views-field-edit-node a:before {
+	content: "[";
+}
+
+div.views-row a.edit-link:after,
+div.views-row .views-field-edit-node a:after {
+	content: "]";
+}
+
 div.panel-pane div.panel-hide-hover,
 div.panel-pane:hover div.panel-hide {
 	position: static;
 	margin-top: -1.5em;
+	font-size: 12px;
+	font-style: italic;
+}
+
+div.view div.views-admin-links {
 	font-size: 12px;
 }
 
@@ -537,12 +560,14 @@ div.panel-pane div.admin-links li {
 	padding: 0 0 2px 0;
 }
 
-div.panel-pane div.admin-links li a {
+div.panel-pane div.admin-links li a,
+div.view div.views-admin-links li a {
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;
 }
 
-div.panel-pane div.admin-links li a:hover {
+div.panel-pane div.admin-links li a:hover,
+div.view div.views-admin-links li a:hover {
 	color: #00A3F7;
 }

@@ -6,7 +6,6 @@ core = 6.x
 
 dependencies[] = taxonomy
 dependencies[] = pathauto
-dependencies[] = subpath_alias
 dependencies[] = views
 dependencies[] = teaser_comments
 dependencies[] = webform

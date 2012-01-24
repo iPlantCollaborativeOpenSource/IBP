@@ -54,6 +54,7 @@ stylesheets[all][]   = css/jquery-ui-themes/smoothness/ui.all.css
 	; override some module css
 stylesheets[all][]   = css/calendar-multiday.css
 stylesheets[all][]   = css/content_profile.css
+stylesheets[all][]   = css/biblio.css
 
   ; Set the conditional stylesheets that are processed by IE.
 conditional-stylesheets[if IE][all][]       = css/ie.css

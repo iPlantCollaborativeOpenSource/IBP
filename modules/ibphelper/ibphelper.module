@@ -25,6 +25,14 @@ function ibphelper_menu() {
 			'type' => MENU_NORMAL_ITEM,
 			'menu_name' => 'menu-my-links',
 		),
+		'user/%user/saved-pages' => array(
+			'access callback' => 'ibphelper_my_pages_access',
+			'access arguments' => array(1),
+			'page callback' => 'ibphelper_my_pages',
+			'page arguments' => array(1),
+			'title' => 'Saved Pages',
+			'type' => MENU_LOCAL_TASK,
+		),
 // 		'training/%' => array(
 // 			'access arguments' => array('access content'),
 // 			'page callback' => 'ibphelper_ibp_training',
@@ -41,6 +49,14 @@ function ibphelper_menu() {
 			'access callback' => 'ibphelper_crop_info_access',
 			'access arguments' => array(1),
 		),
+		'clade/%clade/publications' => array(
+			'type' => MENU_NORMAL_ITEM,
+			'weight' => 25,
+			'title' => 'Publications',
+			'page callback' => 'ibphelper_crop_publications',
+			'page arguments' => array(1),
+			'access arguments' => array('access content'),
+		),
 		'node/%node/query' => array(
 			'type' => MENU_LOCAL_TASK,
 			'weight' => 25,
@@ -53,8 +69,8 @@ function ibphelper_menu() {
 	);
 }
 
-function ibphelper_menu_alter(&$items)
-{
+function ibphelper_menu_alter(&$items) {
+	$items['user/%user_uid_optional']['title callback'] = 'ibphelper_user_page_title';
   unset($items['user/%user/imce']);
   unset($items['clade/%clade/help']);
 }
@@ -68,28 +84,66 @@ function ibphelper_theme() {
 		);
 }
 
-function ibphelper_my_pages_access() {
+function ibphelper_user_page_title($account) {
 	global $user;
-	return $user->uid;
+	$query_parts = explode('/', $_GET['q']);
+	if (count($query_parts) === 3) {
+		$tab = $query_parts[2];
+		if ($tab === 'saved-pages') {
+			$tab = 'Saved Pages';
+		}
+		$title = '!who ' . ucfirst($tab);
+	} else {
+		$title = '!who Profile';
+	}
+	
+	if ($account->uid == $user->uid) {
+		$who = 'My';
+	}
+	else if (module_exists('content_profile')) {
+		$profile = content_profile_load('profile', $account->uid);
+		if ($profile) {
+			$name = $profile->field_profile_first_name[0]['value'];
+			$name .= ' ' . $profile->field_profile_last_name[0]['value'];
+		}
+		if (! $name) {
+			$name = $account->name;
+		}
+		$who = check_plain($name) . "'s";
+	}
+	return t($title, array('!who' => $who));
 }
 
-function ibphelper_my_pages() {
+function ibphelper_my_pages_access($account = NULL) {
 	global $user;
-	if ($user->uid) {
-		if ($user->ibp_pages) {
-			$account = $user;
+	if ($account) {
+		if ($account->uid == $user->uid) {
+			return TRUE;
 		} else {
-			$account = user_load($user->uid);
+			return user_access('administer users');
 		}
-		$pages = array();
-		foreach ($account->ibp_pages as $page) {
-			$pages[] = t('!link (@url)', array('!link' => l($page->title, $page->url), '@url' => url($page->url, array('absolute'=>TRUE))));
-		}
-		if ($pages) {
-			$mypages = theme('item_list', $pages, NULL, 'ul', array('class' => 'ibp-my-pages'));
-		}
-		return theme('ibp_my_pages', $mypages);
+	} else {
+		return $user->uid;
 	}
+}
+
+function ibphelper_my_pages($account = NULL) {
+	if (!$account) {
+		global $user;
+		drupal_goto("user/{$user->uid}/my-ibp-pages");
+	}
+	
+	if (! $account->ibp_pages) {
+		$account = user_load($account->uid);
+	}
+	$pages = array();
+	foreach ($account->ibp_pages as $page) {
+		$pages[] = t('!link (@url)', array('!link' => l($page->title, $page->url), '@url' => url($page->url, array('absolute'=>TRUE))));
+	}
+	if ($pages) {
+		$mypages = theme('item_list', $pages, NULL, 'ul', array('class' => 'ibp-my-pages'));
+	}
+	return theme('ibp_my_pages', $mypages);
 }
 
 // function ibphelper_admin_form() {
@@ -241,6 +295,8 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 			}
 		}
 	} else if ($form_id == 'user_profile_form') {
+		drupal_set_title(ibphelper_user_page_title($form['_account']['#value']));
+		
 		$form['account']['name']['#attributes']['readonly'] = 'readonly';
 		$form['account']['name']['#value'] = $form['account']['name']['#default_value'];
 		$form['account']['mail']['#attributes']['readonly'] = 'readonly';
@@ -272,9 +328,12 @@ info;
 		
 		$form['account']['status']['#weight'] = 5;
 		$form['account']['roles']['#weight'] = 5;
+		
+		$form['picture']['#prefix'] = '<a name="picture"></a>';
+		
 	} else if ($form_id == 'contact_mail_user') {
-		global $user;
-		drupal_set_title('Contact ' . $user->profile_first_name . ' ' . $user->profile_last_name);
+		$account = $form['recipient']['#value'];
+		drupal_set_title(check_plain('Contact ' . $account->profile->field_profile_first_name[0]['value'] . ' ' . $account->profile->field_profile_last_name[0]['value']));
 	} else if ($form_id == 'clade_page_node_form') {
 		$form['#after_build'][] = 'ibphelper_clade_page_node_form_after_build';
 	} else if ($form_id == 'ibp_tool_node_form') {
@@ -315,6 +374,10 @@ function ibphelper_preprocess_page(&$vars) {
 	if ($user->uid) {
 		$vars['my_pages_form'] = drupal_get_form('ibphelper_my_pages_form', $user, ibphelper_user_page_by_url($user->uid, $_GET['q']));
 	}
+}
+
+function ibphelper_preprocess_user_profile(&$vars) {
+	drupal_set_title(ibphelper_user_page_title($vars['account']));
 }
 
 function ibphelper_user_page_by_url($uid, $url) {
@@ -384,10 +447,6 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 				$profile = content_profile_load('profile', $account->uid);
 				$account->profile = $profile;
 			}
-		} else if ($op == "after_update") {
-			if (module_exists('content_profile') && (!$account->profile || ! $account->profile->nid)) {
-				_ibphelper_ldap_create_profile($account);
-			}
 		} else if ($op == "save" || $op == "update") {
 			if ($account->ibp_pages) {
 				foreach ($account->ibp_pages as $page) {
@@ -406,6 +465,40 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 		} else if ($op == "delete") {
 			$sql = "DELETE FROM ibphelper_user_pages WHERE uid = %d";
 			db_query($sql, $account->uid);
+		} else if ($op == "login") {
+			/* check profile for incomplete fields
+			 * fields to check:
+			 * 	affiliation
+			 * 	country
+			 */
+			if (module_exists('content_profile')) {
+				if (! $account->profile) {
+					_ibphelper_ldap_create_profile($account);
+					$account->profile = content_profile_load('profile', $account->uid);
+				}
+				
+				$todo = array();
+				if (! $account->picture) {
+					$todo[] = l(t("Add a Profile Picture"), "user/{$account->uid}/edit", array('fragment' => '#picture'));
+				}
+				
+				if (!(
+					$account->profile->field_profile_affiliation[0]['value'] &&
+					$account->profile->field_profile_country[0]['value']
+				)) {
+					$todo[] = l(t("Update your user profile"), "user/{$account->uid}/edit/profile");
+				}
+				
+				if (count($todo) > 0) {
+					$message = "Help fellow IBP users connect with you:";
+					$replace = array();
+					for ($i = 0; $i < count($todo); $i++) {
+						$message .= " !link_$i!";
+						$replace["!link_$i"] = $todo[$i];
+					}
+					drupal_set_message(t($message, $replace));
+				}
+			}
 		}
 	}
 }
@@ -439,17 +532,12 @@ function _ibphelper_ldap_create_profile(&$account) {
 			$ln = @$entry['sn'][0];
 			if ($fn && $ln) {
 				drupal_set_message("Welcome to the Integrated Breeding Platform, $fn $ln!");
-				if (module_exists('content_profile')) {
-					$profile = content_profile_load('profile', $account->uid);
-					if (! $profile) {
-						$profile = new stdClass;
-						$profile->type = 'profile';
-						$profile->uid = $account->uid;
-					}
-					$profile->field_profile_first_name[0]['value'] = $fn;
-					$profile->field_profile_last_name[0]['value'] = $ln;
-					node_save($profile);
-				}
+				$profile = new stdClass;
+				$profile->type = 'profile';
+				$profile->uid = $account->uid;
+				$profile->field_profile_first_name[0]['value'] = $fn;
+				$profile->field_profile_last_name[0]['value'] = $ln;
+				node_save($profile);
 			}
 		}
 	}
@@ -725,6 +813,15 @@ function ibphelper_clade($op, $clade = NULL) {
 			'weight' => 12,
 			);
 		menu_link_save($menu);
+		$menu = array(
+			'menu_name' => 'primary-links',
+			'plid' => $clade_menu['mlid'],
+			'router_path' => 'clade/%/publications',
+			'link_path' => "clade/$clade->tid/publications",
+			'link_title' => $clade->name . ' publications',
+			'weight' => 12,
+			);
+		menu_link_save($menu);
 	}
 	// TODO delete?
 }
@@ -735,8 +832,13 @@ function ibphelper_clade_details_items($clade) {
 			'data' => l(t('Blogs'), sprintf('clade/%d/blog', $clade->tid)),
 			'data-sort' => 1,
 			'class' => 'clade-details-item',
-			),
-		);
+		),
+		'publications' => array(
+			'data' => l(t('Publications'), sprintf('clade/%d/publications', $clade->tid)),
+			'data-sort' => 5,
+			'class' => 'clade-details-item',
+		),
+	);
 }
 
 function ibphelper_profile_alter(&$account) {
@@ -753,4 +855,12 @@ function ibphelper_profile_alter(&$account) {
 		}
 		unset($content_profile['content_profile_profile']['#prefix'], $content_profile['content_profile_profile']['#suffix']);
 	}
+}
+
+function ibphelper_crop_publications($clade) {
+	drupal_set_title(t('Publications tagged: %clade', array('%clade' => $clade->name)));
+	$view = views_get_view('clade_biblio');
+	$output = l(t('Add a publication'), "node/add/biblio", array("query" => array("clades" => $clade->tid)));
+	$output .= $view->execute_display('default', array($clade->tid));
+	return $output;
 }

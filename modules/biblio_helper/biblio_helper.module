@@ -1,0 +1,102 @@
+<?php
+/**
+ * Biblio Helper Module
+ * Handles various customizations and niceities for the Biblio module
+ * author: Matthew R Hanlon (mrhanlon@tacc.utexas.edu)
+ */
+
+function biblio_helper_theme() {
+	return array(
+		'biblio_help' => array(
+			'template' => 'theme/biblio_help',
+		),
+		'biblio_helper_theme_submitted_type' => array(
+			'arguments' => array('element' => NULL),
+		),
+	);
+}
+
+function biblio_helper_form_biblio_node_form_alter(&$form, &$form_state) {
+	$node = $form['#node'];
+	$tid = isset($form_state['storage']['biblio_type']) ?
+               $form_state['storage']['biblio_type']  :
+               ( isset($node->biblio_type) ? $node->biblio_type : '');
+  $show_fields = !empty($tid);
+	if (! $show_fields) {
+		$form['biblio_help'] = array(
+			'#type' => 'markup',
+			'#value' => theme('biblio_help'),
+			'#weight' => -45
+		);
+		
+		unset($form['biblio_type']['#attributes']['onchange']);
+		$form['biblio_next'] = array(
+			'#type' => 'submit',
+			'#value' => t('Next'),
+		);
+		array_unshift($form['#validate'], 'biblio_helper_form_validate');
+	} else {
+		$type = $form['biblio_type']['#default_value'];
+		$type_name = $form['biblio_type']['#options'][$type];
+		$form['biblio_type']['#disabled'] = TRUE;
+		if (empty($form['nid']['#value'])) {
+			$form['biblio_type']['#theme'] = 'biblio_helper_theme_submitted_type';
+			$form['biblio_type']['#field_suffix'] = l(t('Change type'), 'node/add/biblio', array('attributes' => array('onclick' => 'return confirm("Are you sure you want to change the publication type?  This will reset this form.");')));
+		}
+		array_unshift($form['#after_build'], 'biblio_helper_biblio_node_form_after_build');
+	}
+}
+
+function biblio_helper_biblio_node_form_after_build($form, &$form_state, $form_id) {
+
+	$form['taxonomy']['#title'] = t('Crop communities');
+	$form['taxonomy']['#description'] = t('Select the relevant Crop communities to tag this content with.');
+	$crop_vid = variable_get('clade_vocabulary',0);
+	unset($form['taxonomy'][$crop_vid]['#description']);
+	unset($form['taxonomy'][$crop_vid]['#required']);
+	
+	if ($clade = clade_get_context()) {
+		$form['taxonomy'][$crop_vid]['#default_value'] = array($clade->tid);
+		if (empty($form['#post'])) {
+			// only if not submitted
+			$form['taxonomy'][$crop_vid]['#value'] = array($clade->tid);
+		}
+	}
+	
+	$form_elements = array_keys($form);
+	
+	$cef = array();
+	foreach ($form_elements as $key) {
+		if ($key == 'biblio_type') {
+			$cef[$key]['weight'] = $form[$key]['#weight'] - 300;
+		} else if ($key == 'title') {
+			$cef[$key]['weight'] = $form[$key]['#weight'] - 200;
+		} else if (strpos($key, 'biblio_') === 0) {
+			$cef[$key]['weight'] = $form[$key]['#weight'] - 200;
+		} else if (strpos($key, 'contributors') === 0) {
+			$cef[$key]['weight'] = $form[$key]['#weight'] - 200;
+		}
+	}
+	
+	$form['#content_extra_fields'] = $cef;
+	
+	return $form;
+}
+
+function biblio_helper_form_validate(&$form, &$form_state) {
+	if ($form['#post']['op'] == t('Next')) {
+		$form['#post']['op'] = t('Save');
+	}
+}
+
+function theme_biblio_helper_theme_submitted_type($element) {
+  $select = '';
+  $size = $element['#size'] ? ' size="'. $element['#size'] .'"' : '';
+  _form_set_class($element, array('form-select'));
+  $multiple = $element['#multiple'];
+  $output = '<select name="'. $element['#name'] .''. ($multiple ? '[]' : '') .'"'. ($multiple ? ' multiple="multiple" ' : '') . drupal_attributes($element['#attributes']) .' id="'. $element['#id'] .'" '. $size .'>'. form_select_options($element) .'</select>';
+  if ($element['#field_suffix']) {
+  	$output .= $element['#field_suffix'];
+  }
+  return theme('form_element', $element, $output);
+}
