@@ -41,7 +41,7 @@ function clade_links_schema() {
               'type' => 'text',
               'not null' => TRUE,
               'length' => 256,
-            ),            
+            ),
         ),
       'primary key' => array('lid'),
     );

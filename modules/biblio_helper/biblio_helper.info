@@ -1,6 +1,6 @@
 ; $Id$
 name = Biblio Helper
 description = "A helper module for Biblio.  Handles various customizations."
-package = "Other"
+package = "Biblio"
 core = 6.x
 

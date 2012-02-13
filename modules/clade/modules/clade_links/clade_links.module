@@ -13,13 +13,14 @@
 function clade_links_menu() {
   $items = array();
   
-  $items['clade/%/clade_links/ajax_delete'] = array(
-  	  'page callback' => 'clade_links_delete_link_ajax',
-			'title' => 'Javascript Delete Form',
-      'access arguments' => array('edit own clade'),
-      'type' => MENU_CALLBACK,
-    );
-	$items['clade/%/clade_links/ajax_more'] = array(
+  $items['clade/%clade/edit/links'] = array(
+  	'title' => 'Links',
+  	'page callback' => 'drupal_get_form',
+  	'page arguments' => array('clade_links_form', 1),
+  	'access arguments' => array('edit own clade'),
+  	'type' => MENU_LOCAL_TASK,
+  );
+	$items['clade/%clade/clade_links/ajax_more'] = array(
 			'page callback' => 'clade_links_ajax_more',
 			'title' => 'Javascript More Form',
 			'access arguments' => array('edit own clade'),
@@ -50,31 +51,31 @@ function clade_links_links_block() {
 		
 		// Generate our block content
 		//if there's an NCBI ID configured, then we can search there and in Treebase using it.
-		if($clade->ncbiid) {
-			$links[] = l( t('Search NCBI'), 'http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=info&id=' . $clade->ncbiid, array('attributes' => array('target' => '_blank')));
-			$links[] = l( t('Search TreeBase'), 'http://purl.org/phylo/treebase/phylows/taxon/find?query=tb.identifier.ncbi=' . $clade->ncbiid, array('attributes' => array('target' => '_blank')));
-		} else {
-			$links[] = l( t('Search NCBI'),'http://www.ncbi.nlm.nih.gov/Taxonomy/taxonomyhome.html/index.cgi' , array('attributes' => array('target' => '_blank')));
-			$links[] = l( t('Search TreeBase'), 'http://treebase.org/treebase-web/search/taxonSearch.html', array('attributes' => array('target' => '_blank')));
-		}
-		//configure the link to the Tree of Life website
-		if($clade->tolwebid) {
-			$links[] = l( t('Tree of Life Link'), 'http://tolweb.org/' . $clade->tolwebid, array('attributes' => array('target' => '_blank')));
-		} else {
-			$links[] = l( t('Tree of Life Link'), 'http://tolweb.org/', array('attributes' => array('target' => '_blank')));
-		}
-		
-		if($clade->eolweburl) {
-			$links[] = l( t('Encyclopedia of Life Link'), $clade->eolweburl, array('attributes' => array('target' => '_blank')));
-		} else {
-			$links[] = l( t('Encyclopedia of Life Link'), 'http://www.eol.org/', array('attributes' => array('target' => '_blank')));
-		}
-		
-		if($clade->plantlisturl) {
-			$links[] = l( t('The Plant List Link'), $clade->plantlisturl, array('attributes' => array('target' => '_blank')));
-		} else {
-			$links[] = l( t('The Plant List Link'), 'http://www.theplantlist.org', array('attributes' => array('target' => '_blank')));
-		}
+// 		if($clade->ncbiid) {
+// 			$links[] = l( t('Search NCBI'), 'http://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=info&id=' . $clade->ncbiid, array('attributes' => array('target' => '_blank')));
+// 			$links[] = l( t('Search TreeBase'), 'http://purl.org/phylo/treebase/phylows/taxon/find?query=tb.identifier.ncbi=' . $clade->ncbiid, array('attributes' => array('target' => '_blank')));
+// 		} else {
+// 			$links[] = l( t('Search NCBI'),'http://www.ncbi.nlm.nih.gov/Taxonomy/taxonomyhome.html/index.cgi' , array('attributes' => array('target' => '_blank')));
+// 			$links[] = l( t('Search TreeBase'), 'http://treebase.org/treebase-web/search/taxonSearch.html', array('attributes' => array('target' => '_blank')));
+// 		}
+// 		//configure the link to the Tree of Life website
+// 		if($clade->tolwebid) {
+// 			$links[] = l( t('Tree of Life Link'), 'http://tolweb.org/' . $clade->tolwebid, array('attributes' => array('target' => '_blank')));
+// 		} else {
+// 			$links[] = l( t('Tree of Life Link'), 'http://tolweb.org/', array('attributes' => array('target' => '_blank')));
+// 		}
+// 		
+// 		if($clade->eolweburl) {
+// 			$links[] = l( t('Encyclopedia of Life Link'), $clade->eolweburl, array('attributes' => array('target' => '_blank')));
+// 		} else {
+// 			$links[] = l( t('Encyclopedia of Life Link'), 'http://www.eol.org/', array('attributes' => array('target' => '_blank')));
+// 		}
+// 		
+// 		if($clade->plantlisturl) {
+// 			$links[] = l( t('The Plant List Link'), $clade->plantlisturl, array('attributes' => array('target' => '_blank')));
+// 		} else {
+// 			$links[] = l( t('The Plant List Link'), 'http://www.theplantlist.org', array('attributes' => array('target' => '_blank')));
+// 		}
 		
 		if ($clade->links) {
 			foreach($clade->links as $l) {
@@ -99,8 +100,9 @@ function clade_links_links_block() {
 /**
  * implementation of hook_form()
  */
-function clade_links_form_clade_edit_form_alter(&$form, &$form_state) {
-	$clade = $form['#clade'];
+function clade_links_form(&$form_state, $clade) {
+	
+	$form['#action'] = url("clade/{$clade->tid}/edit/links");
 	
 	if (isset($form_state['link_count'])) {
     $link_count = $form_state['link_count'];
@@ -109,26 +111,18 @@ function clade_links_form_clade_edit_form_alter(&$form, &$form_state) {
     $link_count = max(1, empty($clade->links) ? 1 : count($clade->links));
   }
 	
-	$form['clade_links'] = array(
-		'#type' => 'fieldset',
-		'#title' => t('Clade Links'),
-		'#description' => t('Arbitrary links associated with a clade.'),
-		'#collapsible' => TRUE,
-		'#weight' => 2
-	);
-	
-	$form['clade_links']['link'] = array(
+	$form['links'] = array(
     '#prefix' => '<div id="clade-links">',
     '#suffix' => '</div>',
+    '#tree' => 1,
   );
 
 	// fields for existing links	
 	for ($delta = 0; $delta < $link_count; $delta++) {
-		$form['clade_links']['link'][$delta] = _clade_links_form($delta, $clade, $clade->links[$delta]);
-		$form['clade_links']['link'][$delta]['#theme'] = 'clade_link_form';
+		$form['links'][$delta] = clade_links_form_item($clade, $clade->links[$delta]);
 	}
 	
-	$form['clade_links']['clade_links_more'] = array (
+	$form['clade_links_more'] = array (
 		'#type' => 'submit',
 		'#value' => 'Add Another Link',
 		'#description' => 'If you want to add more than one link, click here for another Link Field.',
@@ -141,72 +135,67 @@ function clade_links_form_clade_edit_form_alter(&$form, &$form_state) {
 			 'effect' => 'slide'
 			)
 		);
-		
-	$form['#validate'][] = 'clade_links_form_validate';
-	$form['#submit'][] = 'clade_links_form_submit';
+	
+	$form['buttons'] = array(
+		'#prefix' => '<div class="button-row">',
+		'#suffix' => '</div>',
+	);
+	$form['buttons']['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save links'),
+	);
+	$form['buttons']['cancel'] = array(
+		'#value' => l(t('Cancel'), "clade/{$clade->tid}"),
+	);
+	$form['buttons']['test'] = array(
+		'#value' => l(t('test'), "", array('attributes' => array('class' => 'test'))),
+	);
+	
+	$form['#theme'] = 'clade_links_form';
+	
+	return $form;
 }
 
-function _clade_links_form($delta, $clade, $link = array()) {
-	if ($link->lid) {
-		$form['prefix'] = array(
-			'#value' => "<div id='edit-link-field-{$link->lid}'>"
-		);
-		$form['suffix'] = array(
-			'#value' => "<div class='clearing'></div></div>"
-		);
-	}
+function clade_links_form_item($clade, $link = array()) {
+	
+	$form['#prefix'] = "<div class='link-row'>";
+	$form['#suffix'] = "</div>";
+	
 	$form['lid'] = array (
 		'#type' => 'hidden',
 		'#title' => t('Link ID (internal)'),
 		'#description' => t("Link ID, just for internal stuff."),
 		'#default_value' => $link->lid,
-		'#parents' => array('clade_links', 'link', $delta, 'lid'),
   );
   $form['tid'] = array (
 		'#type' => 'hidden',
 		'#title' => t('Node ID (internal)'),
 		'#description' => t("Node ID, just for internal stuff."),
 		'#default_value' => $clade->tid,
-		'#parents' => array('clade_links', 'link', $delta, 'tid')
   );
   $form['url'] = array (
 		'#type' => 'textfield',
 		'#title' => t('Link URL'),
-		'#description' => t("The URL of the link you'd like to add."),
+		'#description' => t("The URL for the link."),
 		'#default_value' => $link->url,
-		'#parents' => array('clade_links', 'link', $delta, 'url'),
   );
   $form['linktext'] = array (
 		'#type' => 'textfield',
 		'#title' => t('Link Text'),
-		'#description' => t("The text which will be linked, or the link title."),
+		'#description' => t("The text that should display for the link.  If omitted, the URL will display."),
 		'#default_value' => $link->linktext,
-		'#parents' => array('clade_links', 'link', $delta, 'linktext')
   );
   $form['linkdescription'] = array (
 		'#type' => 'textfield',
 		'#title' => t('Description'),
-		'#description' => t("An optional description of the link."),
+		'#description' => t("An optional description of the link.  This will appear as a tooltip on the link."),
 		'#default_value' => $link->linkdescription,
-		'#parents' => array('clade_links', 'link', $delta, 'linkdescription')
   );
   if ($link->lid) {
-		$form["clade_links_delete"] = array (
-			'#type' => 'submit',
-			'#value' => "Delete Link",
-			'#name' => "clade_links_delete_$delta",
-			'#description' => 'Delete this link.',
-			'#submit' => array('clade_links_delete_link_submit'),
-			'#validate' => array(),
-			'#ahah' => array(
-				 'path' => "clade/{$clade->tid}/clade_links/ajax_delete",
-				 'wrapper' => "edit-link-field-{$link->lid}",
-				 'method' => 'replace',
-				),
-			'#attributes' => array(
-					'class' => 'clade-link-delete-button'
-				),
-			'#parents' => array('clade_links', 'link', $delta, "clade_links_delete"),
+		$form['delete'] = array (
+			'#type' => 'checkbox',
+			'#title' => t('Delete this link'),
+			'#attributes' => array('class' => 'link-delete'),
 		);
 	}
   return $form;
@@ -221,83 +210,43 @@ function _clade_links_load_links($clade) {
 	return $links;
 }
 
-function clade_links_clade($op, $clade) {
+function clade_links_clade($op, $clade = NULL) {
 	if ($op == 'clade load') {
 		$clade->links = _clade_links_load_links($clade);
 	}
 }
 
-function clade_links_form_validate($clade, &$form) {
-	if ($form['values']['link']) {
-		foreach ($form['values']['link'] as $l => $link) {
-			// check that urls provided for all existing links
-			if ($link['lid'] && ! $link['url']) {
-				form_set_error("link][$l][url", 'A URL is required for each link.');
-			}
-			// check that all new links have urls provided
-			else if (($link['linktext'] || $link['linkdescription']) && !$link['url']) {
-				form_set_error("link][$l][url", 'A URL is required for each link.');
-			}
+function clade_links_form_validate($form, &$form_state) {
+	foreach ($form_state['values']['links'] as $l => $link) {
+		// check that urls provided for all existing links
+		if ($link['lid'] && ! $link['url']) {
+			form_set_error("links][$l][url", 'A URL is required for each link.');
+		}
+		// check that all new links have urls provided
+		else if (($link['linktext'] || $link['linkdescription']) && !$link['url']) {
+			form_set_error("links][$l][url", 'A URL is required for each link.');
 		}
 	}
 }
 
 function clade_links_form_submit($form, &$form_state) {
-	if (
-			$form_state['clicked_button']['#id'] != 'edit-clade-links-more' &&
-			$form_state['clicked_button']['#parents'][3] != 'clade_links_delete'
-		)
-	{
-		foreach ($form_state['values']['clade_links']['link'] as $link) {
+	foreach ($form_state['values']['links'] as $link) {
+		
+		if (isset($link['delete']) && $link['delete']) {
+			db_query('DELETE FROM {clade_links} WHERE lid = %d', $link['lid']);
+		} else if ($link['url']){
+			if (! preg_match('/^https?:\/\//', $link['url'])) {
+				$link['url'] = 'http://' . $link['url'];
+			}
+			
 			if ($link['lid']) {
 				drupal_write_record('clade_links', $link, array('lid'));
-			}
-			else if ($link['url']) {
+			} else if ($link['url']) {
 				drupal_write_record('clade_links', $link);
 			}
 		}
 	}
-}
-
-function clade_links_delete_link_submit($form, &$form_state) {
-	if ($form_state['submitted'] && $form_state['clicked_button']['#parents'][3] === 'clade_links_delete') {
-		$delta = $form_state['clicked_button']['#parents'][2];
-		
-		$lid = $form_state['values']['clade_links']['link'][$delta]['lid'];
-		db_query('DELETE FROM {clade_links} WHERE lid = %d', $lid);
-		
-		// remove link from $form_state
-		form_set_value($form['clade_links']['link'][$delta]['lid'], '', $form_state);
-		form_set_value($form['clade_links']['link'][$delta]['tid'], '', $form_state);
-		form_set_value($form['clade_links']['link'][$delta]['url'], '', $form_state);
-		form_set_value($form['clade_links']['link'][$delta]['linktext'], '', $form_state);
-		form_set_value($form['clade_links']['link'][$delta]['linkdescription'], '', $form_state);
-	}
-}
-
-function clade_links_delete_link_ajax() {
-  
-  // get cached form
-  $form_state = array('storage' => NULL, 'submitted' => FALSE);
-  $form_build_id = $_POST['form_build_id'];
-  $form = form_get_cache($form_build_id, $form_state);
-	
-  // prepare to process form
-  $args = $form['#parameters'];
-  $form_id = array_shift($args);
-  $form_state['post'] = $form['#post'] = $_POST;
-  $form['#programmed'] = $form['#redirect'] = FALSE;
-
-  // process form
-  drupal_process_form($form_id, $form, $form_state);
-  
-  // rebuild form
-  $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
-  
-  $output = theme('status_messages');
-
-  // Final rendering callback.
-  drupal_json(array('status' => TRUE, 'data' => $output));
+	drupal_set_message(t('Links saved!'), 'success');
 }
 
 /**
@@ -306,10 +255,7 @@ function clade_links_delete_link_ajax() {
  * entire form is rebuilt during the page reload.
  */
 function clade_links_more_links_submit($form, &$form_state) {
-  // Make the changes we want to the form state.
-  if ($form_state['values']['clade_links_more']) {
-    $form_state['link_count'] = count($form_state['values']['clade_links']['link']) + 1;
-  }
+	$form_state['link_count'] = count($form_state['values']['links']) + 1;
 }
 
 function clade_links_ajax_more() {
@@ -332,15 +278,14 @@ function clade_links_ajax_more() {
   $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
 
   // get the part of the form to re-render
-  $link_form = $form['clade_links']['link'];
+  $link_form = $form['links'];
   
   // remove wrapper elements
   unset($link_form['#prefix'], $link_form['#suffix']);
   
   // only render new links
   $n = $form_state['link_count'];
-  for ($rendered = 0; $rendered < $n - 1; $rendered++)
-  {
+  for ($rendered = 0; $rendered < $n - 1; $rendered++) {
   	unset($link_form[$rendered]);
   }
   $output = theme('status_messages') . drupal_render($link_form); 	
@@ -351,47 +296,16 @@ function clade_links_ajax_more() {
 
 function clade_links_theme($existing, $type, $theme, $path) {
 	return array(
-			'clade_link_form' => array(
-					'arguments' => array('form' => NULL)
-				),
-		);
+		'clade_links_form' => array(
+			'arguments' => array('form' => NULL)
+		),
+	);
 }
 
-function theme_clade_link_form($form) {
-	$output = drupal_render($form['prefix']);
+function theme_clade_links_form($form) {
+	error_log('here');
+	drupal_add_css(drupal_get_path('module','clade_links').'/css/clade-links.css');
+	drupal_add_js(drupal_get_path('module','clade_links').'/js/clade-links.js');
 	
-	// lid
-	$output .= drupal_render($form['lid']);
-	
-	// tid
-	$output .= drupal_render($form['tid']);
-	
-	$output .= '<div class="columns">';
-	
-	// url
-	$output .= '<div class="fourths">';
-	$output .= drupal_render($form['url']);
-	$output .= '</div>';
-	
-	// link text
-	$output .= '<div class="fourths">';
-	$output .= drupal_render($form['linktext']);
-	$output .= '</div>';
-	
-	// link description
-	$output .= '<div class="fourths">';
-	$output .= drupal_render($form['linkdescription']);
-	$output .= '</div>';
-	
-	// delete button
-	if ($form['clade_links_delete']) {
-		$output .= '<div class="fourths"><div class="form-item"><label>&nbsp;</label>';
-		$output .= drupal_render($form['clade_links_delete']);
-		$output .= '</div></div>';
-	}
-	
-	$output .= '<div class="clearing"></div></div>';
-	$output .= drupal_render($form['suffix']);
-
-	return $output;
+	return drupal_render($form);
 }

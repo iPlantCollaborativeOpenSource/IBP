@@ -678,3 +678,8 @@ function ibp_theme_biblio_entry($node, $base = 'biblio', $style = 'classic', $in
 
   return $output;
 }
+
+// function ibp_theme_menu_item_link($link) {
+// 	error_log(print_r($link,1));
+//   return theme_menu_item_link($link);
+// }

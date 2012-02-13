@@ -54,3 +54,9 @@ div.messages ul {
   margin-top: 0;
   margin-bottom: 0;
 }
+
+div.messages.success {
+	border-color: #54bf41;
+	background-color: #e9f7e6;
+  background-image: url(../images/messages-success.png);
+}

@@ -1,0 +1,71 @@
+.link-row {
+	position: relative;
+	border-bottom: 1px dashed #333;
+	margin-bottom: 0.5em;
+}
+
+.link-row:after {
+	content: ".";
+	height: 0px;
+	display: block;
+	visibility: hidden;
+	clear: both;
+}
+
+.link-row .form-item {
+	float: left;
+	width: 75%;
+	margin: 0 0 0.5em;
+}
+
+.link-row .delete-link-link {
+	padding: 6px 12px;
+	background-color: #d81213;
+	background-image: -moz-linear-gradient(#ec2021, #b90f10);
+	background-image: -o-linear-gradient(#ec2021, #b90f10);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ec2021), to(#b90f10));
+	background-image: -webkit-linear-gradient(#ec2021, #b90f10);
+	font-weight: bold;
+	color: #fff;
+	text-shadow: -1px -1px 0px #333;
+	border: 1px solid #b90f10;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-o-border-radius: 4px;
+	border-radius: 4px;
+	font-size: 0.9em;
+	opacity: 0.8;
+}
+
+.link-row .delete-link-link:hover {
+	opacity: 1;
+}
+
+.link-row .undo-link-delete {
+	display: none;
+	margin: 1em 0;
+	font-weight: bold;
+}
+
+.link-row .undo-link-delete:before {
+	content: "This link will be deleted. ";
+	font-weight: normal;
+	color: #000;
+}
+
+.link-row-deleted {
+	
+}
+
+.link-row-deleted .undo-link-delete {
+	display: block;
+}
+
+.link-row-deleted .form-item,
+.link-row-deleted .delete-link-link {
+	display: none;
+}
+
+.button-row {
+	clear: both;
+}

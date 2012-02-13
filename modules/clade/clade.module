@@ -232,6 +232,15 @@ function clade_menu() {
 			'type' => MENU_LOCAL_TASK,
 			'weight' => '2'
 		);
+	
+	$items['clade/%clade/edit/clade'] = array(
+			'title' => 'Clade',
+// 			'page callback' => 'drupal_get_form',
+// 			'page arguments' => array('clade_edit_form', 1),
+// 			'access callback' => 'user_access',
+			'type' => MENU_DEFAULT_LOCAL_TASK,
+			'weight' => 0
+		);
 
 	$items['clade/%clade/help'] = array(
 			'title' => 'Help',
