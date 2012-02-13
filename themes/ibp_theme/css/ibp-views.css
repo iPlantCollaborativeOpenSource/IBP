@@ -1,12 +1,14 @@
 .view-clade-forum-summary.clade-context .views-field-name,
 .view-clade-post-summary.clade-context .views-field-name,
-.view-ibp-projects-summary.clade-context .views-field-tid {
+.view-ibp-projects-summary.clade-context .views-field-tid,
+.view-clade-biblio-summary.clade-context .views-field-name {
 	display: none;
 }
 
 .view-clade-forum-summary .views-row,
 .view-clade-post-summary .views-row,
-.view-ibp-projects-summary .views-row {
+.view-ibp-projects-summary .views-row,
+.view-clade-biblio-summary .views-row {
 	position: relative;
 	clear: both;
 	padding: 12px 0;
@@ -19,7 +21,8 @@
 
 .view-clade-forum-summary .views-row:last-child,
 .view-clade-post-summary .views-row:last-child,
-.view-ibp-projects-summary .views-row:last-child {
+.view-ibp-projects-summary .views-row:last-child,
+.view-clade-biblio-summary .views-row:last-child {
 	border-width: 0;
 	-moz-border-image: none;
 	-o-border-image: none;
@@ -29,7 +32,8 @@
 
 .view-clade-forum-summary .views-row:after,
 .view-clade-post-summary .views-row:after,
-.view-ibp-projects-summary .views-row:after {
+.view-ibp-projects-summary .views-row:after,
+.view-clade-biblio-summary .views-row:after {
 	content: ".";
 	display: block;
 	clear: both;
@@ -39,13 +43,15 @@
 
 .view-clade-forum-summary .views-row > div,
 .view-clade-post-summary .views-row > div,
-.view-ibp-projects-summary .views-row > div {
+.view-ibp-projects-summary .views-row > div,
+.view-clade-biblio-summary .views-row > div {
 	float: left;
 }
 
 .view-clade-forum-summary .views-field-name,
 .view-clade-post-summary .views-field-name,
-.view-ibp-projects-summary .views-field-tid {
+.view-ibp-projects-summary .views-field-tid,
+.view-clade-biblio-summary .views-field-name {
 	font-size: 12px;
 	text-transform: uppercase;
 	width: 74px;
@@ -119,14 +125,16 @@
 }
 
 .view-clade-forum-summary .views-field-name a,
-.view-clade-post-summary .views-field-name a {
+.view-clade-post-summary .views-field-name a,
+.view-clade-biblio-summary .views-field-name a {
 	color: #888888;
 	font-weight: bold;
 }
 
 .view-clade-forum-summary .views-field-name a:hover,
 .view-clade-post-summary .views-field-name a:hover,
-.view-ibp-projects-summary .views-field-tid a:hover {
+.view-ibp-projects-summary .views-field-tid a:hover,
+.view-clade-biblio-summary .views-field-name a:hover {
 	color: #aaaaaa;
 }
 
@@ -165,7 +173,8 @@
 
 .pane-clade-forum-summary-panel-pane-1 h2.pane-title,
 .pane-clade-post-summary-panel-pane-1 h2.pane-title,
-.pane-ibp-projects-summary-panel-pane-1 h2.pane-title {
+.pane-ibp-projects-summary-panel-pane-1 h2.pane-title,
+.pane-clade-biblio-summary-panel-pane-1 h2.pane-title {
 	padding-left: 30px;
 	background-repeat: no-repeat;
 	background-position: left center;
@@ -183,6 +192,11 @@
 .pane-ibp-projects-summary-panel-pane-1 h2.pane-title {
 	background-image: url(../images/project-icon.png);
 }
+
+.pane-clade-biblio-summary-panel-pane-1 h2.pane-title {
+	background-image: url(../images/book-icon.png);
+}
+
 
 .view-ibp-projects-summary .item-list,
 .view-ibp-projects-summary .item-list ul,
@@ -209,4 +223,14 @@
 
 .views-field-ibp-project-number-value .field-content:before {
 	content: "#";
+}
+
+.view-clade-biblio-summary .biblio-entry {
+	width: 592px;
+	padding: 0 10px;
+}
+
+.view-clade-biblio-summary .biblio-export-buttons,
+.view-clade-biblio-summary .links {
+	display: none;
 }

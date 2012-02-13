@@ -860,7 +860,9 @@ function ibphelper_profile_alter(&$account) {
 function ibphelper_crop_publications($clade) {
 	drupal_set_title(t('Publications tagged: %clade', array('%clade' => $clade->name)));
 	$view = views_get_view('clade_biblio');
-	$output = l(t('Add a publication'), "node/add/biblio", array("attributes" => array("class" => "add-publication-link"), "query" => array("clades" => $clade->tid)));
+	if (user_access("create biblio")) {
+		$output = l(t('Add a publication'), "node/add/biblio", array("attributes" => array("class" => "add-publication-link"), "query" => array("clades" => $clade->tid)));
+	}
 	$output .= $view->execute_display('default', array($clade->tid));
 	return $output;
 }
