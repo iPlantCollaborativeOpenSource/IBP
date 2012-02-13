@@ -345,3 +345,36 @@ dd.biblio-field-contents.first {
 dd.biblio-field-contents.odd {
 	background-color: #f9f9f9;
 }
+
+.view-clade-biblio {
+	clear: both;
+}
+
+a.add-publication-link {
+	background-color: white;
+	border: none;
+	background-image: url(/sites/all/themes/ibp_theme/images/add.png),-ms-linear-gradient(white,#F7F7F7);
+	background-image: url(/sites/all/themes/ibp_theme/images/add.png),-moz-linear-gradient(white,#F7F7F7);
+	background-image: url(/sites/all/themes/ibp_theme/images/add.png),-o-linear-gradient(white,#F7F7F7);
+	background-image: url(/sites/all/themes/ibp_theme/images/add.png),-webkit-gradient(linear,0 0,0 100%,from(white),to(#F7F7F7));
+	background-image: url(/sites/all/themes/ibp_theme/images/add.png),-webkit-linear-gradient(white,#F7F7F7);
+	background-image: url(/sites/all/themes/ibp_theme/images/add.png);
+	background-repeat: no-repeat;
+	background-position: 3px 60%;
+	padding: 3px 3px 3px 15px;
+	-moz-box-shadow: 1px 1px 2px #d7d7d7;
+	-o-box-shadow: 1px 1px 2px #d7d7d7;
+	-webkit-box-shadow: 1px 1px 2px #d7d7d7;
+	box-shadow: 1px 1px 2px #d7d7d7;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font-weight: bold;
+	color: #00A3F7;
+	font-size: 11px;
+	cursor: pointer;
+	text-align: right;
+	float: right;
+	margin: 0 0 1em;
+}
