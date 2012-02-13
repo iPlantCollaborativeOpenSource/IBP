@@ -239,6 +239,14 @@ function ibp_theme_links($links, $attributes = array('class' => 'links'), $headi
 	if (strpos(array_shift(array_keys($links)), 'taxonomy_term') === 0) {
 		$attributes['class'] .= ' terms';
 	}
+		
+	if (isset($links['biblio_tagged'])) {
+		$links['biblio_tagged']['title'] = t('EndNote (tagged)');
+	}
+	
+	if ($links['biblio_xml']) {
+		$links['biblio_xml']['title'] = t('EndNote (XML)');
+	}
 	
 	return theme_links($links, $attributes, $heading);
 }
@@ -678,6 +686,71 @@ function ibp_theme_biblio_entry($node, $base = 'biblio', $style = 'classic', $in
 
   return $output;
 }
+
+function ibp_theme_biblio_export_links($node = NULL) {
+  global $pager_total_items;
+  $base = variable_get('biblio_base', 'biblio');
+  $show_link = variable_get('biblio_export_links', array('rtf' => TRUE, 'tagged' => TRUE, 'xml' => TRUE, 'bibtex' => TRUE));
+  $show_link['google'] = variable_get('biblio_google_link', 1);
+
+  $links = '';
+  if ($show_link['rtf'])    $links .= '<li> '. _ibp_theme_build_biblio_link($base, $node, 'rtf') .'</li>';
+  if ($show_link['tagged']) $links .= '<li> '. _ibp_theme_build_biblio_link($base, $node, 'tagged') .'</li>';
+  if ($show_link['xml'])    $links .= '<li> '. _ibp_theme_build_biblio_link($base, $node, 'xml') .'</li>';
+  if ($show_link['bibtex']) $links .= '<li> '. _ibp_theme_build_biblio_link($base, $node, 'bibtex') .'</li>';
+  if ($show_link['google'] && !empty($node)) {
+  	$links .= '<li> '. _ibp_theme_build_biblio_link($base, $node, 'google') .'</li>';
+  }
+  if ($show_link['pubmed'] && module_exists('biblio_pm') && !(empty($node))) {
+    $links .= '<li> '._ibp_theme_build_biblio_link($base, $node, 'pubmed')  .'</li>';
+  }
+  if ($node) $openurl_link = theme('biblio_openurl', $node);
+  if (!empty($openurl_link)) {
+    $links .= '<li> '. l($openurl_link['title'], $openurl_link['href'], $openurl_link) .'</li>';
+  }
+  if (!empty($links)) $links = '<ul class="biblio-export-buttons">' . $links . '</ul>';
+  if (empty($node) && !empty($links)) {
+    $links = t('Export @count results', array('@count' => $pager_total_items[0])).':' . $links;
+  }
+  return $links;
+}
+
+/**
+ * Creates a link to export a node (or view) in EndNote Tagged format
+ *
+ * @param $base this is the base url (defaults to /biblio)
+ * @param $nid  the node id, if NULL then the current view is exported
+ * @return  a link (<a href=...>Tagged</a>)
+ */
+function _ibp_theme_build_biblio_link($base, $node = NULL, $type = NULL) {
+	module_load_include('inc','biblio','biblio_theme');
+  $nid = ($node) ? $node->nid : NULL;
+  switch ($type) {
+    case 'bibtex':
+      $link = _build_biblio_bibtex_link($base, $nid);
+      break;
+    case 'tagged':
+      $link = _build_biblio_tagged_link($base, $nid);
+      $link['title'] = t('EndNote (tagged)');
+      break;
+    case 'xml':
+      $link = _build_biblio_xml_link($base, $nid);
+      $link['title'] = t('EndNote (XML)');
+      break;
+    case 'google':
+      $link = _build_google_scholar_link($node);
+      break;
+    case 'rtf':
+      $link = _build_biblio_rtf_link($base, $nid);
+      break;
+    case 'pubmed':
+      $link = biblio_pm_biblio_lookup_link($node);
+      $link = $link['biblio_pubmed'];
+      break;
+  }
+  if (!empty($link)) return  l($link['title'], $link['href'], $link);
+}
+
 
 // function ibp_theme_menu_item_link($link) {
 // 	error_log(print_r($link,1));
