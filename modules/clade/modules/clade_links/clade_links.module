@@ -147,9 +147,6 @@ function clade_links_form(&$form_state, $clade) {
 	$form['buttons']['cancel'] = array(
 		'#value' => l(t('Cancel'), "clade/{$clade->tid}"),
 	);
-	$form['buttons']['test'] = array(
-		'#value' => l(t('test'), "", array('attributes' => array('class' => 'test'))),
-	);
 	
 	$form['#theme'] = 'clade_links_form';
 	
@@ -303,7 +300,6 @@ function clade_links_theme($existing, $type, $theme, $path) {
 }
 
 function theme_clade_links_form($form) {
-	error_log('here');
 	drupal_add_css(drupal_get_path('module','clade_links').'/css/clade-links.css');
 	drupal_add_js(drupal_get_path('module','clade_links').'/js/clade-links.js');
 	

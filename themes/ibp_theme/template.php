@@ -438,7 +438,7 @@ function _ibp_theme_filefield_icon_path($file) {
 
 function ibp_theme_preprocess_user_login(&$vars) {
 	$vars['form'] = drupal_render($vars['form']);
-	$vars['pass_reset_url'] = 'https://auth.iplantcollaborative.org/account_management/request_reset.py';
+	$vars['pass_reset_url'] = 'http://user.iplantcollaborative.org/reset/request';
 	drupal_add_js('(function($) { $(document).ready(function() { $("#edit-name").focus(); }); })(jQuery);', 'inline');
 }
 
