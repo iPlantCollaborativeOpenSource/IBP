@@ -11,37 +11,64 @@ api = 2
 projects[] = drupal
 
 ; Modules
-projects[] = admin_menu
-projects[] = advanced_help
-projects[] = backup_migrate
-projects[] = ctools
-projects[] = cck
-projects[] = ed_readmore
-projects[] = filefield
-projects[] = imageapi
-projects[] = imagecache
-projects[] = imagecache_profiles
-projects[] = imagefield
-projects[] = jquery_ui
-projects[] = jquery_update
-projects[] = ldap_integration
-projects[] = libraries
-projects[] = link
-projects[] = messaging
-projects[] = menutrails
-projects[] = mimemail
-projects[] = multiblock
-projects[] = notifications
-projects[] = panels
-projects[] = pathauto
-projects[] = stringoverrides
-projects[] = subpath_alias
-projects[] = taxonomy_menu
-projects[] = token
-projects[] = url_alter
-projects[] = user_relationships
-projects[] = views
-projects[] = webform
+projects[] = "admin_menu"
+projects[] = "advanced_help"
+projects[] = "auto_nodetitle"
+projects[] = "automenu"
+projects[] = "backup_migrate"
+projects[] = "biblio"
+projects[] = "ctools"
+projects[] = "calendar"
+projects[] = "cck"
+projects[] = "content_profile"
+projects[] = "content_taxonomy"
+projects[] = "countries_api"
+projects[] = "date"
+projects[] = "drupalchat"
+projects[] = "ed_readmore"
+projects[] = "faq"
+projects[] = "filefield"
+projects[] = "fpa"
+projects[] = "globalredirect"
+projects[] = "google_analytics"
+projects[] = "imageapi"
+projects[] = "imagecache"
+projects[] = "imagecache_profiles"
+projects[] = "imagefield"
+projects[] = "imce"
+projects[] = "jquery_ui"
+projects[] = "jquery_update"
+projects[] = "ldap_integration"
+projects[] = "libraries"
+projects[] = "link"
+projects[] = "location"
+projects[] = "menu_block"
+projects[] = "messaging"
+projects[] = "mimemail"
+projects[] = "multiblock"
+projects[] = "node_convert"
+projects[] = "noreqnewpass"
+projects[] = "notifications"
+projects[] = "panels"
+projects[] = "pathauto"
+projects[] = "phone"
+projects[] = "revision_deletion"
+projects[] = "role_delegation"
+projects[] = "rules"
+projects[] = "site_map"
+projects[] = "stringoverrides"
+projects[] = "subpath_alias"
+projects[] = "taxonomy_menu"
+projects[] = "taxonomy_menu_trails"
+projects[] = "token"
+projects[] = "transliteration"
+projects[] = "upload_replace"
+projects[] = "url_alter"
+projects[] = "user_relationships"
+projects[] = "views"
+projects[] = "views_or"
+projects[] = "webform"
+projects[] = "xmlsitemap"
 
 ; Themes
 
@@ -86,10 +113,14 @@ libraries[jit][download][type] = get
 libraries[jit][download][url] = http://thejit.org/downloads/Jit-2.0.1.zip
 libraries[jit][type] = library
 
+;ckeditor
+; use drush command `drush ckeditor-download`
+
 ; getid3
-libraries[getid3][download][type] = get
-libraries[getid3][download][url] = http://downloads.sourceforge.net/project/getid3/getID3%28%29%201.x/1.8.5/getid3-1.8.5-20110218.zip
-libraries[getid3][type] = library
+; use drush command `drush getid3-download`
+;libraries[getid3][download][type] = get
+;libraries[getid3][download][url] = http://downloads.sourceforge.net/project/getid3/getID3%28%29%201.x/1.8.5/getid3-1.8.5-20110218.zip
+;libraries[getid3][type] = library
 
 ; iphone_check
 libraries[iphone_check][download][type] = git
