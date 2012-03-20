@@ -6,7 +6,7 @@
 	</div>
 	<div class="newsletter_stories">
 		<?php
-			print views_embed_view('newsletter','default', $node->nid);
+			print views_embed_view('Newsletter','default', $node->nid);
 		?>
 	</div>
 </div>
