@@ -1,0 +1,6 @@
+; $Id$
+name = Fileversion field
+description = Defines an fileversioning field type.
+dependencies[] = content
+package = CCK
+core = 6.x

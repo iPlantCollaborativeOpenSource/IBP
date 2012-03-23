@@ -1,0 +1,709 @@
+<?php
+
+/**
+ * @file
+ * An fileversion to define a simple field, widget, and formatter.
+ * A module could define only a field, only a widget, only a 
+ * formatter, or any combination. Widgets and formatters must
+ * declare what kind of field they work with, which can be any
+ * existing field as well as any new field the module creates.
+ */
+
+//==========================================//
+// DEFINING A FIELD
+//==========================================//
+
+/**
+ * Implementation of hook_field_info().
+ */
+function fileversion_field_info() {
+  return array(
+    // The machine name of the field, 
+    // no more than 32 characters.
+    'fileversion' => array(
+      // The human-readable label of the field that will be 
+      // seen in the Manage fields screen.
+      'label' => t('Fileversion field'),
+      // A description of what type of data the field stores.
+      'description' => t('Store text data in the database.'),
+      // An icon to use in Panels.
+      'content_icon' => 'icon_content_text.png',
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_settings().
+ */
+function fileversion_field_settings($op, $field) {
+  switch ($op) {
+
+    // Define the database storage for this field using 
+    // the same construct used by schema API. Most fields
+    // have only one column, but there can be any number 
+    // of different columns. After the schema API values, 
+    // add two optional values to each column, 
+    //  'views', to define a Views field 
+    //  'sortable', to add a Views sort field
+    case 'database columns':
+      $columns['value'] = array(
+        'type' => 'varchar', 
+        'length' => 255, 
+        'not null' => FALSE, 
+        'sortable' => TRUE, 
+        'views' => TRUE,
+      );
+      return $columns;
+
+    // Optional: Make changes to the default $data array 
+    // created for Views. Omit this if no changes are 
+    // needed, use it to add a custom handler or make 
+    // other changes.
+    case 'views data':
+      // Start with the $data created by CCK
+      // and alter it as needed. The following
+      // code illustrates how you would retrieve
+      // the necessary data.
+      $data = content_views_field_views_data($field);
+      $db_info = content_database_info($field);
+      $table_alias = content_views_tablename($field);
+      $field_data = $data[$table_alias][$field['field_name'] .'_value'];
+      // Make changes to $data as needed here.
+      return $data;
+  }
+}
+
+/**
+ * Custom validation of settings values.
+ * Create callbacks like this to do settings validation.
+ */
+function _fileversion_length_validate($element, &$form_state) {
+  $value = $form_state['values']['max_length'];
+  if ($value && !is_numeric($value)|| $value < 1 || $value > 255) {
+    form_set_error('max_length', t('"Max length" must be a number between 1 and 255.'));
+  }
+}
+
+/**
+ * Implementation of hook_field().
+ */
+function fileversion_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    // Do validation on the field values here. The widget 
+    // will do its own validation and you cannot make any 
+    // assumptions about what kind of widget has been used, 
+    // so don't validate widget values, only field values.
+    case 'validate':
+      if (is_array($items)) {
+        foreach ($items as $delta => $item) {
+          // The error_element is needed so that CCK can 
+          // set an error on the right sub-element when 
+          // fields are deeply nested in the form.
+          $error_element = isset($item['_error_element']) ? $item['_error_element'] : '';
+          if (is_array($item) && isset($item['_error_element'])) unset($item['_error_element']);
+          if (!empty($item['value'])) {
+            if (!empty($field['max_length']) && drupal_strlen($item['value']) > $field['max_length']) {
+              form_set_error($error_element, t('%name: the value may not be longer than %max characters.', array('%name' => $field['widget']['label'], '%max' => $field['max_length'])));
+            }
+          }
+        }
+      }
+      return $items;
+
+    // This is where you make sure that user-provided 
+    // data is sanitized before being displayed.
+    case 'sanitize':
+      foreach ($items as $delta => $item) {
+        $fileversion = check_plain($item['value']);
+        $items[$delta]['safe'] = $fileversion;
+      }
+  }
+}
+
+/**
+ * Implementation of hook_content_is_empty().
+ * CCK has no way to know if something like a zero is
+ * an empty value or a valid value, so return
+ * TRUE or FALSE to a populated field $item array.
+ * CCK uses this to remove empty multi-value elements
+ * from forms.
+ */
+function fileversion_content_is_empty($item, $field) {
+  if (empty($item['value'])) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implementation of hook content_generate().
+ * 
+ * Optional, provide dummy value for nodes created
+ * by the Devel Generate module.
+ */
+function fileversion_content_generate($node, $field) {
+  $node_field = array();
+  // Generate a value that respects max_length.
+  if (empty($field['max_length'])) {
+    $field['max_length'] = 12;
+  }
+  $node_field['value'] = user_password($field['max_length']);
+  return $node_field;
+}
+
+/**
+ * Implementation of hook_token_list() 
+ * and hook_token_values().
+ * Optional, provide token values for this field.
+ */
+function fileversion_token_list($type = 'all') {
+  if ($type == 'field' || $type == 'all') {
+    $tokens = array();
+    $tokens['fileversion']['raw']       = t('Raw, unfiltered text');
+    $tokens['fileversion']['formatted'] = t('Formatted and filtered text');
+    return $tokens;
+  }
+}
+
+function fileversion_token_values($type, $object = NULL) {
+  if ($type == 'field') {
+    $item = $object[0];
+    $tokens['raw']  = $item['value'];
+    $tokens['formatted'] = isset($item['view']) ? $item['view'] : '';
+    return $tokens;
+  }
+}
+
+//==========================================//
+// DEFINING A FORMATTER
+//==========================================//
+
+/**
+ * Implementation of hook_theme().
+ */
+function fileversion_theme() {
+//drupal_set_message("Inside&&& fileversion_theme");
+  return array(
+    // Themes for the formatters.
+    'fileversion_formatter_default' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'fileversion_formatter_plain' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'fileversion_widget' => array(
+    	'arguments' => array('element' => NULL),
+    ),
+    'fileversion_item' => array (
+    	    'arguments' => array('element' => NULL),
+    ),
+    'fileversion_file' => array(
+    	    'arguments' => array('element' => NULL),    		    
+    ),
+    'fileversion_fileversionList' => array(
+    	    'arguments' => array('element' => NULL),    		    
+    ),
+    'fileversion_widget_item' =>array(
+    	'arguments' => array('element' => NULL),	    
+    ),
+    'fileversion_widget_file' =>array(
+    	 'arguments' => array('element' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ * 
+ * All fields should have a 'default' formatter.
+ * Any number of other formatters can be defined as well.
+ * It's nice for there always to be a 'plain' option
+ * for the raw value, but that is not required.
+ * 
+ */
+function fileversion_field_formatter_info() {
+	//drupal_set_message("Inside&&& fileversion_field_formatter_info");
+  return array(
+    // The machine name of the formatter.
+    'default' => array(
+      // The human-readable label shown on the Display 
+      // fields screen.
+      'label' => t('Default'),
+      // An array of the field types this formatter 
+      // can be used on.
+      'field types' => array('fileversion'),
+      // CONTENT_HANDLE_CORE:   CCK will pass the formatter
+      // a single value.
+      // CONTENT_HANDLE_MODULE: CCK will pass the formatter
+      // an array of all the values. None of CCK's core 
+      // formatters use multiple values, that is an option
+      // available to other modules that want it.
+      'multiple values' => CONTENT_HANDLE_CORE,
+    ),
+    'plain' => array(
+      'label' => t('Plain text'),
+      'field types' => array('fileversion'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+    ),
+  );
+}
+
+/**
+ * Theme function for 'default' fileversion field formatter.
+ * 
+ * $element['#item']: the sanitized $delta value for the item,
+ * $element['#field_name']: the field name,
+ * $element['#type_name']: the $node->type,
+ * $element['#formatter']: the $formatter_name,
+ * $element'#node']: the $node,
+ * $element['#delta']: the delta of this item, like '0',
+ * 
+ */
+function theme_fileversion_formatter_default($element) {
+
+	  $file = field_file_load($element['#item']['safe']);
+	  $field = content_fields($element['#field_name']);
+	  $output = theme('fileversion_item', $file, $field);
+ 	  return $output;
+}
+
+function theme_fileversion_item($file, $field) {
+  if (fileversion_file_listed($file, $field)) {
+	    return theme('fileversion_file', $file);
+  }
+  return '';
+}
+
+
+/**
+ * Return whether a file should be listed when viewing the node.
+ *
+ * @param $file
+ *   A populated Example item.
+ * @param $field
+ *   A CCK field instance array.
+ */
+function fileversion_file_listed($file, $field) {
+  if (!empty($field['list_field'])) {
+    return !empty($file['list']);
+  }
+  return TRUE;
+}
+
+/**
+ * Theme function for the 'generic' single file formatter.
+ */
+function theme_fileversion_file($file) {
+	drupal_add_js(drupal_get_path('module', 'fileversion') .'/expand_collapse.js');
+	drupal_add_css(drupal_get_path('module', 'fileversion').'/fileversion_style.css');
+  // Views may call this function with a NULL value, return an empty string.
+	  if (empty($file['fid'])) {
+	    return '';
+	  }
+  $path = $file['filepath'];
+  $url = file_create_url($path);
+  // Set options as per anchor format described at
+  // http://microformats.org/wiki/file-format-fileversions
+  // TODO: Possibly move to until I move to the more complex format described 
+  // at http://darrelopry.com/story/microformats-and-media-rfc-if-you-js-or-css
+  $options = array(
+    'attributes' => array(
+      'type' => $file['filemime'] . '; length=' . $file['filesize'],
+    ),
+  );
+
+  // Use the description as the link text if available.
+  //if (empty($file['data']['description'])) {
+    $link_text = $file['filename'];
+
+	return '<div class="fileversion-file">'. l($link_text, $url, $options) .'</div>'.'<a href="#" class="toggle-version-history"><b>Prev Versions</b></a>'.theme('fileversion_fileversionList',$file['fid']);
+}
+
+function theme_fileversion_fileversionList($fid)
+{
+	if(empty($fid))
+		return '';
+
+	$result = db_query("select vid from {fileversionList} where fid=".$fid);
+	while ($record = db_fetch_array($result)) {
+		$vid = $record['vid'];
+	}
+			
+	$result = db_query("select fid from {fileversionList} where vid=".$vid);
+			
+	$rows = array();
+	while ($record = db_fetch_array($result)) {
+	$vfile=field_file_load($record['fid']);
+	$path = $vfile['filepath'];
+	$url = file_create_url($path);
+	$options = array(
+					'attributes' => array(
+					'type' => $vfile['filemime'] . '; length=' . $vfile['filesize'],
+					),
+	);
+
+	$link_text = $vfile['filename'];
+  
+	$user = user_load($vfile['uid']);
+	$ts = $vfile['timestamp'];
+	$rows[] = array(l($link_text, $url, $options), theme('username', $user), format_date($ts, 'medium'));
+	}
+	
+	$markup='<div class="fileversion-version-history" >'.theme('table', null, $rows).'</div>';
+	return $markup;
+	
+}
+
+
+/**
+ * Theme function for 'plain' fileversion field formatter.
+ */
+function theme_fileversion_formatter_plain($element) {
+	//drupal_set_message("Inside&&& theme_fileversion_formatter_plain");
+  return strip_tags($element['#item']['safe']);
+}
+
+//==========================================//
+// DEFINING A WIDGET
+//==========================================//
+
+/**
+ * Implementation of hook_widget_info().
+ *
+ * Here we indicate that the content module will handle
+ * the default value and multiple values for these widgets.
+ *
+ * Callbacks can be omitted if default handing is used.
+ * They're included here just so this module can be used
+ * as an fileversion for custom modules that might do things
+ * differently.
+ */
+function fileversion_widget_info() {
+  return array(
+    // The machine name of the widget, no more than 32 
+    // characters.
+    'fileversion_widget' => array(
+      // The human-readable label of the field that will be 
+      // seen in the Manage fields screen.
+      'label' => t('Fileversion widget'),
+      // An array of the field types this widget can be 
+      // used with.
+      'field types' => array('fileversion'),
+      // Who will handle multiple values, default is core.
+      // 'CONTENT_HANDLE_MODULE' means the module does it.
+      // See optionwidgets for an fileversion of a module that 
+      // handles its own multiple values.
+      'multiple values' => CONTENT_HANDLE_CORE,
+      'callbacks' => array(
+        // Who will create the default value, default is core.
+        // 'CONTENT_CALLBACK_CUSTOM' means the module does it.
+        // 'CONTENT_CALLBACK_NONE' means this widget has 
+        // no default value.
+        'default value' => CONTENT_CALLBACK_CUSTOM,
+      ),
+    ),
+  );
+}
+
+function fileversion_elements() {
+  $elements = array();
+  $elements['fileversion_widget'] = array(
+    '#input' => TRUE,
+    '#columns' => array('value'),
+    '#process' => array('fileversion_widget_process'),
+    '#value_callback' => 'fileversion_widget_value',
+  );
+  return $elements;
+}
+
+/**
+ * Implementation of hook_widget_settings().
+ */
+function fileversion_widget_settings($op, $widget) {
+  switch ($op) {
+    case 'form':
+      return filefield_widget_settings_form($widget);
+    case 'save':
+      return filefield_widget_settings_save($widget);
+  }
+}
+
+/**
+ * Implementation of hook_widget().
+ *
+ * Attach a single form element to the form. 
+ * 
+ * CCK core fields only add a stub element and builds 
+ * the complete item in #process so reusable elements 
+ * created by hook_elements can be plugged into any 
+ * module that provides valid $field information.
+ * 
+ * Custom widgets that don't care about using hook_elements
+ * can be built out completely at this time.
+ *
+ * If there are multiple values for this field and CCK is 
+ * handling multiple values, the content module will call 
+ * this function as many times as needed.
+ *
+ * @param $form
+ *   the entire form array, 
+ *   $form['#node'] holds node information
+ * @param $form_state
+ *   the form_state, 
+ *   $form_state['values'][$field['field_name']]
+ *   holds the field's form values.
+ * @param $field
+ *   the field array
+ * @param $items
+ *   array of default values for this field
+ * @param $delta
+ *   the order of this item in the array of 
+ *   subelements (0, 1, 2, etc)
+ *
+ * @return
+ *   the form item for a single element for this field
+ */
+function fileversion_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+
+  $form['#attributes']['enctype'] = 'multipart/form-data';
+  $item = array('value' => 0);
+  $element = array(
+  	'#title' => $field['widget']['label'],
+    '#type' => $field['widget']['type'],
+    '#default_value' => $items[$delta],
+    '#attributes' => array('class' => 'fileversion'),
+  );
+  
+  return $element;
+}
+
+function fileversion_widget_process($element, $edit, &$form_state, $form) {
+
+ $element['#theme'] = 'fileversion_widget_item';
+ $element['upload'] = array(
+    '#name' => 'files[' . implode('_', $element['#array_parents']) . ']',
+    '#type' => 'file',
+    //'#description' => implode('<br />', $desc),
+    '#size' => 22,
+    '#access' => empty($item['value']),
+    '#default_value' => $element['#value']['value'],
+    );
+    	 
+// Set the FID.
+  $element['value'] = array(
+    '#type' => 'hidden',
+    '#value' => $element['#value']['value'],
+    '#markup' => theme('fileversion_fileversionList',$element['#value']['value']),
+  );
+  
+  $element['#default_value']['value']=$element['#value']['value'];
+  
+  if ($item['value'] != 0) {
+  $element['fileversions'] = array(
+		
+		'#markup' => theme('theme_fileversion_widget_item',$element),
+	); 
+  }
+ 
+  // Grant access to temporary files.
+  if ($item['value'] && isset($item['status']) && $item['status'] == 0 && variable_get('file_downloads', FILE_DOWNLOADS_PUBLIC) == FILE_DOWNLOADS_PRIVATE) {
+    $_SESSION['filefield_access'][] = $item['value'];
+  }
+	return $element;
+}
+
+/**
+ * Determine the widget's files directory
+ *
+ * @param $field
+ *   A CCK field array.
+ * @param $account
+ *   The user account object to calculate the file path for.
+ * @return
+ *   The files directory path, with any tokens replaced.
+ */
+function fileversion_widget_file_path($field, $account = NULL) {
+  $account = isset($account) ? $account : $GLOBALS['user'];
+  $dest = $field['widget']['file_path'];
+  // Replace user level tokens.
+  // Node level tokens require a lot of complexity like temporary storage
+  // locations when values don't exist. See the filefield_paths module.
+  if (module_exists('token')) {
+    $dest = token_replace($dest, 'user', $account);
+  }
+  // Replace nasty characters in the path if possible.
+  if (module_exists('transliteration')) {
+    module_load_include('inc', 'transliteration');
+    $dest_array = array_filter(explode('/', $dest));
+    foreach ($dest_array as $key => $directory) {
+      $dest_array[$key] = transliteration_clean_filename($directory);
+    }
+    $dest = implode('/', $dest_array);
+  }
+  return file_directory_path() .'/'. $dest;
+}
+
+/*
+Function for uploading the file on form save
+*/
+function fileversion_save_upload($element) {
+  $upload_name = implode('_', $element['#array_parents']);
+  $field = content_fields($element['#field_name'], $element['#type_name']);
+	
+  $dest = fileversion_widget_file_path($field);
+  if (!field_file_check_directory($dest, FILE_CREATE_DIRECTORY)) {
+    form_set_error($upload_name, t('The file could not be uploaded.'));
+    return 0;
+  }
+
+  if (!$file = field_file_save_upload($upload_name, $element['#upload_validators'], $dest)) {
+    watchdog('fileversion', 'The file upload failed. %upload', array('%upload' => $upload_name));
+    form_set_error($upload_name, t('The file in the @field field was unable to be uploaded.', array('@field' => $element['#title'])));
+    return 0;
+  }
+  
+  return $file['fid'];
+}
+
+function fileversion_widget_value($element, $edit = FALSE) {
+  
+	if ($edit) {
+		$item = $edit;
+		$field = content_fields($element['#field_name'], $element['#type_name']);
+
+		if(! empty($_FILES[files][name][$element['#field_name'].'_'.$element['#delta']])){
+			// Uploads take priority over value of fid text field.
+			if ($fid = fileversion_save_upload($element)) {
+				$item['value'] = $fid;
+			}
+
+			$element['value_fid']=$item['value'];
+			$objFile = new stdClass();
+			$objFile->fid = $item['value'];
+    
+			if(isset($element['#default_value']['value'])){
+			//query to find the original fid
+    
+			try{
+			
+				$result = db_query("SELECT vid FROM {fileversionList} where fid=".$element['#default_value']['value']);
+			
+				while ($record = db_fetch_array($result)) {
+				$objFile->vid = $record['vid'];			
+				}
+			}catch(Exception $e)
+			{
+				drupal_set_message($e);
+			}	
+    
+    }
+    else{
+    		  $objFile->vid = $item['value'];
+    }
+    
+    drupal_write_record('fileversionList', $objFile);
+
+    // Load file if the FID has changed so that it can be saved by CCK.
+    $file = isset($item['value']) ? field_file_load($item['value']) : NULL;
+
+    // If the file entry doesn't exist, don't save anything.
+    if (empty($file)) {
+      $item = array();
+      $file = array();
+    }
+    		}
+    	}
+	else
+	{
+		 $file = field_file_load($element['#default_value']['value']);
+		 
+		if(isset($element['#default_value']['value'])){
+			//query database
+			try{
+			$result = db_query("SELECT vid FROM {fileversionList} where fid=".$element['#default_value']['value']);
+			while ($record = db_fetch_array($result)) {
+				$group_fid = $record['vid'];
+			}
+			
+			$result = db_query("select fid from {fileversionList} where vid=".$group_fid);
+			//drupal_set_message("select fid from {fileversionList} where vid=".$group_fid);
+			while ($record = db_fetch_array($result)) {
+				//drupal_set_message("hello".$record['fid']);
+			}
+			}catch(Exception $e)
+			{
+				//drupal_set_message($e);
+			}
+			
+		}
+		$item = $element['#default_value'];
+	}
+
+	return $item;
+}
+
+function theme_fileversion_widget($element) {
+  return theme('form_element', $element, $element['#children']);
+}
+
+/**
+ * Implementation of hook_form_alter().
+ *
+ * Set the enctype on forms that need to accept file uploads.
+ */
+function fileversion_form_alter(&$form, $form_state, $form_id) {
+
+  // Node forms.
+  if (preg_match('/_node_form$/', $form_id)) {
+    $form['#attributes']['enctype'] = 'multipart/form-data';
+  }
+}
+
+/*
+Themes for edit layer
+*/
+
+function theme_fileversion_widget_item($element) {
+  $element['upload']['#theme'] = 'fileversion_widget_file';
+
+  $output = '';
+  $output .= '<div class="filefield-element clear-block">';
+  $output .= '<div class="widget-edit">';
+  $output .=  drupal_render($element);
+  $output .= '</div>';
+  $output .= '</div>';
+
+  return $output;
+}
+
+
+/**
+ * Custom theme function for FileField upload elements.
+ *
+ * This function allows us to put the "Upload" button immediately after the
+ * file upload field by respecting the #field_suffix property.
+ */
+function theme_fileversion_widget_file($element) {
+  
+	drupal_add_js(drupal_get_path('module', 'fileversion') .'/expand_collapse.js');
+	drupal_add_css(drupal_get_path('module', 'fileversion').'/fileversion_style.css');
+	
+	$output = '';
+
+  $output .= '<div class="fileversion-upload clear-block">';
+  if (isset($element['#field_prefix'])) {
+    $output .= $element['#field_prefix'];
+  }
+
+  _form_set_class($element, array('form-file'));
+  $output .= '<input type="file" name="'. $element['#name'] .'"'. ($element['#attributes'] ? ' '. drupal_attributes($element['#attributes']) : '') .' id="'. $element['#id'] .'" size="'. $element['#size'] ."\" />\n";
+  
+  if (isset($element['#field_suffix'])) {
+    $output .= $element['#field_suffix'];
+  }
+
+  $output .= '</div>';
+  $output .= '<a href="#" class="toggle-version-history"><b>Prev Versions</b></a>'.theme('fileversion_fileversionList',$element['#default_value']);
+
+  return theme('form_element', $element, $output);
+}

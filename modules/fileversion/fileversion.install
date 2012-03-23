@@ -1,0 +1,73 @@
+<?php
+// $Id$
+// Notify CCK when this module is enabled, disabled, installed, and uninstalled
+// so CCK can do any necessary preparation or cleanup.
+
+function fileversion_schema() {
+$schema['fileversionList'] = array(
+    'description' => t('The version table for files.'),
+    'fields' => array(
+      'sno' => array(
+        'description' => t('The primary identifier for a node.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'fid' => array(
+        'description' => t('Drupal Identifier of the file.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0),
+      'vid' => array(
+        'description' => t('Instance identifier of the file'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0),
+      ),
+    
+    'primary key' => array('sno'),
+    );
+return $schema;
+}
+
+/**
+ * @file
+ * Implementation of hook_install().
+ */
+function fileversion_install() {
+	 // Create my tables.
+	drupal_install_schema('fileversion');
+  drupal_load('module', 'content');
+  content_notify('install', 'fileversion');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function fileversion_uninstall() {
+	 // Drop my tables.
+  drupal_uninstall_schema('fileversion');
+  drupal_load('module', 'content');
+  content_notify('uninstall', 'fileversion');
+}
+
+/**
+ * Implementation of hook_enable().
+ *
+ * Notify content module when this module is enabled.
+ */
+function fileversion_enable() {
+  drupal_load('module', 'content');
+  content_notify('enable', 'fileversion');
+}
+
+/**
+ * Implementation of hook_disable().
+ *
+ * Notify content module when this module is disabled.
+ */
+function fileversion_disable() {
+  drupal_load('module', 'content');
+  content_notify('disable', 'fileversion');
+}
