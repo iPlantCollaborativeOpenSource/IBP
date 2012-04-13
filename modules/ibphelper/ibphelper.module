@@ -342,6 +342,10 @@ info;
 				$form['taxonomy'][$vid]['#required'] = 1;
 			}
 		}
+	} else if ($form_id == 'story_node_form') {
+		if ($vid = variable_get('clade_vocabulary', 0)) {
+			$form['taxonomy'][$vid]['#required'] = 0;
+		}
 //	} else if ($form_id == 'profile_node_form') {
 	} else if ($form_id == 'crop_homepage_node_form') {
 		if ($clade_id = $_GET['clades']) {
@@ -365,6 +369,18 @@ function ibphelper_clade_page_node_form_after_build($form, &$form_state) {
 	}
 	return $form;
 }
+
+function ibphelper_form_filefield_track_download_file_form_alter(&$form, &$form_state) {
+	$dest = array('destination' => $form['#redirect']);
+	// highjack the form
+	$form = array();
+	$form['message'] = array(
+		'#value' => t('Please !login or !register in order to download this file.', array(
+			'!login' => l(t('Login'), 'user/login', array('query' => $dest)),
+			'!register' => l(t('Register'), 'user/register', array('query' => $dest))
+		))
+	);
+} 
 
 // function ibphelper_link_alter(&$links, $node, $comment = NULL) {
 // }
@@ -865,4 +881,10 @@ function ibphelper_crop_publications($clade) {
 	}
 	$output .= $view->execute_display('default', array($clade->tid));
 	return $output;
+}
+
+function ibphelper_menu_link_alter(&$item, $menu) {
+	if ($item['link_title'] === 'Query interface') {
+		error_log(print_r($item,1));
+	}
 }
