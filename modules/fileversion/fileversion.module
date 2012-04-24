@@ -13,6 +13,23 @@
 // DEFINING A FIELD
 //==========================================//
 
+function fileversion_menu() {
+	return array(
+		'fileversion/delete/%node/%' => array(
+			'title' => 'Delete all versions',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('fileversion_delete_all_versions_confirm',2,3),
+			'access arguments' => array('delete',2)
+		),
+		'fileversion/deleteversion/%node/%' => array(
+			'title' => 'Delete this version',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('fileversion_delete_this_version_confirm',2,3),
+			'access arguments' => array('delete',2)
+		),
+	);
+}
+
 /**
  * Implementation of hook_field_info().
  */
@@ -182,7 +199,7 @@ function fileversion_token_values($type, $object = NULL) {
  * Implementation of hook_theme().
  */
 function fileversion_theme() {
-//drupal_set_message("Inside&&& fileversion_theme");
+
   return array(
     // Themes for the formatters.
     'fileversion_formatter_default' => array(
@@ -222,7 +239,6 @@ function fileversion_theme() {
  * 
  */
 function fileversion_field_formatter_info() {
-	//drupal_set_message("Inside&&& fileversion_field_formatter_info");
   return array(
     // The machine name of the formatter.
     'default' => array(
@@ -260,20 +276,15 @@ function fileversion_field_formatter_info() {
  * 
  */
 function theme_fileversion_formatter_default($element) {
-
-	  $file = field_file_load($element['#item']['safe']);
 	  $field = content_fields($element['#field_name']);
-	  $output = theme('fileversion_item', $file, $field);
+	  $output = theme('fileversion_item',$element['#item']['safe'],$element['#node']->nid);
  	  return $output;
 }
 
-function theme_fileversion_item($file, $field) {
-  if (fileversion_file_listed($file, $field)) {
-	    return theme('fileversion_file', $file);
-  }
+function theme_fileversion_item($vid,$nid) {
+	    return theme('fileversion_file',$vid,$nid);
   return '';
 }
-
 
 /**
  * Return whether a file should be listed when viewing the node.
@@ -283,7 +294,7 @@ function theme_fileversion_item($file, $field) {
  * @param $field
  *   A CCK field instance array.
  */
-function fileversion_file_listed($file, $field) {
+function fileversion_file_listed($fid, $field) {
   if (!empty($field['list_field'])) {
     return !empty($file['list']);
   }
@@ -293,13 +304,20 @@ function fileversion_file_listed($file, $field) {
 /**
  * Theme function for the 'generic' single file formatter.
  */
-function theme_fileversion_file($file) {
+function theme_fileversion_file($vid,$nid) {
 	drupal_add_js(drupal_get_path('module', 'fileversion') .'/expand_collapse.js');
 	drupal_add_css(drupal_get_path('module', 'fileversion').'/fileversion_style.css');
+	$result = db_query("select max(fid) as max_fid from {fileversionList} where vid=".(int)$vid);
+	while ($record = db_fetch_array($result)) {
+		$fid=$record['max_fid'];
+	}
+	
+	$file=field_file_load($fid);
   // Views may call this function with a NULL value, return an empty string.
 	  if (empty($file['fid'])) {
 	    return '';
 	  }
+
   $path = $file['filepath'];
   $url = file_create_url($path);
   // Set options as per anchor format described at
@@ -315,23 +333,14 @@ function theme_fileversion_file($file) {
   // Use the description as the link text if available.
   //if (empty($file['data']['description'])) {
     $link_text = $file['filename'];
-
-	return '<div class="fileversion-file">'. l($link_text, $url, $options) .'</div>'.'<a href="#" class="toggle-version-history"><b>Prev Versions</b></a>'.theme('fileversion_fileversionList',$file['fid']);
+	return '<div class="fileversion-file">'. l($link_text, $url, $options) .'</div>'.'<a href="#" class="toggle-version-history"><b>Previous Versions</b></a>'.theme('fileversion_fileversionList',$vid,$nid,1);
 }
 
-function theme_fileversion_fileversionList($fid)
+function theme_fileversion_fileversionList($vid,$nid,$view)
 {
-	if(empty($fid))
-		return '';
-
-	$result = db_query("select vid from {fileversionList} where fid=".$fid);
-	while ($record = db_fetch_array($result)) {
-		$vid = $record['vid'];
-	}
-			
+	$rows = array();			
+	if(!empty($vid)){
 	$result = db_query("select fid from {fileversionList} where vid=".$vid);
-			
-	$rows = array();
 	while ($record = db_fetch_array($result)) {
 	$vfile=field_file_load($record['fid']);
 	$path = $vfile['filepath'];
@@ -343,15 +352,20 @@ function theme_fileversion_fileversionList($fid)
 	);
 
 	$link_text = $vfile['filename'];
-  
 	$user = user_load($vfile['uid']);
 	$ts = $vfile['timestamp'];
+
+$link ='fileversion/deleteversion/'.$nid.'/'.$vfile['fid'];
+$delete = l("Delete", $link);
+	if($view==0){
+	$rows[] = array(l($link_text, $url, $options), theme('username', $user), format_date($ts, 'medium'),$delete);
+	}else{
 	$rows[] = array(l($link_text, $url, $options), theme('username', $user), format_date($ts, 'medium'));
 	}
-	
+	}
+	}
 	$markup='<div class="fileversion-version-history" >'.theme('table', null, $rows).'</div>';
 	return $markup;
-	
 }
 
 
@@ -359,7 +373,6 @@ function theme_fileversion_fileversionList($fid)
  * Theme function for 'plain' fileversion field formatter.
  */
 function theme_fileversion_formatter_plain($element) {
-	//drupal_set_message("Inside&&& theme_fileversion_formatter_plain");
   return strip_tags($element['#item']['safe']);
 }
 
@@ -466,41 +479,74 @@ function fileversion_widget_settings($op, $widget) {
 function fileversion_widget(&$form, &$form_state, $field, $items, $delta = 0) {
 
   $form['#attributes']['enctype'] = 'multipart/form-data';
-  $item = array('value' => 0);
   $element = array(
   	'#title' => $field['widget']['label'],
     '#type' => $field['widget']['type'],
     '#default_value' => $items[$delta],
     '#attributes' => array('class' => 'fileversion'),
   );
-  
   return $element;
 }
 
 function fileversion_widget_process($element, $edit, &$form_state, $form) {
-
  $element['#theme'] = 'fileversion_widget_item';
  $element['upload'] = array(
     '#name' => 'files[' . implode('_', $element['#array_parents']) . ']',
     '#type' => 'file',
-    //'#description' => implode('<br />', $desc),
     '#size' => 22,
     '#access' => empty($item['value']),
     '#default_value' => $element['#value']['value'],
     );
-    	 
+    
+    if(isset($element['#default_value']['value'])){
+		$result = db_query("SELECT count(fid) as count FROM {fileversionList} where vid=".$element['#default_value']['value']);
+				while ($record = db_fetch_array($result)) {
+					$count=$record['count'];
+				}
+				}else{
+					$count=0;
+				}
+				
+				if($count!=0)
+				{
+
+  $element['fileversion_remove'] = array(
+    // With default CCK edit forms, $element['#parents'] is array($element['#field_name'], $element['#delta']).
+    // However, if some module (for example, flexifield) places our widget deeper in the tree, we want to
+    // use that information in constructing the button name.
+    '#name' => implode('_', $element['#parents']) .'_fileversion_remove',
+    '#type' => 'submit',
+    '#value' => t('Remove all versions'),
+    '#field_name' => $element['#field_name'],
+    '#delta' => $element['#delta'],
+    '#weight' => 101,
+    '#post' => $element['#post'],
+  );    	 
+  
+  // Because the output of this field changes depending on the button clicked,
+  // we need to ask FAPI immediately if the remove button was clicked.
+  // It's not good that we call this private function, but
+  // $form_state['clicked_button'] is only available after this #process
+  // callback is finished.
+
+  if (_form_button_was_clicked($element['fileversion_remove'])) {
+    // Delete the file if it is currently unused. Note that field_file_delete()
+    // does a reference check in addition to our basic status check.
+    if (isset($edit['value'])) {
+    drupal_goto('fileversion/delete/'.$form_state['values']['nid'].'/'.$edit['value']);
+    }
+  }
+}
+  
+  $element['#node']=$form_state['values']['nid'];
 // Set the FID.
   $element['value'] = array(
     '#type' => 'hidden',
     '#value' => $element['#value']['value'],
-    '#markup' => theme('fileversion_fileversionList',$element['#value']['value']),
   );
-  
-  $element['#default_value']['value']=$element['#value']['value'];
   
   if ($item['value'] != 0) {
   $element['fileversions'] = array(
-		
 		'#markup' => theme('theme_fileversion_widget_item',$element),
 	); 
   }
@@ -510,6 +556,78 @@ function fileversion_widget_process($element, $edit, &$form_state, $form) {
     $_SESSION['filefield_access'][] = $item['value'];
   }
 	return $element;
+}
+
+function fileversion_delete_all_versions_confirm($form_state, $node, $groupversion_id) {
+	$form['groupversion_id'] = array(
+		'#type' => 'value',
+		'#value' => $groupversion_id
+	);
+	$form['nid'] = array(
+		'#type' => 'value',
+		'#value' => $node->nid
+	);
+	
+	return confirm_form($form, 
+				t('Are you sure you want to delete all versions of this file?'), 
+				'node/'.$node->nid.'/edit',
+				t('This action cannot be undone.'), 
+				t('Delete all versions'),
+				t('Cancel')
+			); 
+}
+
+function fileversion_delete_all_versions_confirm_submit($form, &$form_state) {
+	// do delete here...
+	removeAllFileVersions($form['groupversion_id']['#value']);
+	$form_state['redirect'] = 'node/'.$form_state['values']['nid'].'/edit';
+}
+
+function fileversion_delete_this_version_confirm($form_state, $node, $fileversion_id) {
+	$form['fileversion_id'] = array(
+		'#type' => 'value',
+		'#value' => $fileversion_id
+	);
+	$form['nid'] = array(
+		'#type' => 'value',
+		'#value' => $node->nid
+	);
+	
+	return confirm_form($form, 
+				t('Are you sure you want to delete this version ?'), 
+				'node/'.$node->nid.'/edit',
+				t('This action cannot be undone.'), 
+				t('Delete this version'),
+				t('Cancel')
+			); 
+}
+
+
+function fileversion_delete_this_version_confirm_submit($form, &$form_state) {
+	// do delete here...
+	removeThisFileVersion($form['fileversion_id']['#value']);
+	$form_state['redirect'] = 'node/'.$form_state['values']['nid'].'/edit';
+}
+
+function removeThisFileVersion($fid){
+
+	     $removed_file = field_file_load($fid);
+          if ($removed_file['status'] == 0) {
+	     		   field_file_delete($removed_file);
+					db_query('DELETE FROM {fileversionList} WHERE fid = %d', $fid);
+			}
+}
+
+function removeAllFileVersions($vid)
+{
+	$result = db_query("select fid from {fileversionList} where vid=".$vid);
+	while ($record = db_fetch_array($result)) {
+	     $removed_file = field_file_load($record['fid']);
+	           if ($removed_file['status'] == 0) {
+	     		   field_file_delete($removed_file);
+					db_query('DELETE FROM {fileversionList} WHERE fid = %d', $record['fid']);
+		}
+	}
 }
 
 /**
@@ -561,50 +679,33 @@ function fileversion_save_upload($element) {
     form_set_error($upload_name, t('The file in the @field field was unable to be uploaded.', array('@field' => $element['#title'])));
     return 0;
   }
-  
   return $file['fid'];
 }
 
 function fileversion_widget_value($element, $edit = FALSE) {
-  
 	if ($edit) {
 		$item = $edit;
 		$field = content_fields($element['#field_name'], $element['#type_name']);
 
-		if(! empty($_FILES[files][name][$element['#field_name'].'_'.$element['#delta']])){
+		if(! empty($_FILES[files][name][$element['#field_name'].'_'.$element['#delta']]) && isset($edit['value'])){
 			// Uploads take priority over value of fid text field.
-			if ($fid = fileversion_save_upload($element)) {
-				$item['value'] = $fid;
-			}
-
-			$element['value_fid']=$item['value'];
 			$objFile = new stdClass();
-			$objFile->fid = $item['value'];
-    
+			if ($fid = fileversion_save_upload($element)) {
+			$objFile->fid = $fid;
+			}
 			if(isset($element['#default_value']['value'])){
-			//query to find the original fid
-    
-			try{
 			
-				$result = db_query("SELECT vid FROM {fileversionList} where fid=".$element['#default_value']['value']);
-			
-				while ($record = db_fetch_array($result)) {
-				$objFile->vid = $record['vid'];			
-				}
-			}catch(Exception $e)
-			{
-				drupal_set_message($e);
-			}	
-    
+				$objFile->vid = $item['value'];
     }
     else{
-    		  $objFile->vid = $item['value'];
+    		  $objFile->vid = $fid;
+	  		$item['value'] = $objFile->vid;
     }
     
-    drupal_write_record('fileversionList', $objFile);
+	    drupal_write_record('fileversionList', $objFile);
 
     // Load file if the FID has changed so that it can be saved by CCK.
-    $file = isset($item['value']) ? field_file_load($item['value']) : NULL;
+    $file = isset($fid) ? field_file_load($fid) : NULL;
 
     // If the file entry doesn't exist, don't save anything.
     if (empty($file)) {
@@ -615,30 +716,8 @@ function fileversion_widget_value($element, $edit = FALSE) {
     	}
 	else
 	{
-		 $file = field_file_load($element['#default_value']['value']);
-		 
-		if(isset($element['#default_value']['value'])){
-			//query database
-			try{
-			$result = db_query("SELECT vid FROM {fileversionList} where fid=".$element['#default_value']['value']);
-			while ($record = db_fetch_array($result)) {
-				$group_fid = $record['vid'];
-			}
-			
-			$result = db_query("select fid from {fileversionList} where vid=".$group_fid);
-			//drupal_set_message("select fid from {fileversionList} where vid=".$group_fid);
-			while ($record = db_fetch_array($result)) {
-				//drupal_set_message("hello".$record['fid']);
-			}
-			}catch(Exception $e)
-			{
-				//drupal_set_message($e);
-			}
-			
-		}
 		$item = $element['#default_value'];
 	}
-
 	return $item;
 }
 
@@ -665,14 +744,13 @@ Themes for edit layer
 
 function theme_fileversion_widget_item($element) {
   $element['upload']['#theme'] = 'fileversion_widget_file';
-
+  $element['upload']['#nid']=$element['#node'];
   $output = '';
   $output .= '<div class="filefield-element clear-block">';
   $output .= '<div class="widget-edit">';
   $output .=  drupal_render($element);
   $output .= '</div>';
   $output .= '</div>';
-
   return $output;
 }
 
@@ -703,7 +781,19 @@ function theme_fileversion_widget_file($element) {
   }
 
   $output .= '</div>';
-  $output .= '<a href="#" class="toggle-version-history"><b>Prev Versions</b></a>'.theme('fileversion_fileversionList',$element['#default_value']);
 
+if($element['#default_value']!=" " && ((int)$element['#default_value']!=0)){
+		$result = db_query("SELECT count(fid) as count FROM {fileversionList} where vid=".$element['#default_value']);
+				while ($record = db_fetch_array($result)) {
+					$count=$record['count'];
+				}
+		}else{
+		$count=0;
+		}
+
+				if($count!=0)
+				{
+  $output .= '<a href="#" class="toggle-version-history"><b>Previous Versions</b></a>'.theme('fileversion_fileversionList',$element['#default_value'],$element['#nid'],0);
+  }
   return theme('form_element', $element, $output);
 }
