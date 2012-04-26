@@ -19,12 +19,14 @@ function fileversion_menu() {
 			'title' => 'Delete all versions',
 			'page callback' => 'drupal_get_form',
 			'page arguments' => array('fileversion_delete_all_versions_confirm',2,3),
+			'access callback' => 'node_access',
 			'access arguments' => array('delete',2)
 		),
 		'fileversion/deleteversion/%node/%' => array(
 			'title' => 'Delete this version',
 			'page callback' => 'drupal_get_form',
 			'page arguments' => array('fileversion_delete_this_version_confirm',2,3),
+			'access callback' => 'node_access',
 			'access arguments' => array('delete',2)
 		),
 	);
