@@ -243,7 +243,7 @@
 			</div></div>
 		<?php endif; ?>
 		
-		<a href="#" id="back-to-top">Back to top</a>
+		<a href="#" id="back-to-top"><?php echo t('Back to top'); ?></a>
 
   </div></div><!-- /#page, /#page-wrapper -->
 
