@@ -19,6 +19,10 @@
 				clearTimeout(mylinks_trg._t);
 				mylinks_trg._t = setTimeout(hide_my_links, 500);
 			});
+			
+			$('.my-links > a').attr('href', '#').bind('click', function() {
+				return false;
+			});
 		}
 	);
 })(jQuery);

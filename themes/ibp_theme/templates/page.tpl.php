@@ -161,7 +161,16 @@
 			
 	<?php if ($topbar || $search_box) : ?>
 		<div id="top-bar">
-			<div id="loginlinks"><?php print theme('loginlinks', $user); ?></div>
+			<?php if ($logged_in) : ?>
+				<div class="loginstatus">
+					<span><?php print t('You are logged in as !name', array('!name' => '<strong>'.$user->name.'</strong>')); ?></span>
+				</div>
+			<?php endif; ?>
+			
+			<?php if ($topbar): ?>
+				<div id="topbar"><?php print $topbar; ?></div>
+			<?php endif; ?>
+			
 			<?php if ($search_box): ?>
 				<div id="search-box"><?php print $search_box; ?></div>
 			<?php endif; ?>
