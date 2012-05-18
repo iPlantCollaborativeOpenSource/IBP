@@ -19,7 +19,7 @@
 	-o-border-radius: 0 0 3px 3px;
 	-webkit-border-radius: 0 0 3px 3px;
 	border-radius: 0 0 3px 3px;
-	padding: 0 12px 1px;
+	padding: 0 0 1px;
 }
 
 #top-bar > div {
@@ -45,6 +45,7 @@
 	display: block;
 	line-height: 18px;
 	padding: 12px 12px 12px 16px;
+	margin: 0 0 0 12px;
 }
 
 #top-bar .loginstatus span strong {
@@ -159,7 +160,7 @@
 }
 
 #top-bar #search-box {
-	padding: 8px 0px 8px 12px;
+	padding: 8px 12px;
 }
 
 #top-bar #search-box .form-item {
