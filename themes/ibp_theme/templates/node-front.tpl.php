@@ -100,7 +100,12 @@
 									$profile = content_profile_load('profile', $user->uid);
 								}
 							?>
-							<p>Welcome, <?php print ($profile ? check_plain($profile->field_profile_first_name[0]['value'] . ' ' . $profile->field_profile_last_name[0]['value']) : $user->name); ?>!</p>
+							<p>
+								<?php
+									$name = $profile ? check_plain($profile->field_profile_first_name[0]['value'] . ' ' . $profile->field_profile_last_name[0]['value']) : $user->name;
+									echo t('Welcome, @name!', array('@name' => $name));
+								?>
+							</p>
 							<?php print l(t('Go to My Communities'), 'community', array('attributes' => array('class' => 'button'))); ?>
 						<?php } else { ?>
 							<p>
