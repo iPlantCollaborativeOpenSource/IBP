@@ -23,6 +23,7 @@ projects[] = "cck"
 projects[] = "content_profile"
 projects[] = "content_taxonomy"
 projects[] = "countries_api"
+projects[] = "css_names"
 projects[] = "date"
 projects[] = "drupalchat"
 projects[] = "ed_readmore"
@@ -152,3 +153,7 @@ libraries[jquery_autocomplete][download][type] = git
 libraries[jquery_autocomplete][download][url] = https://github.com/agarzola/jQueryAutocompletePlugin.git
 libraries[jquery_autocomplete][type] = library
 
+; yui for drupalchat
+libraries[yui][download][type] = get
+libraries[yui][download][url] = http://yui.zenfs.com/releases/yui3/yui_3.5.1.zip
+libraries[yui][type] = library

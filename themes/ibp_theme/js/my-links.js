@@ -1,13 +1,13 @@
 (function($) {
 	$(document).ready(
 		function() {
-			var mylinks_trg = $('#my-links');
+			var mylinks_trg = $('.my-links');
 			function show_my_links() {
-				$('#my-links .item-list').slideDown('fast');
+				$('.my-links ul').slideDown('fast');
 				mylinks_trg.addClass('my-links-visible');
 			}
 			function hide_my_links() {
-				$('#my-links .item-list').slideUp('fast', function(){mylinks_trg.removeClass('my-links-visible');});
+				$('.my-links ul').slideUp('fast', function(){mylinks_trg.removeClass('my-links-visible');});
 			}
 			
 			mylinks_trg.bind('mouseenter', function() {

@@ -76,6 +76,7 @@ scripts[] = js/jquery.simplemodal.1.4.1.min.js
   ; To add a new region, copy Zen's page.tpl.php to your sub-theme's directory,
   ; add a line line to this file, and then add the new variable to your
   ; page.tpl.php template.
+regions[topbar]  = Top bar
 regions[sidebar_first]  = First sidebar
 regions[sidebar_second] = Second sidebar
 regions[navigation]     = Navigation bar

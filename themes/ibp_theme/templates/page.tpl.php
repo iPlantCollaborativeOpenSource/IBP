@@ -115,13 +115,15 @@
   <?php print $head; ?>
   <?php print $styles; ?>
   <?php print $scripts; ?>
-  <script type="text/javascript">
-    YUI_config = {
-        filter:       "min",
-        root:         "<?php print url('sites/all/libraries/yui/build') .'/'; ?>",
-        base:         "<?php print url('sites/all/libraries/yui/build') .'/'; ?>"
-    };
-  </script>
+  <?php if (module_exists('drupalchat')) : ?>
+	  <script type="text/javascript">
+		YUI_config = {
+			filter:       "min",
+			root:         "<?php print base_path().'sites/all/libraries/yui/build'.'/'; ?>",
+			base:         "<?php print base_path().'sites/all/libraries/yui/build'.'/'; ?>"
+		};
+	  </script>
+  <?php endif; ?>
 </head>
 <body class="<?php print $classes; ?>">
 
@@ -157,12 +159,14 @@
         </div><!-- /#name-and-slogan -->
       <?php endif; ?>
 			
-			<div id="top-bar">
-				<div id="loginlinks"><?php print theme('loginlinks', $user); ?></div>
-				<?php if ($search_box): ?>
-					<div id="search-box"><?php print $search_box; ?></div>
-				<?php endif; ?>
-			</div>
+	<?php if ($topbar || $search_box) : ?>
+		<div id="top-bar">
+			<div id="loginlinks"><?php print theme('loginlinks', $user); ?></div>
+			<?php if ($search_box): ?>
+				<div id="search-box"><?php print $search_box; ?></div>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
 
       <?php print $header; ?>
       

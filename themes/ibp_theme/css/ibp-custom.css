@@ -2,27 +2,6 @@
 	text-shadow: -1px -1px 1px #333333;
 	font-size: 12px;
 	height: 42px;
-	background-color: #555555;
-	border-color: #141414;
-	border-style: solid;
-	border-width: 0px 1px 1px;
-	-moz-border-radius: 0 0 3px 3px;
-	-o-border-radius: 0 0 3px 3px;
-	-webkit-border-radius: 0 0 3px 3px;
-	border-radius: 0 0 3px 3px;
-	padding: 0 1px 1px;
-}
-
-#top-bar ul,
-#top-bar ul li {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-#top-bar ul.loginlinks > li {
-	float: left;
-	height: 42px;
 	background-color: #505050;
 	background-image: url(../images/top-bar-bg.png);
 	background-repeat: repeat-x;
@@ -33,72 +12,88 @@
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555), to(#444));
 	background-image: -webkit-linear-gradient(#555, #444);
 	background-image: linear-gradient(#555, #444);
-	border-color: #292929 #292929 #292929 #606060;
+	border-color: #141414;
 	border-style: solid;
-	border-width: 0 1px 0 1px;
+	border-width: 0px 1px 1px;
+	-moz-border-radius: 0 0 3px 3px;
+	-o-border-radius: 0 0 3px 3px;
+	-webkit-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+	padding: 0 12px 1px;
 }
 
-#top-bar ul.loginlinks > li.first {
+#top-bar > div {
+	float: left;
+	border-color: #292929 #292929 #292929 #606060;
+	border-style: solid;
+	border-width: 0 1px;
+}
+
+#top-bar > div:first-child {
 	border-width: 0 1px 0 0;
 }
 
-#top-bar .loginstatus {
+#top-bar > div:last-child {
+	border-width: 0 0 0 1px;
+}
+
+#top-bar .loginstatus span {
 	color: #919191;
-	padding: 12px 12px 12px 16px;
 	background-image: url(../images/lock.png);
 	background-repeat: no-repeat;
 	background-position: left center;
 	display: block;
 	line-height: 18px;
-	margin: 0 6px 0 18px
+	padding: 12px 12px 12px 16px;
 }
 
-#top-bar .login-link {
-	padding: 12px 18px;
-	display: block;
-	line-height: 18px;
-}
-
-#top-bar .loginstatus strong {
+#top-bar .loginstatus span strong {
 	color: #efefef;
 }
 
-#my-links .item-list {
-	padding: 0;
+#top-bar #topbar {
+}
+
+#topbar #block-menu-menu-my-links {
 	margin: 0;
-}
-
-#my-links h3 {
-	display: block;
-	font-weight: normal;
-	font-size: 12px;
-	color: #00a3f7;
-	cursor: pointer;
-	padding: 6px 16px 12px;
-	margin: 6px 0 0 0;
-	line-height: 18px;
-}
-
-#my-links h3:after {
-	content: url(../images/arrow_down_blue.png);
 	position: relative;
-	left: 6px;
 }
 
-#my-links .item-list {
-	display: none;
+#top-bar #block-menu-menu-my-links ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#top-bar #block-menu-menu-my-links ul li {
+	float: left;
+	display: block;
+	border-color: #292929 #292929 #292929 #606060;
+	border-style: solid;
+	border-width: 0 1px;
+}
+
+#top-bar #block-menu-menu-my-links ul li:first-child {
+	border-width: 0 1px 0 0;
+}
+
+#top-bar #block-menu-menu-my-links ul li:last-child {
+	border-width: 0 0 0 1px;
+}
+
+#top-bar #block-menu-menu-my-links ul li a {
+	display: block;
+	line-height: 18px;
+	padding: 12px;
+	position: relative;
+	white-space: nowrap;
+}
+
+#top-bar #block-menu-menu-my-links ul li ul {
 	position: absolute;
 	top: 44px;
-	z-index: 100000;
-	overflow: hidden;
-	padding: 0 6px 6px;
-	margin: 0 -6px -6px;
-}
-
-#my-links .item-list ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+	z-index: 10;
+	display: none;
 	background-color: #5a5a5a;
 	background-image: url(../images/my-links-bg.png);
 	background-repeat: repeat-x;
@@ -108,32 +103,46 @@
 	background-image: -o-linear-gradient(#494949, #5a5a5a);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#494949), to(#5a5a5a));
 	background-image: -webkit-linear-gradient(#494949, #5a5a5a);
-
-
 	background-image: linear-gradient(#494949, #5a5a5a);
-	-moz-box-shadow: 1px 1px 1px #000000;
-	-webkit-box-shadow: 1px 1px 1px #000000;
-	box-shadow: 0px 0px 6px #000000;
+	
+	-moz-box-shadow: 1px 1px 6px #000000;
+	-webkit-box-shadow: 1px 1px 6px #000000;
+	box-shadow: 1px 1px 6px #000000;
 }
 
-#my-links .item-list ul li {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	text-align: left;
+#top-bar #block-menu-menu-my-links ul li ul li {
+	float: none;
+	border: none;
 }
 
-#my-links .item-list ul li a {
-	display: block;
+#top-bar #block-menu-menu-my-links ul li ul li a {
+	float: none;
 	padding: 3px 16px;
+	line-height: inherit;
 }
 
-#my-links .item-list ul li a:hover {
+#top-bar #block-menu-menu-my-links ul li ul li a:hover {
 	background-color: #6a6a6a;
 }
 
-#my-links.my-links-visible h3 {
-	padding: 6px 16px 14px;
+#top-bar #block-menu-menu-my-links ul li ul li a:hover {
+	background-color: #6a6a6a;
+}
+
+#top-bar #block-menu-menu-my-links .my-links > a {
+	z-index: 11;
+}
+
+#top-bar #block-menu-menu-my-links .my-links > a:after {
+	content: url(../images/arrow_down_blue.png);
+	position: relative;
+	left: 6px;
+}
+
+#top-bar #block-menu-menu-my-links .my-links.my-links-visible > a {
+	top: 2px;
+	margin: 4px 0 0;
+	padding: 6px 12px 14px;
 	background-color: #5a5a5a;
 	background-image: url(../images/my-links-bg.png);
 	background-repeat: repeat-x;
@@ -143,40 +152,22 @@
 	background-image: -o-linear-gradient(#353535, #494949);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#353535), to(#494949));
 	background-image: -webkit-linear-gradient(#353535, #494949);
-	background-image: linear-gradient(#353535, #494949);
-	
-	-moz-box-shadow: 1px 1px 1px #000000;
-	-webkit-box-shadow: 1px 1px 1px #000000;
-	box-shadow: 1px 1px 1px #000000;
-	
+	background-image: linear-gradient(#353535, #494949);	
 	-moz-border-radius: 3px 3px 0 0;
 	-webkit-border-radius: 3px 3px 0 0;
 	border-radius: 3px 3px 0 0;
 }
 
-#search-box {
-	background-color: #505050;
-	background-image: url(../images/top-bar-bg.png);
-	background-repeat: repeat-x;
-	background-position: bottom center;
-	background-image: -ms-linear-gradient(#555, #444);
-	background-image: -moz-linear-gradient(#555, #444);
-	background-image: -o-linear-gradient(#555, #444);
-	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#555), to(#444));
-	background-image: -webkit-linear-gradient(#555, #444);
-	background-image: linear-gradient(#555, #444);
-	padding: 8px 12px;
-	border-color: #292929 #292929 #292929 #606060;
-	border-style: solid;
-	border-width: 0 0 0 1px;
+#top-bar #search-box {
+	padding: 8px 0px 8px 12px;
 }
 
-#search-box .form-item {
+#top-bar #search-box .form-item {
 	margin: 0;
 	padding: 0;
 }
 
-#search-box input[type=text] {
+#top-bar #search-box input[type=text] {
 	border: 0;
 	margin: 0;
 	background: #ffffff;
@@ -192,12 +183,12 @@
 	border-radius: 3px 0 0 3px;
 }
 
-#search-box input.default {
+#top-bar #search-box input.default {
 	color: #999999;
 	font-style: italic;
 }
 
-#search-box input[type=submit] {
+#top-bar #search-box input[type=submit] {
 	border: 0;
 	margin: 0;
 	background: white;
