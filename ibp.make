@@ -71,6 +71,17 @@ projects[] = "views_or"
 projects[] = "webform"
 projects[] = "xmlsitemap"
 
+; Translation modules
+projects[] = "i18n"
+projects[] = "i18nmenu_node"
+projects[] = "i18nviews"
+projects[] = "l10n_update"
+projects[] = "lang_dropdown"
+projects[] = "languageicons"
+projects[] = "potx"
+projects[] = "translation_overview"
+projects[] = "translation_table"
+
 ; Themes
 
 projects[] = zen

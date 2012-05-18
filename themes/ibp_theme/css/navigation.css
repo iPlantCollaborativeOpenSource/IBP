@@ -43,7 +43,8 @@ li a.active {
 .block-menu_block {
 }
 
-#navigation #block-menu-primary-links {
+#navigation #block-menu-primary-links,
+#navigation #block-i18nmenu_node-menu--primary-links {
 /*
 	float: left;
   width: 100%;
@@ -52,14 +53,16 @@ li a.active {
   margin-bottom: -1px;
 }
 
-#navigation #block-menu-primary-links ul /* Primary and secondary links */ {
+#navigation #block-menu-primary-links ul,
+#navigation #block-i18nmenu_node-menu--primary-links ul /* Primary and secondary links */ {
   margin: 0;
   padding: 0 5px 0 0;
   text-align: right;
   list-style: none;
 }
 
-#navigation #block-menu-primary-links li /* A simple method to get navigation links to appear in one line. */ {
+#navigation #block-menu-primary-links li,
+#navigation #block-i18nmenu_node-menu--primary-links li /* A simple method to get navigation links to appear in one line. */ {
   display: inline-block;
   height: 45px;
   padding: 0px 1px; /* LTR */
@@ -74,7 +77,9 @@ li a.active {
 }
 
 #navigation #block-menu-primary-links li.active-trail,
-#navigation #block-menu-primary-links li:hover {
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail,
+#navigation #block-menu-primary-links li:hover,
+#navigation #block-i18nmenu_node-menu--primary-links li:hover {
 	border-color: #141414;
 	background-color: #636363;
 	-moz-border-radius: 3px 3px 0 0;
@@ -83,7 +88,9 @@ li a.active {
 }
 
 #navigation #block-menu-primary-links li a,
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a {
+#navigation #block-i18nmenu_node-menu--primary-links li a,
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li a {
 	color: #00a3f7;
 	display: block;
   padding: 12px 12px 15px;
@@ -99,7 +106,10 @@ li a.active {
 
 #navigation #block-menu-primary-links li.active-trail a,
 #navigation #block-menu-primary-links li:hover a,
-#navigation #block-menu-primary-links li a:hover {
+#navigation #block-menu-primary-links li a:hover,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail a,
+#navigation #block-i18nmenu_node-menu--primary-links li:hover a,
+#navigation #block-i18nmenu_node-menu--primary-links li a:hover {
 	background-color: #505050;
 	background-image: url(../images/nav-bar-bg.png);
 	background-repeat: repeat-x;
@@ -115,30 +125,35 @@ li a.active {
 	border-radius: 3px 3px 0 0;
 }
 
-#navigation #block-menu-primary-links li.active-trail a {
+#navigation #block-menu-primary-links li.active-trail a,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail a {
 	color: #919191;
 	text-shadow: none;
 }
 
-#navigation #block-menu-primary-links li.expanded ul {
+#navigation #block-menu-primary-links li.expanded ul,
+#navigation #block-i18nmenu_node-menu--primary-links li.expanded ul {
 	display: none;
 	position: absolute;
 	left: 0;
 	padding: 0 0 0 12px;
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul {
+#navigation #block-menu-primary-links li.active-trail.expanded ul,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul {
 	display: block;
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul li {
+#navigation #block-menu-primary-links li.active-trail.expanded ul li,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li {
   margin: 6px 1px 0px 0px; /* LTR */
   height: 37px;
   background-color: transparent;
 	border: none;
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a {
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li a {
   padding: 8px 8px 12px; /* LTR */
   border-color: transparent;
 	border-style: solid;
@@ -149,7 +164,9 @@ li a.active {
 }
 
 #navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a,
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a:hover {
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a:hover,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li.active-trail a,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li a:hover {
 	background-color: #ffffff;
 	border-color: #777777;
 	-moz-border-radius: 3px 3px 0 0;
@@ -157,16 +174,19 @@ li a.active {
 	border-radius: 3px 3px 0 0;
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a {
+#navigation #block-menu-primary-links li.active-trail.expanded ul li.active-trail a,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li.active-trail a {
 	text-shadow: none;
 	color: #919191;
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul li a:hover {
+#navigation #block-menu-primary-links li.active-trail.expanded ul li a:hover,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li a:hover {
 	text-shadow: none;
 }
 
-#navigation #block-menu-primary-links li.active-trail.expanded ul li ul {
+#navigation #block-menu-primary-links li.active-trail.expanded ul li ul,
+#navigation #block-i18nmenu_node-menu--primary-links li.active-trail.expanded ul li ul {
 	display: none;
 }
 
