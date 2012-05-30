@@ -21,3 +21,65 @@
 .view .more-link a:after {
 	content: "→";
 }
+
+.view-news-stories {
+}
+
+.view-news-stories .views-row,
+.view-upcoming-events .views-row,
+.view-past-events .views-row {
+	padding: 1em 0;
+	border-bottom: 1px solid #ccc;
+}
+
+.view-news-stories .views-row:first-child,
+.view-upcoming-events .views-row:first-child,
+.view-past-events .views-row:first-child {
+	padding: 0 0 1em;
+}
+
+.view-news-stories .views-row:last-child,
+.view-upcoming-events .views-row:last-child,
+.view-past-events .views-row:last-child {
+	border-bottom: none;
+}
+
+.view-news-stories .views-row h2 a,
+.view-upcoming-events .views-row h2 a,
+.view-past-events .views-row h2 a {
+	color: #333;
+}
+
+.view-news-stories .views-row h2 a:hover,
+.view-upcoming-events .views-row h2 a:hover,
+.view-past-events .views-row h2 a:hover {
+	color: #00A3F7;
+}
+
+.view-news-stories .views-row .links {
+	display: none;
+}
+
+.view-upcoming-events {
+}
+
+.view-upcoming-events h3 a {
+	color: #333;
+}
+
+.view-upcoming-events h3 a::before {
+	content: url(../images/ical.png);
+	padding: 0 0.25em 0 0;
+}
+
+.view-upcoming-events h3 a:hover {
+	color: #00A3F7;
+}
+
+.view-upcoming-events li.views-row {
+	padding: 0.5em 0;
+}
+
+.view-upcoming-events li.views-row .views-field-title a {
+	font-weight: bold;
+}

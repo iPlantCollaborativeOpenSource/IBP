@@ -56,10 +56,8 @@
       <?php print $header; ?>
       
 			<div id="navigation">
-				<?php print $navigation; ?>
-				<div class="subnavigation"></div>
+				<br/>
 			</div><!-- /#navigation -->
-
     </div></div><!-- /.section, /#header -->
 
 		<div id="main-topper"><div class="section clearfix">

@@ -563,3 +563,7 @@ div.panel-pane div.admin-links li a:hover,
 div.view div.views-admin-links li a:hover {
 	color: #00A3F7;
 }
+
+ul.menu li.calendar {
+	width: auto;
+}
