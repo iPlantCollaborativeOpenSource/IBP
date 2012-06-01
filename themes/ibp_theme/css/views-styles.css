@@ -44,6 +44,13 @@
 	border-bottom: none;
 }
 
+.view-news-stories .views-row h2,
+.view-upcoming-events .views-row h2,
+.view-past-events .views-row h2 {
+	font-size: 1.2em;
+	line-height: 1.2em;
+}
+
 .view-news-stories .views-row h2 a,
 .view-upcoming-events .views-row h2 a,
 .view-past-events .views-row h2 a {
@@ -82,4 +89,15 @@
 
 .view-upcoming-events li.views-row .views-field-title a {
 	font-weight: bold;
+}
+
+.page-news-events .panel-2col-stacked .panel-col-first .inside {
+	padding-right: 1em;
+	margin-right: 0;
+	border-right: 1px solid #eee;
+}
+
+.page-news-events .panel-2col-stacked .panel-col-last .inside {
+	padding-left: 1em;
+	margin-left: 0;
 }
