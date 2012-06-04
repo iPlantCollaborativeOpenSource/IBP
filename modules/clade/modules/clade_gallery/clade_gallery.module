@@ -197,7 +197,6 @@ function clade_gallery_clade_page_attach_image_submit($form, &$form_state) {
 			$relationship->related_nid = $form_state['nid'];
 			drupal_write_record('clade_image_relationships', $relationship);
 		}
-// 		drupal_set_message('<pre>'.print_r($form_state['nid'], TRUE) . '</pre>');
 	}
 }
 

@@ -152,23 +152,26 @@ function clade_subscriptions_theme() {
 			'template' => 'clade_subscriptions_membership',
 			'path' => drupal_get_path('module', 'clade_subscriptions') . '/theme',
 			),
-		);
+		'clade_subscriptions_subscription_form' => array(
+			'arguments' => array('form' => array()),
+		),
+	);
 }
 
-function clade_subscriptions_form_alter(&$form, &$form_state, $form_id) {
-	global $user;
-	if ($form_id == 'notifications_subscription_form') {
-		$subscription = $form['subscription']['#value'];
-		if ($subscription->type == 'taxonomy') {
-			if ($clade = clade_get_clade($subscription->fields['tid'])) {
-				$form['info']['#title'] = t('Clade subscription');
-				$form['info']['#description'] = t('Subscribe to content in this Clade.');
-				$form['info']['#value'] = l($clade->name, "clade/{$clade->tid}");
-				unset($form['delete']);
-			}
-		}
-	}
-}
+// function clade_subscriptions_form_alter(&$form, &$form_state, $form_id) {
+// 	global $user;
+// 	if ($form_id == 'notifications_subscription_form') {
+// 		$subscription = $form['subscription']['#value'];
+// 		if ($subscription->type == 'taxonomy') {
+// 			if ($clade = clade_get_clade($subscription->fields['tid'])) {
+// 				$form['info']['#title'] = t('Clade subscription');
+// 				$form['info']['#description'] = t('Subscribe to content in this Clade.');
+// 				$form['info']['#value'] = l($clade->name, "clade/{$clade->tid}");
+// 				unset($form['delete']);
+// 			}
+// 		}
+// 	}
+// }
 
 // function clade_subscriptions_preprocess_views_view_fields__clade_members_faces(&$vars) {
 // 	drupal_add_css(drupal_get_path('module', 'clade_subscriptions') . '/css/clade_subscriptions_views.css');
@@ -312,17 +315,114 @@ function clade_subscriptions_my_membership_access($clade_id) {
 }
 
 function clade_subscriptions_preprocess_clade_subscriptions_subscriptions(&$vars) {
-	$user = $vars['user'];
-	$clade = $vars['clade'];
+ 	$user = $vars['user'];
+ 	$clade = $vars['clade'];
+ 	
+ 	$site_name = variable_get('site_name', 'Drupal');
+ 	
+ 	$vars['message'] = t(
+ 		'%Site will send you notifications when content is posted to this Clade.  You can customize which notifications you would like to receive by making your selections below.',
+ 		array('%Site' => $site_name)
+ 	);
+ 	
+ 	$vars['subscription_form'] = drupal_get_form('clade_subscriptions_subscription_form', $clade, $user);
+// 	$sub = array_pop(notifications_get_subscriptions(array('type' => 'taxonomy', 'uid' => $user->uid), array('tid' => $clade->tid), TRUE));
+// 	if ($sub) {
+// 		$vars['subscription'] = $sub;	
+// 		module_load_include('inc', 'notifications', 'notifications.pages');
+// 		$vars['subscription_form'] = drupal_get_form('notifications_subscription_form', $sub);
+// 	} else {
+// 		$vars['subscription_form'] = l(t('Start getting email notifications for this Clade'), "notifications/subscribe/$user->uid/taxonomy/tid/$clade->tid");
+// 	}
+}
+
+function clade_subscriptions_subscription_form(&$form_state, $clade, $user) {
+
+	$subs = clade_subscriptions_get_subscriptions_preferences($user->uid, $clade->tid);
+
+	$node_types = module_invoke_all('clade', 'clade node types');
+	$typeNames = node_get_types();
+
+	$form = array();
 	
-	$sub = array_pop(notifications_get_subscriptions(array('type' => 'taxonomy', 'uid' => $user->uid), array('tid' => $clade->tid), TRUE));
-	if ($sub) {
-		$vars['subscription'] = $sub;	
-		module_load_include('inc', 'notifications', 'notifications.pages');
-		$vars['subscription_form'] = drupal_get_form('notifications_subscription_form', $sub);
-	} else {
-		$vars['subscription_form'] = l(t('Start getting email notifications for this Clade'), "notifications/subscribe/$user->uid/taxonomy/tid/$clade->tid");
+	$form['clade'] = array(
+		'#type' => 'value',
+		'#value' => $clade
+	);
+	
+	$form['node_types'] = array(
+		'#tree' => TRUE,
+	);
+	
+	foreach ($node_types as $type) {
+		$form['node_types'][$type] = array(
+			'#tree' => TRUE,
+		);
+		$form['node_types'][$type]['new'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Send notifications for new %type content', array('%type' => $typeNames[$type]->name)),
+			'#default_value' => $subs[$type]['new'],
+		);
+		
+		$form['node_types'][$type]['update'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Send notifications for updated %type content', array('%type' => $typeNames[$type]->name)),
+			'#default_value' => $subs[$type]['update'],
+		);
+		
+		$form['node_types'][$type]['comment'] = array(
+			'#type' => 'checkbox',
+			'#title' => t('Send notifications when %type content is commented on', array('%type' => $typeNames[$type]->name)),
+			'#default_value' => $subs[$type]['comment'],
+		);
 	}
+	
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Save notification preferences'),
+	);
+	
+	return $form;
+}
+
+function clade_subscriptions_subscription_form_submit($form, &$form_state) {
+	global $user;
+	$clade = $form_state['values']['clade'];
+	$subs = clade_subscriptions_get_subscriptions_preferences($user->uid, $clade->tid);
+	
+	foreach ($form_state['values']['node_types'] as $type => $pref) {
+		clade_subscriptions_save_subscription_preference($user->uid, $clade->tid, $type, $pref['new'], $pref['update'], $pref['comment']);
+	}
+	
+	drupal_set_message(t('Your email subscription preferences have been updated.'), 'success');
+}
+
+function theme_clade_subscriptions_subscription_form($form) {
+	$rows = array();
+	$typeNames = node_get_types();
+	foreach (element_children($form['node_types']) as $key) {
+		unset($form['node_types'][$key]['new']['#title']);
+		unset($form['node_types'][$key]['update']['#title']);
+		unset($form['node_types'][$key]['comment']['#title']);
+		
+		$row = array();
+		$row[] = array('data' => $typeNames[$key]->name, 'class' => '');
+		$row[] = array('data' => drupal_render($form['node_types'][$key]['new']), 'class' => 'checkbox');
+		$row[] = array('data' => drupal_render($form['node_types'][$key]['update']), 'class' => 'checkbox');
+		$row[] = array('data' => drupal_render($form['node_types'][$key]['comment']), 'class' => 'checkbox');
+		$rows[] = $row;
+	}
+
+	$header = array(
+		t('Content type'),
+		array('data' => t('New posts'), 'class' => 'checkbox'),
+		array('data' => t('Updates'), 'class' => 'checkbox'),
+		array('data' => t('Comments'), 'class' => 'checkbox')
+	);
+	$output = theme('table', $header, $rows);
+	$output .= drupal_render($form);
+	
+	return $output;
 }
 
 function clade_subscriptions_preprocess_clade_subscriptions_membership(&$vars) {
@@ -422,17 +522,17 @@ function clade_subscriptions_save_subscription($clade_id, $uid, $args = array())
       drupal_write_record('clade_uid', $subscription);
     }
     
-		$subscription = array(
-			'uid' => $uid,
-			'send_interval' => 0,
-			'send_method' => 'phpmailer',
-			'type' => 'taxonomy',
-			'event_type' => 'node',
-			'fields' => array(
-				'tid' => $clade_id,
-				),
-			);
-		notifications_save_subscription($subscription);
+// 		$subscription = array(
+// 			'uid' => $uid,
+// 			'send_interval' => 0,
+// 			'send_method' => 'phpmailer',
+// 			'type' => 'taxonomy',
+// 			'event_type' => 'node',
+// 			'fields' => array(
+// 				'tid' => $clade_id,
+// 				),
+// 			);
+// 		notifications_save_subscription($subscription);
   }
 }
 
@@ -458,10 +558,10 @@ function clade_subscriptions_unsubscribe_user($clade_id, $account) {
 function clade_subscriptions_delete_subscription($clade_id, $uid) {
   $sql = "DELETE FROM {clade_uid} WHERE tid = %d AND uid = %d";
   db_query($sql, $clade_id, $uid);
-	$subs = notifications_get_subscriptions(array('type' => 'taxonomy', 'uid' => $uid), array('tid' => $clade_id), TRUE);
-	foreach ($subs as $sid => $sub) {
-		notifications_delete_subscription($sid);
-	}
+// 	$subs = notifications_get_subscriptions(array('type' => 'taxonomy', 'uid' => $uid), array('tid' => $clade_id), TRUE);
+// 	foreach ($subs as $sid => $sub) {
+// 		notifications_delete_subscription($sid);
+// 	}
 }
 
 function clade_subscriptions_mail($key, &$message, $params) {
@@ -472,6 +572,13 @@ function clade_subscriptions_mail($key, &$message, $params) {
 	} else if ($key === 'unsubscribe') {
 		$message['subject'] = t('You have left the @clade Clade', array('@clade' => $params['clade_name']));
 		$message['body'] = theme('clade_subscriptions_unsubscribe_email', $params['clade_name'], $params['to_name'], $params['from_name']);
+	} else if (
+			$key == 'clade_subscriptions_send_new_content_notification' ||
+			$key == 'clade_subscriptions_send_update_notification' ||
+			$key == 'clade_subscriptions_send_comment_notification'
+		) {
+		$message['subject'] .= str_replace(array("\r", "\n"), '', $params['subject']);
+		$message['body'][] = $params['message'];
 	}
 }
 
@@ -790,6 +897,48 @@ function clade_subscriptions_get_subscriptions($uid, $reset = FALSE) {
   return $subscriptions[$uid];
 }
 
+function clade_subscriptions_get_subscriptions_preferences($uid, $cladeId) {
+	$subscriptions = array();
+	$sql = "SELECT node_type, send_new_content_notifications, send_updated_content_notifications, send_comment_notifications FROM {clade_uid_subscriptions} WHERE uid = %d and tid = %d";
+	$result = db_query($sql, $uid, $cladeId);
+	while ($row = db_fetch_object($result)) {
+		$subscriptions[$row->node_type] = array(
+			'new' => $row->send_new_content_notifications,
+			'update' => $row->send_updated_content_notifications,
+			'comment' => $row->send_comment_notifications,
+		);
+	}
+	$node_types = module_invoke_all('clade', 'clade node types');
+	foreach ($node_types as $node_type) {
+		if (! isset($subscriptions[$node_type])) {
+			$subscriptions[$node_type]['new'] = 1;
+			$subscriptions[$node_type]['update'] = 1;
+			$subscriptions[$node_type]['comment'] = 1;
+		}
+	}
+	return $subscriptions;
+}
+
+function clade_subscriptions_save_subscription_preference($uid, $cladeId, $node_type, $new = 1, $update = 1, $comment = 1) {
+	$sql = "SELECT tid, uid, node_type, send_new_content_notifications, send_updated_content_notifications, send_comment_notifications FROM {clade_uid_subscriptions} WHERE uid = %d AND tid = %d AND node_type = '%s'";
+	if ($prefs = db_fetch_object(db_query($sql, $uid, $cladeId, $node_type))) {
+		$prefs->send_new_content_notifications = $new;
+		$prefs->send_updated_content_notifications = $update;
+		$prefs->send_comment_notifications = $comment;
+		drupal_write_record('clade_uid_subscriptions', $prefs, array('tid', 'uid', 'node_type'));
+	} else {
+		$prefs = array(
+			'uid' => $uid,
+			'tid' => $cladeId,
+			'node_type' => $node_type,
+			'send_new_content_notifications' => $new,
+			'send_updated_content_notifications' => $update,
+			'send_comment_notifications' => $comment,
+		);
+		drupal_write_record('clade_uid_subscriptions', $prefs);
+	}
+}
+
 function clade_subscriptions_access_create_admin($clade_id, $account) {
 	global $user;
 	$clade = clade_get_clade($clade_id);
@@ -869,7 +1018,7 @@ function clade_subscriptions_remove_admin_submit($form, &$form_state) {
 	}
 }
 
-function clade_profile_alter(&$account) {
+function clade_subscriptions_profile_alter(&$account) {
 	$communities = array();
 	foreach ($account->clades as $clade) {
 		$tid = $clade['tid'];

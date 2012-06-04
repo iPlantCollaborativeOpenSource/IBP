@@ -503,7 +503,6 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 				$form['#after_build'][] = 'clade_mini_form_after_build';
 			}
 		}
-//		drupal_set_message('<pre>' . print_r($form, TRUE) . '</pre>');
 	}
 }
 
@@ -2193,4 +2192,35 @@ function clade_preprocess_clade_join(&$vars) {
 		$vars['message'] = t('Login to join this community. Contribute and stay updated!');
 		$vars['link'] = l(t('Login to join this community'), "user/login", array('attributes' => array('class' => 'clade-join-link'), 'query' => array("destination"=>"clade/$clade->tid/members/join")));
 	}
+}
+
+function clade_token_list($type = 'all') {
+	if ($type == 'clade' || $type == 'term' || $type == 'all') {
+		$tokens['clade']['tid'] = t('The Clade\'s taxonomy ID.');
+		$tokens['clade']['name'] = t('The Clade\'s name.');
+		$tokens['clade']['description'] = t('The Clade\'s description.');
+	} else if ($type == 'node') {
+		$tokens['node']['clade-tid'] = t('The Clade\'s taxonomy ID.');
+		$tokens['node']['clade-name'] = t('The Clade\'s name.');
+		$tokens['node']['clade-description'] = t('The Clade\'s description.');
+	}
+	return $tokens;
+}
+
+function clade_token_values($type, $object = NULL, $options = array()) {
+  $values = array();
+  if (! empty($object)) {
+		if ($type == 'clade' || $type == 'term' || $type == 'all') {
+			$values['tid'] = $object->tid;
+			$values['name'] = $object->name;
+			$values['description'] = $object->description;
+		} else if ($type == 'node') {
+			if ($clade = clade_determine_context_for_node($object)) {
+				$values['clade-tid'] = $clade->tid;
+				$values['clade-name'] = $clade->name;
+				$values['clade-description'] = $clade->description;
+			}
+		}
+	}
+	return $values;
 }
