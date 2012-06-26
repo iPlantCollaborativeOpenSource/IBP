@@ -1,8 +1,11 @@
 (function($) {
 	$(document).ready(
 		function() {
-			var mylinks_trg = $('#block-menu-menu-my-links > .content > .menu > li.first'),
-			    mylinks = mylinks_trg.children('ul');
+			var mylinks = $('#block-menu-menu-my-links ul ul'),
+			    mylinks_trg = mylinks.parent();
+			
+			mylinks_trg.addClass('my-links');
+			
 			function show_my_links() {
 				mylinks.slideDown('fast');
 				mylinks_trg.addClass('my-links-visible');

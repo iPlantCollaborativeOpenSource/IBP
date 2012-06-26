@@ -109,15 +109,15 @@
 #top-bar #block-menu-menu-my-links ul li ul li a:hover {
   background-color: #6a6a6a; }
 
-#top-bar #block-menu-menu-my-links > .content > .menu > li.first > a {
+#top-bar #block-menu-menu-my-links .my-links > a {
   z-index: 11; }
 
-#top-bar #block-menu-menu-my-links > .content > .menu > li.first > a:after {
+#top-bar #block-menu-menu-my-links .my-links > a:after {
   content: url(../images/arrow_down_blue.png);
   position: relative;
   left: 6px; }
 
-#top-bar #block-menu-menu-my-links > .content > .menu > li.my-links-visible > a {
+#top-bar #block-menu-menu-my-links .my-links.my-links-visible > a {
   top: 2px;
   margin: 4px 0 0;
   padding: 6px 12px 14px;
