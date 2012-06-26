@@ -1,0 +1,55 @@
+.front-map {
+  font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+  font-variant: small-caps;
+  background-image: url(../images/front-image-no-text.jpg);
+  position: relative;
+  height: 407px; }
+  .front-map::after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    font-size: 0; }
+  .front-map .map-area {
+    position: absolute;
+    top: 23px;
+    height: 255px;
+    width: 202px; }
+    .front-map .map-area h3 {
+      font-size: 1.9em;
+      position: absolute;
+      bottom: 115px;
+      margin: 0; }
+      .front-map .map-area h3 a {
+        color: inherit; }
+    .front-map .map-area ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 1.3em;
+      position: absolute;
+      top: 145px; }
+      .front-map .map-area ul li {
+        list-type: none;
+        margin: 0;
+        padding: 0; }
+    .front-map .map-area.crop-info {
+      left: 48px;
+      color: #ea9d2f; }
+      .front-map .map-area.crop-info h3 a:hover {
+        color: #e89218; }
+    .front-map .map-area.breeding {
+      left: 294px;
+      color: #3397d3; }
+      .front-map .map-area.breeding h3 a:hover {
+        color: #2a89c3; }
+    .front-map .map-area.capacity {
+      left: 522px;
+      color: #ea5435; }
+      .front-map .map-area.capacity h3 a:hover {
+        color: #e8401e; }
+    .front-map .map-area.community {
+      left: 752px;
+      color: #67b556; }
+      .front-map .map-area.community h3 a:hover {
+        color: #5aa84a; }

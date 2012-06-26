@@ -173,6 +173,10 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
 	
 	if (drupal_is_front_page()) {
 		$vars['template_files'][] = 'node-front';
+		$path = drupal_get_path('theme','ibp_theme').'/css/node-front.css';
+    if (file_exists($path)) {
+      drupal_add_css($path, 'theme');
+    }
 	}
 	
   // Optionally, run node-type-specific preprocess functions, like
@@ -183,13 +187,13 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
   }
   
   // add css per node type
-  $nodetype_css_path = drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css';
-  if (file_exists($nodetype_css_path)) {
-  	drupal_add_css($nodetype_css_path, 'theme');
+  $path = drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css';
+  if (file_exists($path)) {
+  	drupal_add_css($path, 'theme');
   }
-  $nodetype_js_path = drupal_get_path('theme','ibp_theme').'/js/node-'.$node->type.'.js';
-  if (file_exists($nodetype_js_path)) {
-  	drupal_add_js($nodetype_js_path, 'theme');
+  $path = drupal_get_path('theme','ibp_theme').'/js/node-'.$node->type.'.js';
+  if (file_exists($path)) {
+  	drupal_add_js($path, 'theme');
   }
 	
 	if ($node->type == 'ibp_tool') {

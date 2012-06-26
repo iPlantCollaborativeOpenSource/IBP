@@ -73,6 +73,7 @@
 ?>
 <div id="node-<?php print $node->nid; ?>" class="node <?php print $classes; ?> clearfix">
 
+<!-- 
 	<?php print theme('image', path_to_theme() .'/images/front-image.jpg','','',array('usemap'=>'#front-map')); ?>
 	<map name="front-map" id="front-map">
 		<area shape="rect" coords="25,25,266,285" href="<?php print url("node/166"); ?>" title="Go to Crop Information" />
@@ -80,6 +81,42 @@
 		<area shape="rect" coords="496,25,727,285" href="<?php print url("node/149"); ?>" title="Go to Capacity building" />
 		<area shape="rect" coords="727,25,968,285" href="<?php print url("community"); ?>" title="Go to Crop networks" />
 	</map>
+ -->
+	
+	<div class="front-map">
+	  <div class="map-area crop-info">
+	    <h3><?php echo l(t('crop<br>INFORMATION'), 'crop-information', array('html' => true)); ?></h3>
+	    <ul>
+	      <li><?php echo t('access to data'); ?></li>
+	      <li><?php echo t('data management'); ?></li>
+	      <li><?php echo t('trait dictionaries'); ?></li>
+	    </ul>
+	  </div>
+	  <div class="map-area breeding">
+	    <h3><?php echo l(t('breeding<br>ACTIVITIES'), 'breeding-activities', array('html' => true)); ?></h3>
+	    <ul>
+	      <li><?php echo t('improved germplasm'); ?></li>
+	      <li><?php echo t('tools'); ?></li>
+	      <li><?php echo t('services'); ?></li>
+	    </ul>
+	  </div>
+	  <div class="map-area capacity">
+	    <h3><?php echo l(t('capacity<br>BUILDING'), 'capacity-building', array('html' => true)); ?></h3>
+	    <ul>
+	      <li><?php echo t('learning & development'); ?></li>
+	      <li><?php echo t('support services'); ?></li>
+	      <li><?php echo t('information & resources'); ?></li>
+	    </ul>
+	  </div>
+	  <div class="map-area community">
+	    <h3><?php echo l(t('crop<br>COMMUNITIES'), 'community', array('html' => true)); ?></h3>
+	    <ul>
+	      <li><?php echo t('shared solutions'); ?></li>
+	      <li><?php echo t('communities of practice'); ?></li>
+	      <li><?php echo t('knowledge sharing'); ?></li>
+	    </ul>
+	  </div>
+	</div>
 	
 	<div class="content-wrapper">  
 		<div class="content-main">
@@ -109,7 +146,7 @@
 							<?php print l(t('Go to My Communities'), 'community', array('attributes' => array('class' => 'button'))); ?>
 						<?php } else { ?>
 							<p>
-								Get started today by registering for a free account.
+								<?php print t('Get started today by registering for a free account.'); ?>
 							</p>
 							<?php print l(t('Register for an account'), 'user/register', array('attributes' => array('class' => 'button'))); ?>
 						<?php } ?>

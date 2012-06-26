@@ -1,0 +1,87 @@
+@import "lib";
+
+.front-map {
+  font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+  font-variant: small-caps;
+  background-image: url(../images/front-image-no-text.jpg);
+  position: relative;
+  height: 407px;
+
+  &::after {
+    @include clearfix();
+  }
+  
+  .map-area {
+    position: absolute;
+    top: 23px;
+    height: 255px;
+    width: 202px;
+    
+    h3 {
+      font-size: 1.9em;
+      position: absolute;
+      bottom: 115px;
+      margin: 0;
+      
+      a {
+        color: inherit;
+      }
+    }
+    
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 1.3em;
+      position: absolute;
+      top: 145px;
+      
+      li {
+        list-type: none;
+        margin: 0;
+        padding: 0;
+      }
+    }
+    
+    &.crop-info {
+      left: 48px;
+      $color: #ea9d2f;
+      color: $color;
+        
+      h3 a:hover {
+        color: darken($color, 5%);
+      }
+    }
+    
+    &.breeding {
+      left: 294px;
+      $color: #3397d3;
+      color: $color;
+        
+      h3 a:hover {
+        color: darken($color, 5%);
+      }
+    }
+    
+    &.capacity {
+      left: 522px;
+      $color: #ea5435;
+      color: $color;
+        
+      h3 a:hover {
+        color: darken($color, 5%);
+      }
+    }
+    
+    &.community {
+      left: 752px;
+      $color: #67b556;
+      color: $color;
+        
+      h3 a:hover {
+        color: darken($color, 5%);
+      }
+    }
+  }
+  
+}
