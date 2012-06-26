@@ -1,13 +1,14 @@
 (function($) {
 	$(document).ready(
 		function() {
-			var mylinks_trg = $('.my-links');
+			var mylinks_trg = $('#block-menu-menu-my-links > .content > .menu > li.first'),
+			    mylinks = mylinks_trg.children('ul');
 			function show_my_links() {
-				$('.my-links ul').slideDown('fast');
+				mylinks.slideDown('fast');
 				mylinks_trg.addClass('my-links-visible');
 			}
 			function hide_my_links() {
-				$('.my-links ul').slideUp('fast', function(){mylinks_trg.removeClass('my-links-visible');});
+				mylinks.slideUp('fast', function(){mylinks_trg.removeClass('my-links-visible');});
 			}
 			
 			mylinks_trg.bind('mouseenter', function() {
@@ -20,7 +21,7 @@
 				mylinks_trg._t = setTimeout(hide_my_links, 500);
 			});
 			
-			$('.my-links > a').attr('href', '#').bind('click', function() {
+			mylinks_trg.children('a').attr('href', '#').bind('click', function() {
 				return false;
 			});
 		}
