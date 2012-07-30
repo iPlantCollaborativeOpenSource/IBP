@@ -1,7 +1,8 @@
 @import "lib";
 
 .front-map {
-  font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  letter-spacing: normal;
   font-variant: small-caps;
   background-image: url(../images/front-image-no-text.jpg);
   position: relative;
@@ -15,10 +16,11 @@
     position: absolute;
     top: 23px;
     height: 255px;
-    width: 202px;
+    width: 225px;
+    letter-spacing: -.9px;
     
     h3 {
-      font-size: 1.9em;
+      font-size: 27px;
       position: absolute;
       bottom: 115px;
       margin: 0;
@@ -32,7 +34,7 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      font-size: 1.3em;
+      font-size: 18px;
       position: absolute;
       top: 145px;
       

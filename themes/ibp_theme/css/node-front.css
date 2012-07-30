@@ -1,55 +1,87 @@
+/* line 3, ../stylesheets/node-front.scss */
 .front-map {
-  font-family: Lucida Sans Unicode, Lucida Grande, sans-serif;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  letter-spacing: normal;
   font-variant: small-caps;
   background-image: url(../images/front-image-no-text.jpg);
   position: relative;
-  height: 407px; }
-  .front-map::after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    font-size: 0; }
-  .front-map .map-area {
-    position: absolute;
-    top: 23px;
-    height: 255px;
-    width: 202px; }
-    .front-map .map-area h3 {
-      font-size: 1.9em;
-      position: absolute;
-      bottom: 115px;
-      margin: 0; }
-      .front-map .map-area h3 a {
-        color: inherit; }
-    .front-map .map-area ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      font-size: 1.3em;
-      position: absolute;
-      top: 145px; }
-      .front-map .map-area ul li {
-        list-type: none;
-        margin: 0;
-        padding: 0; }
-    .front-map .map-area.crop-info {
-      left: 48px;
-      color: #ea9d2f; }
-      .front-map .map-area.crop-info h3 a:hover {
-        color: #e89218; }
-    .front-map .map-area.breeding {
-      left: 294px;
-      color: #3397d3; }
-      .front-map .map-area.breeding h3 a:hover {
-        color: #2a89c3; }
-    .front-map .map-area.capacity {
-      left: 522px;
-      color: #ea5435; }
-      .front-map .map-area.capacity h3 a:hover {
-        color: #e8401e; }
-    .front-map .map-area.community {
-      left: 752px;
-      color: #67b556; }
-      .front-map .map-area.community h3 a:hover {
-        color: #5aa84a; }
+  height: 407px;
+}
+/* line 11, ../stylesheets/node-front.scss */
+.front-map::after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  font-size: 0;
+}
+/* line 15, ../stylesheets/node-front.scss */
+.front-map .map-area {
+  position: absolute;
+  top: 23px;
+  height: 255px;
+  width: 225px;
+  letter-spacing: -0.9px;
+}
+/* line 22, ../stylesheets/node-front.scss */
+.front-map .map-area h3 {
+  font-size: 27px;
+  position: absolute;
+  bottom: 115px;
+  margin: 0;
+}
+/* line 28, ../stylesheets/node-front.scss */
+.front-map .map-area h3 a {
+  color: inherit;
+}
+/* line 33, ../stylesheets/node-front.scss */
+.front-map .map-area ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  position: absolute;
+  top: 145px;
+}
+/* line 41, ../stylesheets/node-front.scss */
+.front-map .map-area ul li {
+  list-type: none;
+  margin: 0;
+  padding: 0;
+}
+/* line 48, ../stylesheets/node-front.scss */
+.front-map .map-area.crop-info {
+  left: 48px;
+  color: #ea9d2f;
+}
+/* line 53, ../stylesheets/node-front.scss */
+.front-map .map-area.crop-info h3 a:hover {
+  color: #e89218;
+}
+/* line 58, ../stylesheets/node-front.scss */
+.front-map .map-area.breeding {
+  left: 294px;
+  color: #3397d3;
+}
+/* line 63, ../stylesheets/node-front.scss */
+.front-map .map-area.breeding h3 a:hover {
+  color: #2a89c3;
+}
+/* line 68, ../stylesheets/node-front.scss */
+.front-map .map-area.capacity {
+  left: 522px;
+  color: #ea5435;
+}
+/* line 73, ../stylesheets/node-front.scss */
+.front-map .map-area.capacity h3 a:hover {
+  color: #e8401e;
+}
+/* line 78, ../stylesheets/node-front.scss */
+.front-map .map-area.community {
+  left: 752px;
+  color: #67b556;
+}
+/* line 83, ../stylesheets/node-front.scss */
+.front-map .map-area.community h3 a:hover {
+  color: #5aa84a;
+}
