@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * Implements hook_form().
+ */
+function ibp_docshare_form_alter(&$form, &$form_state, $form_id) {
+	if ($form_id == 'ibp_docshare_node_form') {
+		$node = $form['#node'];
+		if (empty($node->nid) && $clade = clade_get_context()) {
+			$form['ibp_docshare_crop']['#default_value'][]['value'] = $clade->tid;
+			$form['ibp_docshare_crop']['#value'][]['value'] = $clade->tid;
+			$form['ibp_docshare_crop']['#type'] = 'hidden';
+		}
+	}
+}
+
+function ibp_docshare_clade($op = 'determine context', $obj = null) {
+
+	if ($op == 'determine context') {
+		if ($obj && $obj->type == 'ibp_docshare') {
+			$tid = $obj->ibp_docshare_crop[0]['value'];
+			return clade_get_clade($tid);
+		}
+	} else if ($op == 'clade node types') {
+		return 'ibp_docshare';
+	}
+	
+}
+
+function ibp_docshare_clade_details_items($clade) {
+	return array(
+		'docshare' => array(
+			'data' => l(t('Shared Documents'), "clade/{$clade->tid}/documents"),
+			'data-sort' => 9,
+			'class' => 'clade-details-item'
+		),
+		'create_docshare' => array(
+			'data' => l(t('Add a new Shared Document'), "node/add/ibp-docshare", array('query' => array('clades' => $clade->tid))),
+			'data-sort' => 13,
+			'class' => 'clade-details-item'
+		),
+	);
+}
+
+function ibp_docshare_views_pre_render(&$view) {
+	if ($view->name == 'clade_documents') {
+		$tid = $view->args[0];
+		drupal_set_title(t('@name Documents', array('@name' => taxonomy_get_term($tid)->name)));
+	}
+}
+
+function ibp_docshare_views_api() {
+  return array('api' => 2.0);
+}

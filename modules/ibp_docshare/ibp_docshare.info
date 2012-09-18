@@ -1,0 +1,6 @@
+name = Docshare content type
+description = Provides a content type for shared documents
+dependencies[] = content
+dependencies[] = fileversion
+package = IBP
+core = 6.x

@@ -1,0 +1,20 @@
+<?php
+
+function ibp_docshare_install() {
+	// check if content type already exists
+	$types = node_get_types();
+	if (!isset($types['ibp_docshare'])) {
+		module_load_include('inc', 'ibp_docshare', 'includes/ibp_docshare.content_type');
+		$content = ibp_docshare_content_type_def();
+		$values = array();
+		$values['type_name'] = '<create>';
+		$values['macro'] = '$content = ' . var_export($content, TRUE) . ';';
+		$form_state = array();
+		$form_state['values'] = $values;
+		drupal_execute("content_copy_import_form", $form_state);
+		content_clear_type_cache();
+	}
+}
+
+function ibp_docshare_uninstall() {
+}
