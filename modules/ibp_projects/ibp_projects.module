@@ -101,19 +101,7 @@ function ibp_projects_form_validate($form, &$form_state) {
 }
 
 function ibp_projects_clade($op, $clade = NULL, $args=array()) {
-	if ($op == 'clade insert') {
-		$clade_menu = menu_get_item("clade/$clade->tid");
-		$menu = array(
-			'menu_name' => 'primary-links',
-			'plid' => $clade_menu['mlid'],
-			'router_path' => 'clade/%/projects',
-			'link_path' => "clade/$clade->tid/projects",
-			'link_title' => $clade->name . ' projects',
-			'weight' => 15,
-			);
-		menu_link_save($menu);
-	}
-	else if ($op == 'clade node types') {
+	if ($op == 'clade node types') {
 		return 'ibp_project';
 	}
 	// TODO delete?

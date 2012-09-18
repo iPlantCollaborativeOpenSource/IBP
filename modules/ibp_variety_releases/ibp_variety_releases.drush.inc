@@ -9,11 +9,11 @@ function ibp_variety_releases_drush_command() {
 		'aliases' => array('ibpvcck'),
 	);
 	
-	$items['ibp-variety-release-menus'] = array(
-		'callback' => 'ibp_variety_releases_setup_menus',
-		'description' => 'Set up IBP Project menus for crops',
-		'aliases' => array('ibpvmenu'),
-	);
+	// $items['ibp-variety-release-menus'] = array(
+	// 	'callback' => 'ibp_variety_releases_setup_menus',
+	// 	'description' => 'Set up IBP Project menus for crops',
+	// 	'aliases' => array('ibpvmenu'),
+	// );
 	
 	return $items;
 }
@@ -22,8 +22,8 @@ function ibp_variety_releases_drush_help($section) {
   switch ($section) {
     case 'drush:ibp-proj-cck':
       return dt("Set up the IBP Variety Release CCK content type.");
-    case 'drush:ibp-proj-menus':
-      return dt('Set up IBP Variety Release menus for crops.');
+    // case 'drush:ibp-proj-menus':
+    //   return dt('Set up IBP Variety Release menus for crops.');
   }
 }
 
@@ -40,25 +40,25 @@ function ibp_variety_releases_setup_content_type() {
 	content_clear_type_cache();
 }
 
-function ibp_variety_releases_setup_menus() {
-	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
-	foreach ($clades as $clade) {
-		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/variety-releases"))) {
-			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/variety-releases"));
-			if ($existing) {
-				// already exists
-				continue;
-			}
-			$clade_menu = menu_get_item("clade/$clade->tid");
-			$menu = array(
-				'menu_name' => 'primary-links',
-				'plid' => $clade_menu['mlid'],
-				'router_path' => 'clade/%/variety-releases',
-				'link_path' => "clade/$clade->tid/variety-releases",
-				'link_title' => $clade->name . ' variety releases',
-				'weight' => 14,
-				);
-			menu_link_save($menu);
-		}
-	}
-}
+// function ibp_variety_releases_setup_menus() {
+// 	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
+// 	foreach ($clades as $clade) {
+// 		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/variety-releases"))) {
+// 			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/variety-releases"));
+// 			if ($existing) {
+// 				// already exists
+// 				continue;
+// 			}
+// 			$clade_menu = menu_get_item("clade/$clade->tid");
+// 			$menu = array(
+// 				'menu_name' => 'primary-links',
+// 				'plid' => $clade_menu['mlid'],
+// 				'router_path' => 'clade/%/variety-releases',
+// 				'link_path' => "clade/$clade->tid/variety-releases",
+// 				'link_title' => $clade->name . ' variety releases',
+// 				'weight' => 14,
+// 				);
+// 			menu_link_save($menu);
+// 		}
+// 	}
+// }

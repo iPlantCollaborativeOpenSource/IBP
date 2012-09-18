@@ -9,11 +9,11 @@ function ibp_projects_drush_command() {
 		'aliases' => array('ibppcck'),
 	);
 	
-	$items['ibp-proj-menus'] = array(
-		'callback' => 'ibp_projects_project_setup_menus',
-		'description' => 'Set up IBP Project menus for crops',
-		'aliases' => array('ibppmenu'),
-	);
+	// $items['ibp-proj-menus'] = array(
+	// 	'callback' => 'ibp_projects_project_setup_menus',
+	// 	'description' => 'Set up IBP Project menus for crops',
+	// 	'aliases' => array('ibppmenu'),
+	// );
 	
 	return $items;
 }
@@ -22,8 +22,8 @@ function ibp_projects_drush_help($section) {
   switch ($section) {
     case 'drush:ibp-proj-cck':
       return dt("Set up the IBP Project content type.");
-    case 'drush:ibp-proj-menus':
-      return dt('Set up IBP Project menus for crops.');
+    // case 'drush:ibp-proj-menus':
+    //   return dt('Set up IBP Project menus for crops.');
   }
 }
 
@@ -40,25 +40,25 @@ function ibp_projects_setup_content_type() {
 	content_clear_type_cache();
 }
 
-function ibp_projects_project_setup_menus() {
-	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
-	foreach ($clades as $clade) {
-		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/projects"))) {
-			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/projects"));
-			if ($existing) {
-				// already exists
-				continue;
-			}
-			$clade_menu = menu_get_item("clade/$clade->tid");
-			$menu = array(
-				'menu_name' => 'primary-links',
-				'plid' => $clade_menu['mlid'],
-				'router_path' => 'clade/%/projects',
-				'link_path' => "clade/$clade->tid/projects",
-				'link_title' => $clade->name . ' projects',
-				'weight' => 15,
-				);
-			menu_link_save($menu);
-		}
-	}
-}
+// function ibp_projects_project_setup_menus() {
+// 	$clades = taxonomy_get_tree(variable_get('clade_vocabulary',0));
+// 	foreach ($clades as $clade) {
+// 		if (menu_valid_path(array('link_path'=>"clade/$clade->tid/projects"))) {
+// 			$existing = db_result(db_query("SELECT mlid FROM {menu_links} WHERE link_path = '%s'", "clade/$clade->tid/projects"));
+// 			if ($existing) {
+// 				// already exists
+// 				continue;
+// 			}
+// 			$clade_menu = menu_get_item("clade/$clade->tid");
+// 			$menu = array(
+// 				'menu_name' => 'primary-links',
+// 				'plid' => $clade_menu['mlid'],
+// 				'router_path' => 'clade/%/projects',
+// 				'link_path' => "clade/$clade->tid/projects",
+// 				'link_title' => $clade->name . ' projects',
+// 				'weight' => 15,
+// 				);
+// 			menu_link_save($menu);
+// 		}
+// 	}
+// }

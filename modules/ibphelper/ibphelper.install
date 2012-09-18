@@ -39,3 +39,25 @@ function ibphelper_install() {
 function ibphelper_uninstall() {
 	drupal_uninstall_schema('ibphelper');
 }
+
+function ibphelper_update_6001() {
+  // cleanup unnecessary menu items
+  $result = db_query("SELECT mlid FROM menu_links where link_path regexp '^clade/[0-9]+/.*'");
+  while ($mlid = db_result($result)) {
+    menu_link_delete($mlid);
+  }
+
+  // fix news/events menu items
+  $result = db_query("SELECT mlid FROM menu_links WHERE link_path IN ('news','events')");
+  while ($mlid = db_result($result)) {
+    $links = db_query("SELECT mlid FROM menu_links WHERE plid = %d", $mlid);
+    while ($child_mlid = db_result($links)) {
+      menu_link_delete($child_mlid);
+    }
+  }
+
+  $result = db_query("SELECT nid FROM node where type = 'story' OR type = 'event'");
+  while ($nid = db_result($result)) {
+    node_save(node_load($nid));
+  }
+}
