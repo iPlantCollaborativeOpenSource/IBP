@@ -1,0 +1,9 @@
+name = DrupalChat Nodejs integration
+description = Adds Node.js backend to DrupalChat
+package = DrupalChat
+version = VERSION
+core = 6.x
+files[] = drupalchat_nodejs.module
+dependencies[] = nodejs
+dependencies[] = drupalchat
+

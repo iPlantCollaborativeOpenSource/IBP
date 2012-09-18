@@ -1,0 +1,106 @@
+<?php
+
+define('DRUPALCHAT_NODEJS', 2);
+
+function drupalchat_nodejs_menu() {
+  return array(
+    'drupalchat/channel/add' => array(
+      'page callback' => 'drupalchat_nodejs_channel_add',
+      'access arguments' => array('access drupalchat'),
+      'type' => MENU_CALLBACK,
+    ),
+    'drupalchat/channel/remove' => array(
+      'page callback' => 'drupalchat_nodejs_channel_remove',
+      'access arguments' => array('access drupalchat'),
+      'type' => MENU_CALLBACK,
+    ),
+  );
+}
+
+/**
+ * Implements hook_nodejs_handlers_info().
+ */
+function drupalchat_nodejs_nodejs_handlers_info() {
+  global $user;
+  if (user_access('access drupalchat', $user) && variable_get('drupalchat_polling_method', DRUPALCHAT_LONGPOLL) == DRUPALCHAT_NODEJS) {
+    $handlers[] = drupal_get_path('module', 'drupalchat_nodejs') . '/drupalchat_nodejs.js';
+  } else {
+    $handlers[] = drupal_get_path('module', 'drupalchat_nodejs') . '/drupalchat_nodejs.stub.js';
+  }
+  return $handlers;
+}
+
+/**
+ * Implements hook_nodejs_user_channels().
+ */
+function drupalchat_nodejs_nodejs_user_channels($auth_user) {
+  global $user;
+  $channels = array();
+  if (user_access('access drupalchat')) {
+    $channels[] = 'drupalchat_' . $user->uid;
+    if (variable_get('drupalchat_enable_chatroom', 1)) {
+      $channels[] = 'drupalchat_c-0'; // public chatroom
+    }
+  }
+  return $channels;
+}
+
+/**
+ * Implements hook_drupalchat_send().
+ */
+function drupalchat_nodejs_drupalchat_send($message) {
+  global $user;
+  $message->timestamp = date("H:i", $message->timestamp);
+  $message->name = $user->name;
+  $drupalchat_nodejs_message = (object) array(
+    'channel' => 'drupalchat_' . $message->uid2,
+    'broadcast' => FALSE,
+    'type' => 'newMessage',
+    'callback' => 'drupalchatNodejsMessageHandler',
+    'data' => json_encode($message),
+  );
+  nodejs_enqueue_message($drupalchat_nodejs_message);
+}
+
+function drupalchat_nodejs_channel_add() {
+  global $user;
+  if ($user->uid != 0) {   
+    $message['uid'] = $user->uid;
+    $message['name'] = $user->name;
+    $message['status'] = 1;
+    $drupalchat_nodejs_message = (object) array(
+      'channel' => 'drupalchat_' . $user->uid,
+      'broadcast' => FALSE,
+      'type' => 'sendName',
+      'callback' => 'drupalchatNodejsMessageHandler',
+      'data' => json_encode($message),
+    );
+    nodejs_enqueue_message($drupalchat_nodejs_message);
+    nodejs_add_user_to_channel($user->uid, 'drupalchat_' . $user->uid);
+  }
+}
+
+function drupalchat_nodejs_drupalchat_status($status) {
+  global $user;
+  if ($user->uid != 0) {   
+    $message['uid'] = $user->uid;
+    $message['name'] = $user->name;
+    $message['status'] = $status;
+    $drupalchat_nodejs_message = (object) array(
+      'channel' => 'drupalchat_' . $user->uid,
+      'broadcast' => FALSE,
+      'type' => 'sendStatus',
+      'callback' => 'drupalchatNodejsMessageHandler',
+      'data' => json_encode($message),
+    );
+    nodejs_enqueue_message($drupalchat_nodejs_message);
+  }
+}
+
+function drupalchat_nodejs_drupalchat_settings_alter(&$settings) {
+  $settings['addUrl'] = url('drupalchat/channel/add', array('absolute' => TRUE));
+}
+
+function drupalchat_nodejs_drupalchat_polling_methods_alter(&$methods) {
+  $methods[DRUPALCHAT_NODEJS] = t('Node.js (currently under development)');
+}
