@@ -1,6 +1,7 @@
 <h2>
 	<?php print t('Manage your Email subscription preferences for this Clade...'); ?>
 </h2>
-<?php
-	print $subscription_form;
-?>
+<p>
+	<?php print $message; ?>
+</p>
+<?php print $subscription_form; ?>
