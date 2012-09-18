@@ -37,16 +37,16 @@ function clade_forum_clade_forum_title($clade) {
 	return "$clade->name Community Forum";
 }
 
-function clade_forum_clade($op, $clade = NULL) {
+function clade_forum_clade($op, $obj = NULL) {
 	if ($op == 'clade load') {
 		$sql = "SELECT fid FROM {clade_forum} WHERE tid = %d";
-		$clade->forum = db_result(db_query($sql, $clade->tid));
+		$obj->forum = db_result(db_query($sql, $obj->tid));
 	}
 	else if ($op == 'clade insert') {
 		$forum_vid = variable_get('forum_nav_vocabulary', 0);
 		$forum_fields = array();
-		$forum_fields['values']['name'] = "$clade->name Forum";
-		$forum_fields['values']['description'] = "$clade->name Forum";
+		$forum_fields['values']['name'] = "$obj->name Forum";
+		$forum_fields['values']['description'] = "$obj->name Forum";
 		$forum_fields['values']['parent'][0] = 0;
 		$forum_fields['values']['weight'] = 0;
 		$forum_fields['values']['vid'] = $forum_vid;
@@ -55,12 +55,12 @@ function clade_forum_clade($op, $clade = NULL) {
 		$forum = forum_form_forum($forum_fields);
 		forum_form_submit($forum, $forum_fields);
 		
-		$clade_forum = array('tid' => $clade->tid, 'fid' => $forum_fields['values']['tid']);
+		$clade_forum = array('tid' => $obj->tid, 'fid' => $forum_fields['values']['tid']);
 		drupal_write_record('clade_forum', $clade_forum);
 	}
 	else if ($op == 'clade delete') {
 		$sql = "DELETE FROM {clade_forum} WHERE tid = %d";
-		db_query($sql, $clade->tid);
+		db_query($sql, $obj->tid);
 	}
 	else if ($op == 'determine context') {
 		$path = $_GET['q'];
@@ -69,16 +69,12 @@ function clade_forum_clade($op, $clade = NULL) {
 				return $clade;
 			}
 		} else if (strpos($path, 'node/') === 0) {
-			$nid = arg(1);
-			if (is_numeric($nid)) {
-				$node = node_load(arg(1));
-				if ($node->type == 'forum') {
-					$clade_vid = variable_get('clade_vocabulary',0);
-					foreach ($node->taxonomy as $tid => $term) {
-						if ($term->vid == $clade_vid) {
-							$clade = clade_get_clade($tid);
-							return $clade;
-						}
+			if ($obj->type == 'forum') {
+				$clade_vid = variable_get('clade_vocabulary',0);
+				foreach ($obj->taxonomy as $tid => $term) {
+					if ($term->vid == $clade_vid) {
+						$clade = clade_get_clade($tid);
+						return $clade;
 					}
 				}
 			}

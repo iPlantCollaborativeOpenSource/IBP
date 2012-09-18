@@ -2,7 +2,15 @@
 // $Id$
 
 function clade_init() {
-	clade_set_context(clade_determine_context());
+	$clade = clade_determine_context();
+	clade_set_context($clade);
+
+	// set menu path
+	if ($clade) {
+		$item = menu_get_item();
+		$item['href'] = 'clade/'.$clade->tid;
+		menu_set_item(NULL, $item);
+	}
 }
 
 /**
@@ -160,7 +168,7 @@ function clade_determine_context() {
 			$context = $contexts[0];
 		}
 	}
-	
+		
 	return $context;
 }
 
@@ -168,9 +176,8 @@ function clade_determine_context_for_node($node) {
 	$context = NULL;
 	$clade_types = clade_get_node_types();
 	if ($clade_types[$node->type]) {
-		$types = node_get_types();
-		$context = module_invoke($types[$node->type]->module, 'clade', 'determine context', NULL);
-		if ($context == null) {
+		$context = module_invoke_all('clade', 'determine context', $node);
+		if (count($context) == 0) {
 			if ($node->taxonomy) {
 				$clade_vid = variable_get('clade_vocabulary', 0);
 				foreach ($node->taxonomy as $term) {
@@ -180,6 +187,8 @@ function clade_determine_context_for_node($node) {
 					}
 				}
 			}
+		} else {
+			$context = $context[0];
 		}
 	}
 	return $context;
@@ -895,14 +904,14 @@ function clade_clade_details_items($clade) {
 		'homepage' => array(
 			'data' => l(t('Clade homepage'), sprintf('clade/%d', $clade->tid)),
 			'data-sort' => 0,
-			'class' => 'iplant',
+			'class' => 'clade-details-item',
 			),
 		);
 	if (user_access('create clade page')) {
 		$items['post'] = array(
 			'data' => l(t('Write a post'), sprintf('clade/%d/post/add', $clade->tid)),
 			'data-sort' => 9,
-			'class' => 'iplant',
+			'class' => 'clade-details-item',
 			);
 	}
 	return $items;
