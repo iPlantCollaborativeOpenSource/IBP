@@ -66,6 +66,7 @@ scripts[] = js/messages.js
 scripts[] = js/ibp-menu-blocks.js
 scripts[] = js/fancybox/jquery.fancybox-1.3.4.js
 scripts[] = js/jquery.simplemodal.1.4.1.min.js
+scripts[] = js/jquery.parseJSON.js
 
   ; The regions defined in Zen's default page.tpl.php file.  The name in
   ; brackets is the name of the variable in the page.tpl.php file, (e.g.

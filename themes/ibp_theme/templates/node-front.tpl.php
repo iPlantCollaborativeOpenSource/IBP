@@ -85,7 +85,7 @@
 	
 	<div class="front-map">
 	  <div class="map-area crop-info">
-	    <h3><?php echo l(t('crop<br>INFORMATION'), 'crop-information', array('html' => true)); ?></h3>
+	    <h3><?php echo l(t('crop INFORMATION'), 'crop-information', array('html' => true)); ?></h3>
 	    <ul>
 	      <li><?php echo t('access to data'); ?></li>
 	      <li><?php echo t('data management'); ?></li>
@@ -93,7 +93,7 @@
 	    </ul>
 	  </div>
 	  <div class="map-area breeding">
-	    <h3><?php echo l(t('breeding<br>ACTIVITIES'), 'breeding-activities', array('html' => true)); ?></h3>
+	    <h3><?php echo l(t('breeding ACTIVITIES'), 'breeding-activities', array('html' => true)); ?></h3>
 	    <ul>
 	      <li><?php echo t('improved germplasm'); ?></li>
 	      <li><?php echo t('tools'); ?></li>
@@ -101,7 +101,7 @@
 	    </ul>
 	  </div>
 	  <div class="map-area capacity">
-	    <h3><?php echo l(t('capacity<br>BUILDING'), 'capacity-building', array('html' => true)); ?></h3>
+	    <h3><?php echo l(t('capacity BUILDING'), 'capacity-building', array('html' => true)); ?></h3>
 	    <ul>
 	      <li><?php echo t('learning & development'); ?></li>
 	      <li><?php echo t('support services'); ?></li>
@@ -109,7 +109,7 @@
 	    </ul>
 	  </div>
 	  <div class="map-area community">
-	    <h3><?php echo l(t('crop<br>COMMUNITIES'), 'community', array('html' => true)); ?></h3>
+	    <h3><?php echo l(t('crop COMMUNITIES'), 'community', array('html' => true)); ?></h3>
 	    <ul>
 	      <li><?php echo t('shared solutions'); ?></li>
 	      <li><?php echo t('communities of practice'); ?></li>

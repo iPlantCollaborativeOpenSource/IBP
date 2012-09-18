@@ -115,15 +115,6 @@
   <?php print $head; ?>
   <?php print $styles; ?>
   <?php print $scripts; ?>
-  <?php if (module_exists('drupalchat')) : ?>
-	  <script type="text/javascript">
-		YUI_config = {
-			filter:       "min",
-			root:         "<?php print base_path().'sites/all/libraries/yui/build'.'/'; ?>",
-			base:         "<?php print base_path().'sites/all/libraries/yui/build'.'/'; ?>"
-		};
-	  </script>
-  <?php endif; ?>
 </head>
 <body class="<?php print $classes; ?>">
 
