@@ -2,5 +2,6 @@ name = Docshare content type
 description = Provides a content type for shared documents
 dependencies[] = content
 dependencies[] = fileversion
+;dependencies[] = nodeaccess_userreference
 package = IBP
 core = 6.x

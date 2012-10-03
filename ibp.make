@@ -13,38 +13,55 @@ projects[] = drupal
 ; Modules
 projects[] = "admin_menu"
 projects[] = "advanced_help"
-projects[] = "auto_nodetitle"
 projects[] = "automenu"
+projects[] = "auto_nodetitle"
 projects[] = "backup_migrate"
 projects[] = "biblio"
-projects[] = "ctools"
+;projects[] = "biblio_helper"
 projects[] = "calendar"
 projects[] = "cck"
+projects[] = "ckeditor"
+;projects[] = "clade"
 projects[] = "content_profile"
 projects[] = "content_taxonomy"
 projects[] = "countries_api"
 projects[] = "css_names"
+projects[] = "ctools"
 projects[] = "date"
+projects[] = "devel"
 projects[] = "drupalchat"
 projects[] = "ed_readmore"
 projects[] = "faq"
 projects[] = "filefield"
 projects[] = "filefield_track"
 projects[] = "fpa"
+projects[] = "getid3"
 projects[] = "globalredirect"
 projects[] = "google_analytics"
+projects[] = "i18n"
+projects[] = "i18nmenu_node"
+projects[] = "i18nviews"
+;projects[] = "ibphelper"
+;projects[] = "ibp_projects"
+;projects[] = "ibp_variety_releases"
 projects[] = "imageapi"
 projects[] = "imagecache"
 projects[] = "imagecache_profiles"
 projects[] = "imagefield"
 projects[] = "imce"
+;projects[] = "jit"
 projects[] = "jquery_ui"
 projects[] = "jquery_update"
+projects[] = "l10n_update"
+projects[] = "lang_dropdown"
+projects[] = "languageicons"
 projects[] = "ldap_integration"
 projects[] = "libraries"
 projects[] = "link"
 projects[] = "location"
 projects[] = "menu_block"
+projects[] = "menu_per_role"
+projects[] = "menutrails"
 projects[] = "messaging"
 projects[] = "mimemail"
 projects[] = "multiblock"
@@ -53,7 +70,10 @@ projects[] = "noreqnewpass"
 projects[] = "notifications"
 projects[] = "panels"
 projects[] = "pathauto"
+projects[] = "permissions_api"
 projects[] = "phone"
+projects[] = "potx"
+projects[] = "profile_migrate"
 projects[] = "revision_deletion"
 projects[] = "role_delegation"
 projects[] = "rules"
@@ -62,7 +82,10 @@ projects[] = "stringoverrides"
 projects[] = "subpath_alias"
 projects[] = "taxonomy_menu"
 projects[] = "taxonomy_menu_trails"
+;projects[] = "teaser_comments"
 projects[] = "token"
+projects[] = "translation_overview"
+projects[] = "translation_table"
 projects[] = "transliteration"
 projects[] = "upload_replace"
 projects[] = "url_alter"
@@ -72,52 +95,125 @@ projects[] = "views_or"
 projects[] = "webform"
 projects[] = "xmlsitemap"
 
-; Translation modules
-projects[] = "i18n"
-projects[] = "i18nmenu_node"
-projects[] = "i18nviews"
-projects[] = "l10n_update"
-projects[] = "lang_dropdown"
-projects[] = "languageicons"
-projects[] = "potx"
-projects[] = "translation_overview"
-projects[] = "translation_table"
+;projects[] = "admin_menu"
+;projects[] = "advanced_help"
+;projects[] = "auto_nodetitle"
+;projects[] = "automenu"
+;projects[] = "backup_migrate"
+;projects[] = "biblio"
+;projects[] = "ctools"
+;projects[] = "calendar"
+;projects[] = "cck"
+;projects[] = "content_profile"
+;projects[] = "content_taxonomy"
+;projects[] = "countries_api"
+;projects[] = "css_names"
+;projects[] = "date"
+;projects[] = "drupalchat"
+;projects[] = "ed_readmore"
+;projects[] = "faq"
+;projects[] = "filefield"
+;projects[] = "filefield_track"
+;projects[] = "fpa"
+;projects[] = "globalredirect"
+;projects[] = "google_analytics"
+;projects[] = "imageapi"
+;projects[] = "imagecache"
+;projects[] = "imagecache_profiles"
+;projects[] = "imagefield"
+;projects[] = "imce"
+;projects[] = "jquery_ui"
+;projects[] = "jquery_update"
+;projects[] = "ldap_integration"
+;projects[] = "libraries"
+;projects[] = "link"
+;projects[] = "location"
+;projects[] = "menu_block"
+;projects[] = "messaging"
+;projects[] = "mimemail"
+;projects[] = "multiblock"
+;projects[] = "node_convert"
+;projects[] = "noreqnewpass"
+;projects[] = "notifications"
+;projects[] = "panels"
+;projects[] = "pathauto"
+;projects[] = "phone"
+;projects[] = "revision_deletion"
+;projects[] = "role_delegation"
+;projects[] = "rules"
+;projects[] = "site_map"
+;projects[] = "stringoverrides"
+;projects[] = "subpath_alias"
+;projects[] = "taxonomy_menu"
+;projects[] = "taxonomy_menu_trails"
+;projects[] = "token"
+;projects[] = "transliteration"
+;projects[] = "upload_replace"
+;projects[] = "url_alter"
+;projects[] = "user_relationships"
+;projects[] = "views"
+;projects[] = "views_or"
+;projects[] = "webform"
+;projects[] = "xmlsitemap"
+;
+;; Translation modules
+;projects[] = "i18n"
+;projects[] = "i18nmenu_node"
+;projects[] = "i18nviews"
+;projects[] = "l10n_update"
+;projects[] = "lang_dropdown"
+;projects[] = "languageicons"
+;projects[] = "potx"
+;projects[] = "translation_overview"
+;projects[] = "translation_table"
 
 ; Themes
 
 projects[] = zen
 
 ; Custom Modules
-
-; clade
-projects[clade][download][type] = git
-projects[clade][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
-projects[clade][download][subtree] = modules/clade
-projects[clade][type] = module
-
-; teaser_comments
-projects[ibphelper][download][type] = git
-projects[ibphelper][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
-projects[ibphelper][download][subtree] = modules/ibphelper
-projects[ibphelper][type] = module
-
-; jit
-projects[jit][download][type] = git
-projects[jit][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
-projects[jit][download][subtree] = modules/jit
-projects[jit][type] = module
-
-; teaser_comments
-projects[teaser_comments][download][type] = git
-projects[teaser_comments][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
-projects[teaser_comments][download][subtree] = modules/teaser_comments
-projects[teaser_comments][type] = module
-
-; ibp_theme
-projects[teaser_comments][download][type] = git
-projects[teaser_comments][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
-projects[teaser_comments][download][subtree] = themes/ibp_theme
-projects[teaser_comments][type] = theme
+; INSTALL THESE MODULES FROM GIT
+;; clade
+;projects[clade][download][type] = git
+;projects[clade][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects[clade][download][subtree] = modules/clade
+;projects[clade][type] = module
+;
+;; ibphelper
+;projects[ibphelper][download][type] = git
+;projects[ibphelper][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects[ibphelper][download][subtree] = modules/ibphelper
+;projects[ibphelper][type] = module
+;
+;; ibp_projects
+;projects [ibp_projects][download][type] = git
+;projects [ibp_projects][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects [ibp_projects][download][subtree] = modules ibp_projects
+;projects [ibp_projects][type] = module
+;
+;; ibp_variety_releases
+;projects[ibp_variety_releases][download][type] = git
+;projects[ibp_variety_releases][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects[ibp_variety_releases][download][subtree] = modules/ibp_variety_releases
+;projects[ibp_variety_releases][type] = module
+;
+;; jit
+;projects[jit][download][type] = git
+;projects[jit][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects[jit][download][subtree] = modules/jit
+;projects[jit][type] = module
+;
+;; teaser_comments
+;projects[teaser_comments][download][type] = git
+;projects[teaser_comments][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects[teaser_comments][download][subtree] = modules/teaser_comments
+;projects[teaser_comments][type] = module
+;
+;; ibp_theme
+;projects[teaser_comments][download][type] = git
+;projects[teaser_comments][download][url] = git@github.com:iPlantCollaborativeOpenSource/IBP.git
+;projects[teaser_comments][download][subtree] = themes/ibp_theme
+;projects[teaser_comments][type] = theme
 
 ; Libraries
 
