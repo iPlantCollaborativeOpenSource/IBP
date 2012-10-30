@@ -50,9 +50,12 @@
           	case 'Linux':
           		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-linux.png';
           		break;
-          	case 'Solaris':
-          		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-solaris.png';
-          		break;
+            case 'Solaris':
+              $path = drupal_get_path('theme', 'ibp_theme').'/images/platform-solaris.png';
+              break;
+            case 'Android':
+              $path = drupal_get_path('theme', 'ibp_theme').'/images/platform-android.png';
+              break;
           	default: // Web tool
           		$path = drupal_get_path('theme', 'ibp_theme').'/images/platform-web.png';
           	}
