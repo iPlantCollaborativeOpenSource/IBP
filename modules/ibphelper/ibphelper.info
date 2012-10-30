@@ -4,3 +4,4 @@ description = "A helper module for IBP.  Handles various customizations."
 package = "IBP"
 core = 6.x
 
+dependencies[] = clade

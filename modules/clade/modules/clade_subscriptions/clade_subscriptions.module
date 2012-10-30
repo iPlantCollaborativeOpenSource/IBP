@@ -1037,3 +1037,26 @@ function clade_subscriptions_profile_alter(&$account) {
 		);
 	}
 }
+
+function clade_subscriptions_token_list($type = 'all') {
+	if ($type == 'clade' || $type == 'term' || $type == 'all') {
+		$tokens['clade']['subscriptions-url'] = t('URL to manage subscriptions for a community');
+	} else if ($type == 'node') {
+		$tokens['node']['clade-subscriptions-url'] = t('URL to manage subscriptions for a community');
+	}
+	return $tokens;
+}
+
+function clade_subscriptions_token_values($type, $object = NULL, $options = array()) {
+  $values = array();
+  if (! empty($object)) {
+		if ($type == 'clade' || $type == 'term' || $type == 'all') {
+			$values['subscriptions-url'] = url('clade/' . $clade->tid . '/my-membership', array('absolute' => TRUE));
+		} else if ($type == 'node') {
+			if ($clade = clade_determine_context_for_node($object)) {
+				$values['clade-subscriptions-url'] = url('clade/' . $clade->tid . '/my-membership', array('absolute' => TRUE));
+			}
+		}
+	}
+	return $values;
+}

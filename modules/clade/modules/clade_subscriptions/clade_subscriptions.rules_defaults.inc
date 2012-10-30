@@ -11,10 +11,11 @@ function clade_subscriptions_rules_defaults() {
 	)));
 	
 	// new content notifications
+	$templatePath = drupal_get_path('module', 'clade_subscriptions').'/templates/new_content_notification.inc';
 	$actions = array(
 		rules_use_action('clade_subscriptions_send_new_content_notification', array('#settings' => array(
 			'subject' => 'New in [node:clade-name]: [node:title]',
-			'message' => '<p>New [node:type-name] by [author:user] <?php echo $node->teaser; ?></p><br><br><p>Read more on [:global:site-name]: <a href="[node:node-url]">[node:node-url]</a></p>',
+			'message' => file_get_contents($templatePath),
 			'#argument map' => array(
 				'node' => 'node',
 			),
@@ -42,10 +43,11 @@ function clade_subscriptions_rules_defaults() {
   );
 	
 	// updated content notifications
+	$templatePath = drupal_get_path('module', 'clade_subscriptions').'/templates/update_notification.inc';
 	$actions = array(
 		rules_use_action('clade_subscriptions_send_update_notification', array('#settings' => array(
 			'subject' => 'Updated in [node:clade-name]: [node:title]',
-			'message' => '<p>New update for [node:type-name] by [user:user]:<br><?php echo $node->teaser; ?></p><br><br><p>Read more on [:global:site-name]: <a href="[node:node-url]">[node:node-url]</a></p>',
+			'message' => file_get_contents($templatePath),
 			'#argument map' => array(
 				'node' => 'node',
 			),
@@ -73,10 +75,11 @@ function clade_subscriptions_rules_defaults() {
  );
 	
 	// new comment notifications
+	$templatePath = drupal_get_path('module', 'clade_subscriptions').'/templates/comment_notification.inc';
 	$actions = array(
 		rules_use_action('clade_subscriptions_send_new_content_notification', array('#settings' => array(
 			'subject' => 'New comment in [node:clade-name]: [node:title]',
-			'message' => '<p>New comment by [comment_author:user]:<br>[comment:comment-body]</p><p>Original [node:type-name] by [node_author:user]:<br><?php echo $node->teaser; ?></p><br><br><p>Read more on [:global:site-name]: <a href="[node:node-url]">[node:node-url]</a></p>',
+			'message' => file_get_contents($templatePath),
 			'#argument map' => array(
 				'node' => 'node',
 				'comment' => 'comment',

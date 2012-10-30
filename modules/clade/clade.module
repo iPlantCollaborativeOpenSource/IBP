@@ -432,7 +432,6 @@ function clade_form(&$node, $form_state) {
 
 function clade_form_alter(&$form, &$form_state, $form_id) {
 	global $user;
-	
 	// add additional submit hook for webform submissions
 	// TODOL: handle suggestions internally not with webform module 
 	if ($form_id == "webform_client_form_170") {
@@ -453,24 +452,13 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 		$form['comment_settings']['#access'] = $user->uid == 1;
 		$form['revision_information']['#access'] = $user->uid == 1;
 		
-		$form['taxonomy']['#type'] = '';
+		unset($form['taxonomy']['#type']);
+		unset($form['taxonomy']['#title']);
+		unset($form['taxonomy']['#collapsible']);
+		unset($form['taxonomy']['#collapsed']);
 		$clades_vid = variable_get('clade_vocabulary', 0);
-		$form['taxonomy'][$clades_vid]['#required'] = TRUE;
-		$form['taxonomy'][$clades_vid]['#description'] = t('This is the Clade this post will appear in.');
-		if ($clade = clade_get_context()) {
-			$form['taxonomy'][$clades_vid]['#type'] = 'value';
-			$form['taxonomy'][$clades_vid]['#value'] = array($clade->tid);
-			$form['taxonomy'][$clades_vid]['#default_value'] = array($clade->tid);
-			unset($form['taxonomy'][$clades_vid]['#options']);
-			unset($form['taxonomy'][$clades_vid]['#theme']);
-		} else if ($user->clades) {
-			$options = array();
-			foreach($user->clades as $clade) {
-				$opt = new stdClass;
-				$opt->option = array($clade['tid'] => $clade['name']);
-				$options[] = $opt;
-			}
-			$form['taxonomy'][$clades_vid]['#options'] = $options;
+		if ($clade = clade_get_context() || $user->clades) {
+			$form['#after_build'][] = 'clade_post_form_after_build';
 		}
 	
 		if (! empty($form['#node']->theme)) {
@@ -513,6 +501,33 @@ function clade_form_alter(&$form, &$form_state, $form_id) {
 			}
 		}
 	}
+}
+
+function clade_post_form_after_build($form, &$form_state) {
+	global $user;
+	$clades_vid = variable_get('clade_vocabulary', 0);
+
+	$node = $form['#node'];
+
+	if (! isset($node->nid)) {
+		if ($clade = clade_get_context()) {
+			$form['taxonomy'][$clades_vid]['#default_value'][] = $clade->tid;
+			$form['taxonomy'][$clades_vid]['#value'][] = $clade->tid;
+		}
+	}
+
+	if ($user->clades) {
+		$options = array();
+		foreach($user->clades as $clade) {
+			$opt = new stdClass;
+			$opt->option = array($clade['tid'] => $clade['name']);
+			$options[] = $opt;
+		}
+		$form['taxonomy'][$clades_vid]['#options'] = $options;
+		$form['taxonomy'][$clades_vid]['#size'] = min(count($options), 6);
+	}
+
+	return $form;
 }
 
 function clade_mini_form_after_build($form, &$form_state) {
