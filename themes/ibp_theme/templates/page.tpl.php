@@ -108,7 +108,12 @@
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php print $language->language; ?>" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:fb="http://www.facebook.com/2008/fbml"
+  xml:lang="<?php print $language->language; ?>"
+  lang="<?php print $language->language; ?>"
+  dir="<?php print $language->dir; ?>"
+>
 
 <head>
   <title><?php print $head_title; ?></title>
@@ -129,7 +134,7 @@
       <?php if ($logo): ?>
         <a href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>" rel="home" id="logo"><img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" /></a>
       <?php endif; ?>
-			
+
       <?php if ($site_name || $site_slogan): ?>
         <div id="name-and-slogan">
           <?php if ($site_name): ?>
@@ -149,7 +154,7 @@
           <?php endif; ?>
         </div><!-- /#name-and-slogan -->
       <?php endif; ?>
-			
+
 	<?php if ($topbar || $search_box) : ?>
 		<div id="top-bar">
 			<?php if ($logged_in) : ?>
@@ -157,11 +162,11 @@
 					<span><?php print t('You are logged in as !name', array('!name' => '<strong>'.$user->name.'</strong>')); ?></span>
 				</div>
 			<?php endif; ?>
-			
+
 			<?php if ($topbar): ?>
 				<div id="topbar"><?php print $topbar; ?></div>
 			<?php endif; ?>
-			
+
 			<?php if ($search_box): ?>
 				<div id="search-box"><?php print $search_box; ?></div>
 			<?php endif; ?>
@@ -169,14 +174,14 @@
 	<?php endif; ?>
 
       <?php print $header; ?>
-      
+
 			<div id="navigation">
 				<?php print $navigation; ?>
 				<div class="subnavigation"></div>
 			</div><!-- /#navigation -->
 
     </div></div><!-- /.section, /#header -->
-		
+
 		<div id="main-topper"><div class="section clearfix">
 			<?php if ($title): ?>
 				<h1 class="title">
@@ -191,7 +196,7 @@
 				<div class="tabs"><?php print $tabs; ?></div>
 			<?php endif; ?>
 		</div></div>
-		
+
     <div id="main-wrapper">
     	<div id="main">
 				<div id="columns">
@@ -201,21 +206,21 @@
 								<?php if ($mission): ?>
 									<div id="mission"><?php print $mission; ?></div>
 								<?php endif; ?>
-				
+
 								<?php print $highlight; ?>
-				
+
 								<?php print $help; ?>
-				
+
 								<?php print $content_top; ?>
-								
+
 								<div id="messages-wrapper"><?php print $messages; ?></div>
-				
+
 								<div id="content-area">
 									<?php print $content; ?>
 								</div>
-				
+
 								<?php print $content_bottom; ?>
-				
+
 								<?php if ($feed_icons): ?>
 									<div class="feed-icons"><?php print $feed_icons; ?></div>
 								<?php endif; ?>
@@ -233,7 +238,7 @@
 				<?php print $page_bottom; ?>
 			</div></div>
 		<?php endif; ?>
-		
+
 		<a href="#" id="back-to-top"><?php echo t('Back to top'); ?></a>
 
   </div></div><!-- /#page, /#page-wrapper -->
