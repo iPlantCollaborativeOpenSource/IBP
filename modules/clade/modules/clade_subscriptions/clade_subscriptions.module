@@ -375,9 +375,10 @@ function clade_subscriptions_subscribe_user($clade_id, $account) {
 	if ($account->uid > 0) { // don't accidentialy subscribe anonymous
 		$clade = clade_get_clade($clade_id);
 		clade_subscriptions_save_subscription($clade_id, $account->uid);
-		$to_name = $account->name;
-		if ($account->profile) {
-			$to_name = $account->profile->field_profile_first_name[0]['value'] . ' ' . $account->profile->field_profile_last_name[0]['value'];
+		$user = user_load($account->uid);
+		$to_name = $user->name;
+		if ($user->profile) {
+			$to_name = $user->profile->field_profile_first_name[0]['value'] . ' ' . $user->profile->field_profile_last_name[0]['value'];
 		}
 		$params = array(
 			'clade_name' => $clade->name,
@@ -388,8 +389,8 @@ function clade_subscriptions_subscribe_user($clade_id, $account) {
 		drupal_mail(
 			'clade_subscriptions',
 			'subscribe',
-			$account->mail,
-			$account->language,
+			$user->mail,
+			$user->language,
 			$params,
 			t('@clade_name Managers <@site_mail>', array('@clade_name' => $clade->name, '@site_mail' => variable_get('site_mail', '')))
 		);
@@ -440,26 +441,29 @@ function clade_subscriptions_save_subscription($clade_id, $uid, $args = array())
 }
 
 function clade_subscriptions_unsubscribe_user($clade_id, $account) {
+	if ($account->uid > 0) {
 	clade_subscriptions_delete_subscription($clade_id, $account->uid);
-
-	$clade = clade_get_clade($clade_id);
-		$to_name = $account->name;
-		if ($account->profile) {
-			$to_name = $account->profile->field_profile_first_name[0]['value'] . ' ' . $account->profile->field_profile_last_name[0]['value'];
+		$clade = clade_get_clade($clade_id);
+		$user = user_load($account->uid);
+		$to_name = $user->name;
+		if ($user->profile) {
+			$to_name = $user->profile->field_profile_first_name[0]['value'] . ' ' . $user->profile->field_profile_last_name[0]['value'];
 		}
-	$params = array(
-		'clade_name' => $clade->name,
-		'to_name' => $to_name,
-		'from_name' => t('The @clade_name Clade Managers', array('@clade_name' => $clade->name)),
+
+		$params = array(
+			'clade_name' => $clade->name,
+			'to_name' => $to_name,
+			'from_name' => t('The @clade_name Clade Managers', array('@clade_name' => $clade->name)),
+			);
+		drupal_mail(
+			'clade_subscriptions',
+			'unsubscribe',
+			$user->mail,
+			$user->language,
+			$params,
+			t('@clade_name Managers <@site_mail>', array('@clade_name' => $clade->name, '@site_mail' => variable_get('site_mail', '')))
 		);
-	drupal_mail(
-		'clade_subscriptions',
-		'unsubscribe',
-		$account->mail,
-		$account->language,
-		$params,
-		t('@clade_name Managers <@site_mail>', array('@clade_name' => $clade->name, '@site_mail' => variable_get('site_mail', '')))
-	);
+	}
 }
 
 function clade_subscriptions_delete_subscription($clade_id, $uid) {
