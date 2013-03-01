@@ -96,7 +96,7 @@ function ibphelper_user_page_title($account) {
 	} else {
 		$title = '!who Profile';
 	}
-	
+
 	if ($account->uid == $user->uid) {
 		$who = 'My';
 	}
@@ -132,7 +132,7 @@ function ibphelper_my_pages($account = NULL) {
 		global $user;
 		drupal_goto("user/{$user->uid}/my-ibp-pages");
 	}
-	
+
 	if (! $account->ibp_pages) {
 		$account = user_load($account->uid);
 	}
@@ -148,13 +148,13 @@ function ibphelper_my_pages($account = NULL) {
 
 // function ibphelper_admin_form() {
 // 	$form = array();
-// 	
+//
 // 	$vocs = taxonomy_get_vocabularies();
 // 	$options = array(t('Choose one'));
 // 	foreach ($vocs as $voc) {
 // 		$options[$voc->vid] = $voc->name;
 // 	}
-// 	
+//
 // 	$form['ibphelper_tools_vocabulary'] = array(
 // 		'#title' => t('IB Tools Vocabulary'),
 // 		'#description' => t('Select the Vocabulary to use in the IB Tools Navigation Menu block'),
@@ -162,10 +162,10 @@ function ibphelper_my_pages($account = NULL) {
 // 		'#options' => $options,
 // 		'#default_value' => variable_get('ibphelper_tools_vocabulary', 0),
 // 		);
-// 	
+//
 // 	return system_settings_form($form);
 // }
-// 
+//
 // function ibphelper_block($op = 'list', $delta = 0, $edit = array()) {
 // 	$block = array();
 // 	if ($op == 'list') {
@@ -181,12 +181,12 @@ function ibphelper_my_pages($account = NULL) {
 // 			drupal_add_js(drupal_get_path('module', 'ibphelper') . '/js/ibp-nav-menu.js');
 // 			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
 // 			$block['subject'] = t('IB Tools');
-// 			
-// 			if ($vid = variable_get('ibphelper_tools_vocabulary', 0)) {			
+//
+// 			if ($vid = variable_get('ibphelper_tools_vocabulary', 0)) {
 // 				$block['content'] = ibphelper_ibtools_nav_menu();
 // 			}
 // 			break;
-// 
+//
 // 		case 1 :
 // 			drupal_add_css(drupal_get_path('module', 'ibphelper') . '/css/ibp-nav-menu.css');
 // 			$block['subject'] = t('Training navigation');
@@ -210,7 +210,7 @@ function ibphelper_my_pages($account = NULL) {
 // 	}
 // 	return $block;
 // }
-// 
+//
 // function ibphelper_ibtools_nav_menu($pid = 0) {
 // 	$menu = taxonomy_get_tree(variable_get('ibphelper_tools_vocabulary', 0), $pid, -1, 1);
 // 	$items = array();
@@ -296,7 +296,7 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 		}
 	} else if ($form_id == 'user_profile_form') {
 		drupal_set_title(ibphelper_user_page_title($form['_account']['#value']));
-		
+
 		$form['account']['name']['#attributes']['readonly'] = 'readonly';
 		$form['account']['name']['#value'] = $form['account']['name']['#default_value'];
 		$form['account']['mail']['#attributes']['readonly'] = 'readonly';
@@ -307,7 +307,7 @@ function ibphelper_form_alter(&$form, &$form_state, $form_id) {
 			$form['account']['mail']['#description'],
 			$form['account']['pass']
 		);
-		
+
 		$info = <<<info
 		<div class="status">
 			The Integrated Breeding Platform takes advantage of iPlant central authentication.
@@ -325,12 +325,12 @@ info;
 			'#value' => $info,
 			'#weight' => 1,
 		);
-		
+
 		$form['account']['status']['#weight'] = 5;
 		$form['account']['roles']['#weight'] = 5;
-		
+
 		$form['picture']['#prefix'] = '<a name="picture"></a>';
-		
+
 	} else if ($form_id == 'contact_mail_user') {
 		$account = $form['recipient']['#value'];
 		drupal_set_title(check_plain('Contact ' . $account->profile->field_profile_first_name[0]['value'] . ' ' . $account->profile->field_profile_last_name[0]['value']));
@@ -357,6 +357,8 @@ info;
 			unset($form['taxonomy'][$clade_vid]['#options'],$form['taxonomy'][$clade_vid]['#theme']);
 		}
 		unset($form['menu']);
+	} else if ($form_id == "comment_form") {
+		$form['comment_filter']['comment']['#rows'] = 3;
 	}
 }
 
@@ -380,7 +382,7 @@ function ibphelper_form_filefield_track_download_file_form_alter(&$form, &$form_
 			'!register' => l(t('Register'), 'user/register', array('query' => $dest))
 		))
 	);
-} 
+}
 
 // function ibphelper_link_alter(&$links, $node, $comment = NULL) {
 // }
@@ -492,19 +494,19 @@ function ibphelper_user($op, &$edit, &$account, $category = NULL) {
 					_ibphelper_ldap_create_profile($account);
 					$account->profile = content_profile_load('profile', $account->uid);
 				}
-				
+
 				$todo = array();
 				if (! $account->picture) {
 					$todo[] = l(t("Add a Profile Picture"), "user/{$account->uid}/edit", array('fragment' => '#picture'));
 				}
-				
+
 				if (!(
 					$account->profile->field_profile_affiliation[0]['value'] &&
 					$account->profile->field_profile_country[0]['value']
 				)) {
 					$todo[] = l(t("Update your user profile"), "user/{$account->uid}/edit/profile");
 				}
-				
+
 				if (count($todo) > 0) {
 					$message = "Help fellow IBP users connect with you:";
 					$replace = array();
@@ -563,14 +565,14 @@ function ibphelper_imagecache_default_presets() {
 	$presets = array();
 	$presets['profile_normal'] = array (
 		'presetname' => 'profile_normal',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '200',
 					'height' => '200',
@@ -581,14 +583,14 @@ function ibphelper_imagecache_default_presets() {
 	);
 	$presets['profile_medium'] = array (
 		'presetname' => 'profile_medium',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale_and_crop',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '64',
 					'height' => '64',
@@ -598,14 +600,14 @@ function ibphelper_imagecache_default_presets() {
 	);
 	$presets['profile_small'] = array (
 		'presetname' => 'profile_small',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale_and_crop',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '30',
 					'height' => '30',
@@ -615,14 +617,14 @@ function ibphelper_imagecache_default_presets() {
 	);
 	$presets['profile_tiny'] = array (
 		'presetname' => 'profile_tiny',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale_and_crop',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '24',
 					'height' => '24',
@@ -630,17 +632,17 @@ function ibphelper_imagecache_default_presets() {
 			),
 		),
 	);
-	
+
 	$presets['tool_screenshot_small'] = array (
 		'presetname' => 'tool_screenshot_small',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale_and_crop',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '85',
 					'height' => '56',
@@ -650,14 +652,14 @@ function ibphelper_imagecache_default_presets() {
 	);
 	$presets['tool_screenshot_preview'] = array (
 		'presetname' => 'tool_screenshot_preview',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale_and_crop',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '300',
 					'height' => '200',
@@ -667,14 +669,14 @@ function ibphelper_imagecache_default_presets() {
 	);
 	$presets['tool_screenshot_zoom'] = array (
 		'presetname' => 'tool_screenshot_zoom',
-		'actions' => 
+		'actions' =>
 		array (
-			0 => 
+			0 =>
 			array (
 				'weight' => '0',
 				'module' => 'imagecache',
 				'action' => 'imagecache_scale',
-				'data' => 
+				'data' =>
 				array (
 					'width' => '1024',
 					'height' => '768',
@@ -683,7 +685,7 @@ function ibphelper_imagecache_default_presets() {
 			),
 		),
 	);
-	
+
 	return $presets;
 }
 
@@ -698,23 +700,23 @@ function ibphelper_imagecache_default_presets() {
 // 					$alias = 'training/'.pathauto_cleanstring($array['name']);
 // 					path_set_alias('training/'.$array['tid'],$alias);
 // 					break;
-// 				
+//
 // 				case "update":
 // 					// update path alias
 // 					path_set_alias('training/'.$array['tid']); // delete old path
 // 					$alias = 'training/'.pathauto_cleanstring($array['name']);
 // 					path_set_alias('training/'.$array['tid'], $alias);
 // 					break;
-// 					
+//
 // 				case "delete":
 // 					// delete path alias
 // 					path_set_alias('training/'.$array['tid']);
-// 					break;	
+// 					break;
 // 			}
 // 		}
 // 	}
 // }
-// 
+//
 // function ibphelper_ibp_training($category, $crop = NULL) {
 // 	$args = array($category);
 // 	if ($crop) {
@@ -728,18 +730,18 @@ function ibphelper_imagecache_default_presets() {
 // 		return "<h3>".t('No training materials available.')."</h3>";
 // 	}
 // }
-// 
+//
 // function ibphelper_ibp_training_title($category) {
 // 	return taxonomy_get_term($category)->name;
 // }
-// 
+//
 // function ibphelper_taxonomy_menu_path() {
 // 	$output = array(
 // 		'ibphelper_taxonomy_menu_path_custom' => t('IBP Custom'),
 // 		);
 // 	return $output;
 // }
-// 
+//
 // function ibphelper_taxonomy_menu_path_custom($vid,$tid) {
 // 	$vocabulary = taxonomy_vocabulary_load($vid);
 // 	if ($vocabulary->name == 'Training types') {
@@ -761,7 +763,7 @@ function ibphelper_ctools_plugin_api($module, $api) {
   )
   {
     return array('version' => 1);
-  }  
+  }
 }
 
 // Implementation of hook_ctools_plugin_directory()

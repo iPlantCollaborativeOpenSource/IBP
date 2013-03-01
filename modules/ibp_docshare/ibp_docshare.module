@@ -1,21 +1,5 @@
 <?php
 
-/**
- * Implements hook_form().
- */
-function ibp_docshare_form_alter(&$form, &$form_state, $form_id) {
-	if ($form_id == 'ibp_docshare_node_form') {
-		$node = $form['#node'];
-		if (empty($node->nid) && $clade = clade_get_context()) {
-			$form['ibp_docshare_crop']['#default_value'][]['value'] = $clade->tid;
-			$form['ibp_docshare_crop']['#value'][]['value'] = $clade->tid;
-			$form['ibp_docshare_crop']['#type'] = 'hidden';
-		}
-	}
-}
-
-
-
 function ibp_docshare_clade($op = 'determine context', $obj = null) {
 
 	if ($op == 'determine context') {
@@ -26,22 +10,27 @@ function ibp_docshare_clade($op = 'determine context', $obj = null) {
 	} else if ($op == 'clade node types') {
 		return 'ibp_docshare';
 	}
-	
+
 }
 
 function ibp_docshare_clade_details_items($clade) {
-	return array(
+	$items = array(
 		'docshare' => array(
 			'data' => l(t('Shared Documents'), "clade/{$clade->tid}/documents"),
 			'data-sort' => 9,
 			'class' => 'clade-details-item'
 		),
-		'create_docshare' => array(
+	);
+
+	if (user_access('create ibp_docshare')) {
+		$items['create_docshare'] = array(
 			'data' => l(t('Add a new Shared Document'), "node/add/ibp-docshare", array('query' => array('clades' => $clade->tid))),
 			'data-sort' => 13,
 			'class' => 'clade-details-item'
-		),
-	);
+		);
+	}
+
+	return $items;
 }
 
 function ibp_docshare_views_pre_render(&$view) {
@@ -53,4 +42,105 @@ function ibp_docshare_views_pre_render(&$view) {
 
 function ibp_docshare_views_api() {
   return array('api' => 2.0);
+}
+
+function ibp_docshare_perm() {
+	return array(
+		'create ibp_docshare',
+		'edit own ibp_docshare',
+		'edit any ibp_docshare',
+		'delete own ibp_docshare',
+		'delete any ibp_docshare',
+	);
+}
+
+function ibp_docshare_access($op, $node, $account) {
+	switch ($op) {
+		case 'view':
+			return TRUE;
+			break;
+		case 'create':
+			return user_access('create ibp_docshare');
+			break;
+		case 'update':
+			if ($account->uid == $node->nid) {
+				return user_access('edit own ibp_docshare');
+			}
+			if ($node->ibp_docshare_access_type[0]['value'] == 'community') {
+				error_log('community');
+				// check if user in community
+				$node_clade = clade_determine_context_for_node($node);
+				error_log(print_r($account,1));
+			} else if ($node->ibp_docshare_access_type[0]['value'] == 'user') {
+				// check if user in ibp_docshare_allowed_users
+				for ($i = 0; $i < count($node->ibp_docshare_allowed_users); $i++) {
+					if ($account->uid == $node->ibp_docshare_allowed_users[0]['uid']) {
+						return true;
+					}
+				}
+			}
+			break;
+		case 'delete':
+			return user_access('delete own ibp_docshare') || user_access('delete any ibp_docshare');
+			break;
+	}
+}
+
+function ibp_docshare_access_type() {
+
+}
+
+function ibp_docshare_node_info() {
+	return array(
+		'ibp_docshare' => array(
+	        'name' => t('Shared Document'),
+	        'module' => 'ibp_docshare',
+	        'description' => t('A Shared Document.'),
+			'has_title' => TRUE,
+			'title_label' => t('Document name'),
+			'has_body' => TRUE,
+			'body_label' => t('Description'),
+		),
+	);
+}
+
+function ibp_docshare_form(&$node, $form_state) {
+	$form = array();
+
+	$form['title'] = array(
+		'#type' => 'textfield',
+		'#title' => t('Document name'),
+		'#default_value' => $node->title,
+		'#required' => TRUE,
+		);
+
+	$form['body'] = array(
+		'#type' => 'textarea',
+		'#title' => t('Description'),
+		'#default_value' => $node->body,
+		'#required' => TRUE,
+		'#weight' => -4,
+		);
+
+	return $form;
+}
+
+function ibp_docshare_form_alter(&$form, &$form_state, $form_id) {
+	global $user;
+
+	if ($form_id == 'ibp_docshare_node_form') {
+		$node = $form['#node'];
+		if (empty($node->nid) && $clade = clade_get_context()) {
+			$form['ibp_docshare_crop']['#default_value'][]['value'] = $clade->tid;
+			$form['ibp_docshare_crop']['#value'][]['value'] = $clade->tid;
+			$form['ibp_docshare_crop']['#type'] = 'hidden';
+		}
+
+		if ($user->uid != $node->uid && !user_access("edit any ibp_docshare")) {
+			$form['title']['#access'] = FALSE;
+			$form['ibp_docshare_crop']['#access'] = FALSE;
+			$form['ibp_docshare_access_type']['#access'] = FALSE;
+			$form['ibp_docshare_allowed_users']['#access'] = FALSE;
+		}
+	}
 }

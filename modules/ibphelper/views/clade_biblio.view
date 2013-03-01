@@ -76,6 +76,15 @@ $handler->override_option('fields', array(
     'relationship' => 'none',
   ),
 ));
+$handler->override_option('sorts', array(
+  'biblio_year' => array(
+    'order' => 'DESC',
+    'id' => 'biblio_year',
+    'table' => 'biblio',
+    'field' => 'biblio_year',
+    'relationship' => 'none',
+  ),
+));
 $handler->override_option('arguments', array(
   'tid' => array(
     'default_action' => 'ignore',

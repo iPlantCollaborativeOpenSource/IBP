@@ -52,7 +52,7 @@ function ibp_projects_access($op, $node, $account) {
 function ibp_projects_form(&$node, $form_state) {
 	$type = node_get_types('type', $node->type);
 	$form = array();
-	
+
 	$form['title'] = array(
 		'#title' => $type->title_label,
 		'#type' => 'textfield',
@@ -60,7 +60,7 @@ function ibp_projects_form(&$node, $form_state) {
 		'#default_value' => $node->nid ? $node->title : $form_state['values']['title'],
 		'#weight' => -20,
 	);
-	
+
 	$form['body'] = array(
 		'#title' => $type->body_label,
 		'#type' => 'textarea',

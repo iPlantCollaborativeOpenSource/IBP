@@ -65,7 +65,7 @@ function clade_subscriptions_send_new_content_notification($node, $settings) {
 		$subPrefs = clade_subscriptions_get_subscriptions_preferences($member, $clade->tid);
 		if ($subPrefs[$node->type]['new'] && $member != $node->uid) {
 			$account = user_load($member);
-			$to = 'mrhanlon@tacc.utexas.edu';//$account->mail;
+			$to = $account->mail;
 			$from = ($settings['from']) ? str_replace(array("\r", "\n"), '', $settings['from']) : NULL;
 			$message = drupal_mail('clade_subscriptions', 'clade_subscriptions_send_new_content_notification', $to, user_preferred_language($account), $settings, $from);
 			if ($message['result']) {
@@ -83,7 +83,7 @@ function clade_subscriptions_send_update_notification($node, $user, $settings) {
 		$subPrefs = clade_subscriptions_get_subscriptions_preferences($member, $clade->tid);
 		if ($subPrefs[$node->type]['update'] && $member != $user->uid) {
 			$account = user_load($member);
-			$to = 'mrhanlon@tacc.utexas.edu';//$account->mail;
+			$to = $account->mail;
 			$from = ($settings['from']) ? str_replace(array("\r", "\n"), '', $settings['from']) : NULL;
 			$message = drupal_mail('clade_subscriptions', 'clade_subscriptions_send_update_notification', $to, user_preferred_language($account), $settings, $from);
 			if ($message['result']) {
@@ -101,7 +101,7 @@ function clade_subscriptions_send_comment_notification($node, $comment, $setting
 		$subPrefs = clade_subscriptions_get_subscriptions_preferences($member, $clade->tid);
 		if ($subPrefs[$node->type]['comment'] && $member != $comment->uid) {
 			$account = user_load($member);
-			$to = 'mrhanlon@tacc.utexas.edu';//$account->mail;
+			$to = $account->mail;
 			$from = ($settings['from']) ? str_replace(array("\r", "\n"), '', $settings['from']) : NULL;
 			$message = drupal_mail('clade_subscriptions', 'clade_subscriptions_send_comment_notification', $to, user_preferred_language($account), $settings, $from);
 			if ($message['result']) {

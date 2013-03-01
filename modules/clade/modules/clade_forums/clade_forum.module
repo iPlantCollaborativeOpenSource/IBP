@@ -4,7 +4,7 @@ function clade_forum_menu() {
 	$items = array();
 	$items['clade/%clade/forums'] = array(
     'title' => 'Forums',
-    'page callback' => 'clade_forum_clade_forum',   
+    'page callback' => 'clade_forum_clade_forum',
     'page arguments' => array(1),
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
@@ -50,11 +50,11 @@ function clade_forum_clade($op, $obj = NULL) {
 		$forum_fields['values']['parent'][0] = 0;
 		$forum_fields['values']['weight'] = 0;
 		$forum_fields['values']['vid'] = $forum_vid;
-		
+
 		module_load_include('inc', 'forum', 'forum.admin');
 		$forum = forum_form_forum($forum_fields);
 		forum_form_submit($forum, $forum_fields);
-		
+
 		$clade_forum = array('tid' => $obj->tid, 'fid' => $forum_fields['values']['tid']);
 		drupal_write_record('clade_forum', $clade_forum);
 	}
@@ -97,18 +97,18 @@ function clade_forum_clade_details_items($clade) {
 
 function clade_forum_form_alter(&$form, &$form_state, $form_id) {
 	if ($form_id == "forum_node_form") {
-		$form['taxonomy']['#type'] = '';
-		
+		unset($form['taxonomy']['#type']);
 		$vid = variable_get('forum_nav_vocabulary', 0);
 		$form['taxonomy'][$vid]['#type'] = 'value';
 		$form['taxonomy'][$vid]['#value'] = $form['taxonomy'][$vid]['#default_value'][0];
-		unset($form['taxonomy'][$vid]['#theme']);
-		
+		unset($form['taxonomy'][$vid]['#theme'], $form['taxonomy'][$vid]['#options']);
+
 		$clade_tid = clade_forum_clade_from_forum($form['taxonomy'][$vid]['#value']);
 		$vid = variable_get('clade_vocabulary', 0);
 		$form['taxonomy'][$vid]['#type'] = 'value';
 		$form['taxonomy'][$vid]['#value'] = array($clade_tid);
 		unset($form['taxonomy'][$vid]['#theme']);
+		// error_log(print_r($form,1));
 	}
 }
 
