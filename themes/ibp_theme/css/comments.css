@@ -78,3 +78,7 @@
 .preview .comment /* Preview of the comment before submitting new or updated comment */ {
   /* background-color: #ffffea; */ /* Drupal core uses a #ffffea background */
 }
+
+#comment-form .tips, #comment-form .tips + p a {
+  display:none;
+}
