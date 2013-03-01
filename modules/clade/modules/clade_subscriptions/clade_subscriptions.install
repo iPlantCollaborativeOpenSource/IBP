@@ -4,86 +4,40 @@
 function clade_subscriptions_schema() {
   $schema = array();
   $schema['clade_uid'] = array(
-		'description' => 'Table to store info about users who join clades.',
-		'fields' => array(
-				'tid' => array(
-						'description' => 'the clade id (term_data.tid)',
-						'type' => 'int',
-						'size' => 'normal',
-						'not null' => TRUE,
-					),
-				'uid' => array(
-						'description' => 'the id of the user',
-						'type' => 'int',
-						'size' => 'normal',
-						'not null' => TRUE,
-					),
-				'is_admin' => array(
-						'description' => 'whether or not the user is an admin for the clade',
-						'type' => 'int',
-						'size' => 'tiny',
-						'not null' => TRUE,
-						'default' => 0,
-					),
-				'created' => array(
-						'description' => 'date the user joined the clade',
-						'type' => 'int',
-						'size' => 'normal',
-					),
-				'changed' => array(
-						'description' => 'membership last modified',
-						'type' => 'int',
-						'size' => 'normal',
-					),
-			),
-		'primary key' => array('tid', 'uid'),
-	);
-	
-	$schema['clade_uid_subscriptions'] = array(
-		'description' => 'Table to store user clade subscription preferences',
-		'fields' => array(
-			'tid' => array(
-				'description' => 'the clade id (term_data.tid)',
-				'type' => 'int',
-				'size' => 'normal',
-				'not null' => TRUE,
-			),
-			'uid' => array(
-				'description' => 'the id of the user',
-				'type' => 'int',
-				'size' => 'normal',
-				'not null' => TRUE,
-			),
-			'node_type' => array(
-				'description' => 'the node type',
-				'type' => 'varchar',
-				'length' => 255,
-				'not null' => TRUE,
-			),
-			'send_new_content_notifications' => array(
-				'description' => 'Are new content notifications active',
-				'type' => 'int',
-				'size' => 'tiny',
-				'not null' => TRUE,
-				'default' => 1,
-			),
-			'send_updated_content_notifications' => array(
-				'description' => 'Are updated content notifications active',
-				'type' => 'int',
-				'size' => 'tiny',
-				'not null' => TRUE,
-				'default' => 1,
-			),
-			'send_comment_notifications' => array(
-				'description' => 'Are comment notifications active',
-				'type' => 'int',
-				'size' => 'tiny',
-				'not null' => TRUE,
-				'default' => 1,
-			),
-		),
-		'primary key' => array('tid', 'uid', 'node_type'),
-	);
+      'description' => 'Table to store info about users who join clades.',
+      'fields' => array(
+          'tid' => array(
+              'description' => 'the clade id (term_data.tid)',
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+            ),
+          'uid' => array(
+              'description' => 'the id of the user',
+              'type' => 'int',
+              'size' => 'normal',
+              'not null' => TRUE,
+            ),
+          'is_admin' => array(
+              'description' => 'whether or not the user is an admin for the clade',
+              'type' => 'int',
+              'size' => 'tiny',
+              'not null' => TRUE,
+              'default' => 0,
+            ),
+          'created' => array(
+              'description' => 'date the user joined the clade',
+              'type' => 'int',
+              'size' => 'normal',
+            ),
+          'changed' => array(
+              'description' => 'membership last modified',
+              'type' => 'int',
+              'size' => 'normal',
+            ),
+        ),
+      'primary key' => array('tid', 'uid'),
+    );
   return $schema;
 }
 
@@ -125,58 +79,4 @@ function clade_subscriptions_update_6003() {
 	}
 	
 	return array();
-}
-
-function clade_subscriptions_update_6004() {
-	$return = array();
-	
-	$schema['clade_uid_subscriptions'] = array(
-		'description' => 'Table to store user clade subscription preferences',
-		'fields' => array(
-			'tid' => array(
-				'description' => 'the clade id (term_data.tid)',
-				'type' => 'int',
-				'size' => 'normal',
-				'not null' => TRUE,
-			),
-			'uid' => array(
-				'description' => 'the id of the user',
-				'type' => 'int',
-				'size' => 'normal',
-				'not null' => TRUE,
-			),
-			'node_type' => array(
-				'description' => 'the node type',
-				'type' => 'varchar',
-				'length' => 255,
-				'not null' => TRUE,
-			),
-			'send_new_content_notifications' => array(
-				'description' => 'Are new content notifications active',
-				'type' => 'int',
-				'size' => 'tiny',
-				'not null' => TRUE,
-				'default' => 1,
-			),
-			'send_updated_content_notifications' => array(
-				'description' => 'Are updated content notifications active',
-				'type' => 'int',
-				'size' => 'tiny',
-				'not null' => TRUE,
-				'default' => 1,
-			),
-			'send_comment_notifications' => array(
-				'description' => 'Are comment notifications active',
-				'type' => 'int',
-				'size' => 'tiny',
-				'not null' => TRUE,
-				'default' => 1,
-			),
-		),
-		'primary key' => array('tid', 'uid', 'node_type'),
-	);
-	
-	db_create_table($return, 'clade_uid_subscriptions', $schema['clade_uid_subscriptions']);
-	
-	return $return;
 }

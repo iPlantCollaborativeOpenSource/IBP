@@ -2,5 +2,6 @@
 name = Clade Subscriptions
 description = Allow users to subscribe to or "join" clades.
 dependencies[] = clade
+dependencies[] = notifications_tags
 package = "Clade"
 core = 6.x
