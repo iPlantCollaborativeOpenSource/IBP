@@ -150,7 +150,8 @@
 
 .view-clade-forum-summary .views-field-title,
 .view-clade-post-summary .views-field-title,
-.view-ibp-projects-summary .views-field-title {
+.view-ibp-projects-summary .views-field-title,
+.view-community-latest-comments .views-field-subject {
 	font-weight: bold;
 }
 
