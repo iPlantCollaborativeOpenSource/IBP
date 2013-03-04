@@ -8,7 +8,8 @@
 .view-clade-forum-summary .views-row,
 .view-clade-post-summary .views-row,
 .view-ibp-projects-summary .views-row,
-.view-clade-biblio-summary .views-row {
+.view-clade-biblio-summary .views-row,
+.view-community-latest-comments .views-row {
 	position: relative;
 	clear: both;
 	padding: 12px 0;
@@ -22,7 +23,8 @@
 .view-clade-forum-summary .views-row:last-child,
 .view-clade-post-summary .views-row:last-child,
 .view-ibp-projects-summary .views-row:last-child,
-.view-clade-biblio-summary .views-row:last-child {
+.view-clade-biblio-summary .views-row:last-child,
+.view-community-latest-comments .views-row:last-child {
 	border-width: 0;
 	-moz-border-image: none;
 	-o-border-image: none;
@@ -33,7 +35,8 @@
 .view-clade-forum-summary .views-row:after,
 .view-clade-post-summary .views-row:after,
 .view-ibp-projects-summary .views-row:after,
-.view-clade-biblio-summary .views-row:after {
+.view-clade-biblio-summary .views-row:after,
+.view-community-latest-comments .views-row:after {
 	content: ".";
 	display: block;
 	clear: both;
@@ -44,7 +47,8 @@
 .view-clade-forum-summary .views-row > div,
 .view-clade-post-summary .views-row > div,
 .view-ibp-projects-summary .views-row > div,
-.view-clade-biblio-summary .views-row > div {
+.view-clade-biblio-summary .views-row > div,
+.view-community-latest-comments .views-row > div {
 	float: left;
 }
 
@@ -86,12 +90,18 @@
 	padding: 0 10px 0 0;
 }
 
+.view-community-latest-comments .views-field-title {
+	width: 570px;
+	padding: 0 10px 0 0;
+}
+
 .view-ibp-projects-summary.clade-context .views-field-title {
 	width: 430px;
 	padding: 0 10px 0 0;
 }
 
 .view-clade-post-summary .views-field-name-1,
+.view-community-latest-comments .views-field-name,
 .view-ibp-projects-summary .views-field-ibp-project-pi-uid,
 .view-ibp-projects-summary .views-field-ibp-project-pi-text-value {
 	color: #888888;
@@ -186,6 +196,10 @@
 }
 
 .pane-clade-post-summary-panel-pane-1 h2.pane-title {
+	background-image: url(../images/blog-icon.png);
+}
+
+.pane-community-latest-comments-panel-pane-1 h2.pane-title {
 	background-image: url(../images/blog-icon.png);
 }
 
