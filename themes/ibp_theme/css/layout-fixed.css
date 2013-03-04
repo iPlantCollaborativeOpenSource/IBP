@@ -235,7 +235,8 @@ body.admin-menu {
 
 .region-sidebar-second .section .block h2.title,
 .region-sidebar-second .section .block div.content {
-	margin-left: 15px;
+	margin-left: 5px;
+  position: relative;
 }
 
 /*

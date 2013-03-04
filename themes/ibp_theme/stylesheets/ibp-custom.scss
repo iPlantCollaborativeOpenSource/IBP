@@ -1,3 +1,5 @@
+@import "compass/css3";
+
 #top-bar {
 	text-shadow: -1px -1px 1px #333333;
 	font-size: 12px;
@@ -566,4 +568,28 @@ div.view div.views-admin-links li a:hover {
 
 ul.menu li.calendar {
 	width: auto;
+}
+
+.content-complete-percent-bar-wrapper {
+	width: auto;
+	@include border-radius(3px);
+}
+
+.content-complete-percent-bar {
+	background-color: #2F85C6;
+	@include background-image(linear-gradient(lighten(#2F85C6, 5%), darken(#2F85C6, 2%)));
+	@include border-radius(2px);
+}
+
+.view-latest-my-clades {
+	.views-row {
+		margin-bottom: .5em;
+		padding-bottom: .5em;
+		border-bottom: 1px solid #ddd;
+
+		&:last-child {
+			padding-bottom: 0;
+			border-bottom: none;
+		}
+	}
 }

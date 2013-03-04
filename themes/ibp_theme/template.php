@@ -71,7 +71,7 @@ function ibp_theme_theme(&$existing, $type, $theme, $path) {
   $hooks['hook_name_here'] = array( // Details go here );
   */
   // @TODO: Needs detailed comments. Patches welcome!
-  
+
   $hooks['loginlinks'] = array(
 		'arguments' => array(
 			'user' => NULL,
@@ -87,9 +87,13 @@ function ibp_theme_theme(&$existing, $type, $theme, $path) {
   $hooks['user_flag'] = array(
     'arguments' => array('account' => NULL),
 		);
-	$hooks['definition_list'] = array(
-		'arguments' => array('vars' => NULL),
-	);
+  $hooks['definition_list'] = array(
+    'arguments' => array('vars' => NULL),
+  );
+  $hooks['profile_join_a_clade'] = array(
+    'arguments' => array('user' => NULL),
+    'template' => 'templates/profile_join_a_clade'
+  );
   return $hooks;
 }
 
@@ -102,7 +106,7 @@ function ibp_theme_loginlinks($user) {
 		}
 		$items[] = t("<span class='loginstatus'>You are logged in as <strong>@user</strong></span>", array("@user" => $name));
 		// TODO My Links
-		
+
 		$menu_data = menu_tree_all_data('menu-my-links');
 		$mylinks = array();
 		foreach ($menu_data as $link) {
@@ -137,7 +141,7 @@ function ibp_theme_preprocess(&$vars, $hook) {
 	if (drupal_is_front_page()) {
 		drupal_add_css(drupal_get_path('theme','ibp_theme') . '/css/page-front.css', 'theme');
 	}
-	
+
 	if ($hook == 'page') {
 		if ($_SERVER['SERVER_NAME'] && $_SERVER['SERVER_NAME'] != 'www.integratedbreeding.net') {
 			$vars['classes_array'][] = 'devel-site';
@@ -168,9 +172,9 @@ function ibp_theme_preprocess_page(&$vars, $hook) {
  */
 function ibp_theme_preprocess_node(&$vars, $hook) {
 	$node = $vars['node'];
-	
+
 	$vars['classes'] .= strtolower(preg_replace("/[\s_]+/", "-", $node->type));
-	
+
 	if (drupal_is_front_page()) {
 		$vars['template_files'][] = 'node-front';
 		$path = drupal_get_path('theme','ibp_theme').'/css/node-front.css';
@@ -178,14 +182,14 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
       drupal_add_css($path, 'theme');
     }
 	}
-	
+
   // Optionally, run node-type-specific preprocess functions, like
   // ibp_theme_preprocess_node_page() or ibp_theme_preprocess_node_story().
   $function = __FUNCTION__ . '_' . $node->type;
   if (function_exists($function)) {
     $function($vars, $hook);
   }
-  
+
   // add css per node type
   $path = drupal_get_path('theme','ibp_theme').'/css/node-'.$node->type.'.css';
   if (file_exists($path)) {
@@ -195,12 +199,12 @@ function ibp_theme_preprocess_node(&$vars, $hook) {
   if (file_exists($path)) {
   	drupal_add_js($path, 'theme');
   }
-	
+
 	if ($node->type == 'ibp_tool') {
 		if ($node->field_tool_development[0]['value']) {
 			$vars['classes'] .= ' in-development';
 			$vars['in_development'] = TRUE;
-			
+
 		}
 		drupal_add_js(drupal_get_path('theme','ibp_theme').'/js/ibp_tool.js');
 	}
@@ -239,19 +243,19 @@ function ibp_theme_links($links, $attributes = array('class' => 'links'), $headi
 	if ($links['node_read_more']) {
 		$links['node_read_more']['title'] = t('Continue reading');
 	}
-	
+
 	if (strpos(array_shift(array_keys($links)), 'taxonomy_term') === 0) {
 		$attributes['class'] .= ' terms';
 	}
-		
+
 	if (isset($links['biblio_tagged'])) {
 		$links['biblio_tagged']['title'] = t('EndNote (tagged)');
 	}
-	
+
 	if ($links['biblio_xml']) {
 		$links['biblio_xml']['title'] = t('EndNote (XML)');
 	}
-	
+
 	return theme_links($links, $attributes, $heading);
 }
 // */
@@ -331,7 +335,7 @@ function ibp_theme_username($object) {
 			}
 			$name .= ' ' . $profile->field_profile_last_name[0]['value'];
 			$name = trim($name);
-			
+
 			if (module_exists('countries_api')) {
 				$countries = $countries = countries_api_get_array('printable_name', 'iso2');
 				$profile_country = $profile->field_profile_country[0]['value'];
@@ -340,11 +344,11 @@ function ibp_theme_username($object) {
 				}
 			}
 		}
-		
+
 		if (empty($name)) {
 			$name = $object->name;
 		}
-		
+
     // Shorten the name when it is too long or it will break many tables.
     if (drupal_strlen($name) > 20) {
       $name = drupal_substr($name, 0, 15) . '...';
@@ -356,7 +360,7 @@ function ibp_theme_username($object) {
     else {
       $name = check_plain($name);
     }
-    
+
     $output = $flag.$name;
   }
   else if ($object->name) {
@@ -397,7 +401,7 @@ function ibp_theme_filefield_icon($file) {
   }
   $mime = check_plain($file['filemime']);
   $dashed_mime = strtr($mime, array('/' => '-', '+' => '-'));
-  
+
   if ($icon_path = _ibp_theme_filefield_icon_path($file)) {
   	$icon_url = $base_url . '/' . $icon_path;
     return '<img class="filefield-icon field-icon-'. $dashed_mime .'"  alt="'. t('@mime icon', array('@mime' => $mime)) .'" src="'. $icon_url .'" />';
@@ -409,19 +413,19 @@ function ibp_theme_filefield_icon($file) {
 function _ibp_theme_filefield_icon_path($file) {
 	$dir = drupal_get_path('theme','ibp_theme') . '/images/filefield/';
 	$dashed_mime = strtr($file['filemime'], array('/' => '-'));
-	
+
 	$path = $dir.$dashed_mime.'.png';
 	if (file_exists($path)) {
 		return $path;
 	}
-	
+
 	if ($generic_name = _filefield_generic_icon_map($file)) {
 		$path = $dir.$generic_name.'.png';
 		if (file_exists($path)) {
 			return $path;
 		}
 	}
-	
+
 	foreach (array('audio', 'image', 'text', 'video') as $category) {
 		if (strpos($file['filemime'], $category .'/') === 0) {
 			$path = $dir.$category.'-x-generic'.'.png';
@@ -430,13 +434,13 @@ function _ibp_theme_filefield_icon_path($file) {
 			}
 		}
 	}
-	
+
 	// Try application-octet-stream as last fallback.
 	$path = $dir.'application-octet-stream'.'.png';
 	if (file_exists($path)) {
 		return $path;
 	}
-	
+
 	return NULL;
 }
 
@@ -485,12 +489,12 @@ function ibp_theme_definition_list($vars) {
 	$terms = $vars['terms'];
 	$title = $vars['title'];
 	$attributes = $vars['attributes'];
-	
+
 	$output = '<div class="definition-list">';
 	if (isset($title)) {
 		$output .= '<h3>'.$title.'</h3>';
 	}
-	
+
 	if (!empty($terms)) {
     $output .= "<dl" . drupal_attributes($attributes) . '>';
     $num_terms = count($terms);
@@ -675,13 +679,13 @@ function ibp_theme_biblio_entry($node, $base = 'biblio', $style = 'classic', $in
     // add links to attached files (if any)
     $output .= theme('biblio_download_links',$node);
   }
-  
+
   // taxonomy
   if (module_exists('taxonomy')) {
     $terms = taxonomy_link('taxonomy terms', $node);
     $output .= theme('links', $terms);
   }
-  
+
   if (!$node->status) {
     $output .= '</div>';
   }
@@ -760,3 +764,20 @@ function _ibp_theme_build_biblio_link($base, $node = NULL, $type = NULL) {
 // 	error_log(print_r($link,1));
 //   return theme_menu_item_link($link);
 // }
+
+
+function ibp_theme_preprocess_block($vars) {
+  if ($vars['block']->module == 'content_complete' && $vars['block']->delta == 'profile') {
+    if (strpos($vars['content'], '% complete') === FALSE) {
+      global $user;
+      if ($user->clades && count($user->clades) > 0) {
+        $vars['title'] = t('Latest posts in your communities');
+        $viewName = 'latest_my_clades';
+        $view = views_get_view($viewName);
+        $vars['content'] = $view->execute_display('default', array_keys($user->clades));
+      } else {
+        $vars['content'] = theme('profile_join_a_clade', $user);
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-/* line 1, ../stylesheets/ibp-custom.scss */
+/* line 3, ../stylesheets/ibp-custom.scss */
 #top-bar {
   text-shadow: -1px -1px 1px #333333;
   font-size: 12px;
@@ -23,7 +23,7 @@
   padding: 0 0 1px;
 }
 
-/* line 25, ../stylesheets/ibp-custom.scss */
+/* line 27, ../stylesheets/ibp-custom.scss */
 #top-bar > div {
   float: left;
   border-color: #292929 #292929 #292929 #606060;
@@ -31,17 +31,17 @@
   border-width: 0 1px;
 }
 
-/* line 32, ../stylesheets/ibp-custom.scss */
+/* line 34, ../stylesheets/ibp-custom.scss */
 #top-bar > div:first-child {
   border-width: 0 1px 0 0;
 }
 
-/* line 36, ../stylesheets/ibp-custom.scss */
+/* line 38, ../stylesheets/ibp-custom.scss */
 #top-bar > div:last-child {
   border-width: 0 0 0 1px;
 }
 
-/* line 40, ../stylesheets/ibp-custom.scss */
+/* line 42, ../stylesheets/ibp-custom.scss */
 #top-bar .loginstatus span {
   color: #919191;
   background-image: url(../images/lock.png);
@@ -53,25 +53,25 @@
   margin: 0 0 0 12px;
 }
 
-/* line 51, ../stylesheets/ibp-custom.scss */
+/* line 53, ../stylesheets/ibp-custom.scss */
 #top-bar .loginstatus span strong {
   color: #efefef;
 }
 
-/* line 58, ../stylesheets/ibp-custom.scss */
+/* line 60, ../stylesheets/ibp-custom.scss */
 #topbar #block-menu-menu-my-links {
   margin: 0;
   position: relative;
 }
 
-/* line 63, ../stylesheets/ibp-custom.scss */
+/* line 65, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-/* line 69, ../stylesheets/ibp-custom.scss */
+/* line 71, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li {
   float: left;
   display: block;
@@ -80,17 +80,17 @@
   border-width: 0 1px;
 }
 
-/* line 77, ../stylesheets/ibp-custom.scss */
+/* line 79, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li:first-child {
   border-width: 0 1px 0 0;
 }
 
-/* line 81, ../stylesheets/ibp-custom.scss */
+/* line 83, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li:last-child {
   border-width: 0 0 0 1px;
 }
 
-/* line 85, ../stylesheets/ibp-custom.scss */
+/* line 87, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li a {
   display: block;
   line-height: 18px;
@@ -99,7 +99,7 @@
   white-space: nowrap;
 }
 
-/* line 93, ../stylesheets/ibp-custom.scss */
+/* line 95, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li ul {
   position: absolute;
   top: 44px;
@@ -120,42 +120,42 @@
   box-shadow: 1px 1px 6px #000000;
 }
 
-/* line 114, ../stylesheets/ibp-custom.scss */
+/* line 116, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li ul li {
   float: none;
   border: none;
 }
 
-/* line 119, ../stylesheets/ibp-custom.scss */
+/* line 121, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li ul li a {
   float: none;
   padding: 3px 16px;
   line-height: inherit;
 }
 
-/* line 125, ../stylesheets/ibp-custom.scss */
+/* line 127, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li ul li a:hover {
   background-color: #6a6a6a;
 }
 
-/* line 129, ../stylesheets/ibp-custom.scss */
+/* line 131, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links ul li ul li a:hover {
   background-color: #6a6a6a;
 }
 
-/* line 133, ../stylesheets/ibp-custom.scss */
+/* line 135, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links .my-links > a {
   z-index: 11;
 }
 
-/* line 137, ../stylesheets/ibp-custom.scss */
+/* line 139, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links .my-links > a:after {
   content: url(../images/arrow_down_blue.png);
   position: relative;
   left: 6px;
 }
 
-/* line 143, ../stylesheets/ibp-custom.scss */
+/* line 145, ../stylesheets/ibp-custom.scss */
 #top-bar #block-menu-menu-my-links .my-links.my-links-visible > a {
   top: 2px;
   margin: 4px 0 0;
@@ -175,18 +175,18 @@
   border-radius: 3px 3px 0 0;
 }
 
-/* line 162, ../stylesheets/ibp-custom.scss */
+/* line 164, ../stylesheets/ibp-custom.scss */
 #top-bar #search-box {
   padding: 8px 12px;
 }
 
-/* line 166, ../stylesheets/ibp-custom.scss */
+/* line 168, ../stylesheets/ibp-custom.scss */
 #top-bar #search-box .form-item {
   margin: 0;
   padding: 0;
 }
 
-/* line 171, ../stylesheets/ibp-custom.scss */
+/* line 173, ../stylesheets/ibp-custom.scss */
 #top-bar #search-box input[type=text] {
   border: 0;
   margin: 0;
@@ -203,13 +203,13 @@
   border-radius: 3px 0 0 3px;
 }
 
-/* line 187, ../stylesheets/ibp-custom.scss */
+/* line 189, ../stylesheets/ibp-custom.scss */
 #top-bar #search-box input.default {
   color: #999999;
   font-style: italic;
 }
 
-/* line 192, ../stylesheets/ibp-custom.scss */
+/* line 194, ../stylesheets/ibp-custom.scss */
 #top-bar #search-box input[type=submit] {
   border: 0;
   margin: 0;
@@ -230,7 +230,7 @@
   border-radius: 0 3px 3px 0;
 }
 
-/* line 213, ../stylesheets/ibp-custom.scss */
+/* line 215, ../stylesheets/ibp-custom.scss */
 a#back-to-top {
   display: block;
   font-size: .85em;
@@ -249,7 +249,7 @@ a#back-to-top {
   border-radius: 0 0 3px 3px;
 }
 
-/* line 234, ../stylesheets/ibp-custom.scss */
+/* line 236, ../stylesheets/ibp-custom.scss */
 .item-list ul,
 .item-list ul li,
 #page-bottom ul.menu,
@@ -259,18 +259,18 @@ a#back-to-top {
   list-style-image: url(../images/arrow_right_grey.png);
 }
 
-/* line 241, ../stylesheets/ibp-custom.scss */
+/* line 243, ../stylesheets/ibp-custom.scss */
 .item-list ul li,
 #page-bottom ul.menu li {
   padding: 0;
 }
 
-/* line 245, ../stylesheets/ibp-custom.scss */
+/* line 247, ../stylesheets/ibp-custom.scss */
 #page-bottom ul.menu li ul {
   display: none;
 }
 
-/* line 249, ../stylesheets/ibp-custom.scss */
+/* line 251, ../stylesheets/ibp-custom.scss */
 form#ibphelper-my-pages-form {
   position: absolute;
   top: 50%;
@@ -280,7 +280,7 @@ form#ibphelper-my-pages-form {
   height: 10px;
 }
 
-/* line 259, ../stylesheets/ibp-custom.scss */
+/* line 261, ../stylesheets/ibp-custom.scss */
 input.ibphelper-my-pages-add,
 input.ibphelper-my-pages-remove {
   background-color: #ffffff;
@@ -302,51 +302,51 @@ input.ibphelper-my-pages-remove {
   filter: none;
 }
 
-/* line 281, ../stylesheets/ibp-custom.scss */
+/* line 283, ../stylesheets/ibp-custom.scss */
 input.ibphelper-my-pages-add,
 input.ibphelper-my-pages-add:hover {
   background-color: #ffffff;
   background-image: url(../images/add.png);
 }
 
-/* line 287, ../stylesheets/ibp-custom.scss */
+/* line 289, ../stylesheets/ibp-custom.scss */
 input.ibphelper-my-pages-remove,
 input.ibphelper-my-pages-remove:hover {
   background-color: #ffffff;
   background-image: url(../images/remove.png);
 }
 
-/* line 293, ../stylesheets/ibp-custom.scss */
+/* line 295, ../stylesheets/ibp-custom.scss */
 ul.ibp-my-pages,
 ul.ibp-my-pages li {
   list-style-type: circle;
   list-style-image: url(../images/arrow_right_grey.png);
 }
 
-/* line 298, ../stylesheets/ibp-custom.scss */
+/* line 300, ../stylesheets/ibp-custom.scss */
 h2.clade-page-mini-form-title {
   color: #3e3e3e;
 }
 
-/* line 302, ../stylesheets/ibp-custom.scss */
+/* line 304, ../stylesheets/ibp-custom.scss */
 .block h2.title {
   color: #888888;
 }
 
-/* line 307, ../stylesheets/ibp-custom.scss */
+/* line 309, ../stylesheets/ibp-custom.scss */
 #block-clade-4 h2,
 #block-clade-4 h2 a {
   color: #888888;
 }
 
-/* line 311, ../stylesheets/ibp-custom.scss */
+/* line 313, ../stylesheets/ibp-custom.scss */
 #block-clade-4 li h3 {
   font-weight: normal;
   margin: 0 0 1px 0;
   color: #888888;
 }
 
-/* line 321, ../stylesheets/ibp-custom.scss */
+/* line 323, ../stylesheets/ibp-custom.scss */
 .clade-join {
   color: #8e8e8e;
   background-color: #ececec;
@@ -356,14 +356,14 @@ h2.clade-page-mini-form-title {
   word-spacing: -1px;
 }
 
-/* line 330, ../stylesheets/ibp-custom.scss */
+/* line 332, ../stylesheets/ibp-custom.scss */
 .clade-join-message {
   line-height: 46px;
   margin: 0px 0px 0px 12px;
   float: left;
 }
 
-/* line 336, ../stylesheets/ibp-custom.scss */
+/* line 338, ../stylesheets/ibp-custom.scss */
 .clade-join-link {
   float: right;
   line-height: 32px;
@@ -384,7 +384,7 @@ h2.clade-page-mini-form-title {
   border-radius: 3px;
 }
 
-/* line 360, ../stylesheets/ibp-custom.scss */
+/* line 362, ../stylesheets/ibp-custom.scss */
 ul.nostyle,
 ul.nostyle li {
   margin: 0;
@@ -392,12 +392,12 @@ ul.nostyle li {
   list-style: none;
 }
 
-/* line 366, ../stylesheets/ibp-custom.scss */
+/* line 368, ../stylesheets/ibp-custom.scss */
 span.read-more a:after {
   content: " \2192";
 }
 
-/* line 372, ../stylesheets/ibp-custom.scss */
+/* line 374, ../stylesheets/ibp-custom.scss */
 .clade-community-feed-item,
 .view-training .views-row,
 .view-clade-posts .views-row {
@@ -408,7 +408,7 @@ span.read-more a:after {
   border-width: 0 0 1px 0;
 }
 
-/* line 382, ../stylesheets/ibp-custom.scss */
+/* line 384, ../stylesheets/ibp-custom.scss */
 .clade-community-feed-item:last-child,
 .view-training .views-row:last-child,
 .view-clade-posts .views-row:last-child {
@@ -416,28 +416,28 @@ span.read-more a:after {
   border-width: 0px;
 }
 
-/* line 387, ../stylesheets/ibp-custom.scss */
+/* line 389, ../stylesheets/ibp-custom.scss */
 .teaser-comments-container {
   margin: 1em 0 0 0 !important;
 }
 
-/* line 391, ../stylesheets/ibp-custom.scss */
+/* line 393, ../stylesheets/ibp-custom.scss */
 ul.links.inline li {
   padding: 0;
 }
 
-/* line 395, ../stylesheets/ibp-custom.scss */
+/* line 397, ../stylesheets/ibp-custom.scss */
 ul.links.inline li:after {
   content: "| ";
   color: #cacaca;
 }
 
-/* line 400, ../stylesheets/ibp-custom.scss */
+/* line 402, ../stylesheets/ibp-custom.scss */
 ul.links.inline li a {
   padding: 0 6px 0 0;
 }
 
-/* line 404, ../stylesheets/ibp-custom.scss */
+/* line 406, ../stylesheets/ibp-custom.scss */
 ul.terms.links li {
   padding: 0 0 0 16px;
   background-image: url(../images/tag.png);
@@ -445,20 +445,20 @@ ul.terms.links li {
   background-position: left center;
 }
 
-/* line 412, ../stylesheets/ibp-custom.scss */
+/* line 414, ../stylesheets/ibp-custom.scss */
 body.cke_show_borders,
 body.cke_panel_frame {
   background-image: none;
   background-color: #ffffff;
 }
 
-/* line 417, ../stylesheets/ibp-custom.scss */
+/* line 419, ../stylesheets/ibp-custom.scss */
 .item-list ul li.clade-manager {
   line-height: 24px;
   margin: 0 0 3px 0;
 }
 
-/* line 424, ../stylesheets/ibp-custom.scss */
+/* line 426, ../stylesheets/ibp-custom.scss */
 .clade-manager img,
 .clade-manager a,
 .clade-manager span {
@@ -467,7 +467,7 @@ body.cke_panel_frame {
   vertical-align: middle;
 }
 
-/* line 430, ../stylesheets/ibp-custom.scss */
+/* line 432, ../stylesheets/ibp-custom.scss */
 a.external-link {
   background-image: url(../images/external-link.png);
   background-repeat: no-repeat;
@@ -475,45 +475,45 @@ a.external-link {
   padding: 0 16px 0 0;
 }
 
-/* line 439, ../stylesheets/ibp-custom.scss */
+/* line 441, ../stylesheets/ibp-custom.scss */
 #fancybox-title.fancybox-title-inside,
 #fancybox-title.fancybox-title-float,
 #fancybox-title.fancybox-title-over {
   font-size: 18px;
 }
 
-/* line 443, ../stylesheets/ibp-custom.scss */
+/* line 445, ../stylesheets/ibp-custom.scss */
 #fancybox-title.fancybox-title-over {
   text-shadow: 1px 1px 0px #000000;
 }
 
-/* line 447, ../stylesheets/ibp-custom.scss */
+/* line 449, ../stylesheets/ibp-custom.scss */
 #autocomplete {
   width: auto !important;
 }
 
-/* line 451, ../stylesheets/ibp-custom.scss */
+/* line 453, ../stylesheets/ibp-custom.scss */
 #autocomplete li {
   padding: 3px 0;
   border-bottom: 1px solid #ccc;
 }
 
-/* line 456, ../stylesheets/ibp-custom.scss */
+/* line 458, ../stylesheets/ibp-custom.scss */
 #autocomplete li:nth-child(2n) {
   background-color: #efefef;
 }
 
-/* line 460, ../stylesheets/ibp-custom.scss */
+/* line 462, ../stylesheets/ibp-custom.scss */
 #autocomplete li.selected:nth-child(2n) {
   background-color: #0072B9;
 }
 
-/* line 464, ../stylesheets/ibp-custom.scss */
+/* line 466, ../stylesheets/ibp-custom.scss */
 #autocomplete li:last-child {
   border-bottom: none;
 }
 
-/* line 468, ../stylesheets/ibp-custom.scss */
+/* line 470, ../stylesheets/ibp-custom.scss */
 .fancybox-title-ibp-float {
   min-width: 300px;
   padding: 6px 12px;
@@ -523,7 +523,7 @@ a.external-link {
   box-shadow: 3px 3px 6px #666;
 }
 
-/* line 477, ../stylesheets/ibp-custom.scss */
+/* line 479, ../stylesheets/ibp-custom.scss */
 .field-field-file-attachment .filefield-file {
   padding: 8px 0;
   margin-bottom: 0.25em;
@@ -534,7 +534,7 @@ a.external-link {
   border-width: 0 0 4px 0;
 }
 
-/* line 487, ../stylesheets/ibp-custom.scss */
+/* line 489, ../stylesheets/ibp-custom.scss */
 .field-field-file-attachment .field-label {
   font-size: 16px;
   color: #3E3E3E;
@@ -544,17 +544,17 @@ a.external-link {
   margin-bottom: 5px;
 }
 
-/* line 496, ../stylesheets/ibp-custom.scss */
+/* line 498, ../stylesheets/ibp-custom.scss */
 .field-field-file-attachment .filefield-file img {
   float: left;
 }
 
-/* line 500, ../stylesheets/ibp-custom.scss */
+/* line 502, ../stylesheets/ibp-custom.scss */
 .field-field-file-attachment .filefield-file a {
   line-height: 32px;
 }
 
-/* line 505, ../stylesheets/ibp-custom.scss */
+/* line 507, ../stylesheets/ibp-custom.scss */
 div.views-row a.edit-link,
 div.views-row .views-field-edit-node a {
   opacity: 0;
@@ -564,31 +564,31 @@ div.views-row .views-field-edit-node a {
   color: #888888;
 }
 
-/* line 514, ../stylesheets/ibp-custom.scss */
+/* line 516, ../stylesheets/ibp-custom.scss */
 div.views-row:hover a.edit-link,
 div.views-row:hover .views-field-edit-node a {
   opacity: 1;
 }
 
-/* line 519, ../stylesheets/ibp-custom.scss */
+/* line 521, ../stylesheets/ibp-custom.scss */
 div.views-row a.edit-link:hover,
 div.views-row .views-field-edit-node a {
   color: #00a3f7;
 }
 
-/* line 524, ../stylesheets/ibp-custom.scss */
+/* line 526, ../stylesheets/ibp-custom.scss */
 div.views-row a.edit-link:before,
 div.views-row .views-field-edit-node a:before {
   content: "[";
 }
 
-/* line 529, ../stylesheets/ibp-custom.scss */
+/* line 531, ../stylesheets/ibp-custom.scss */
 div.views-row a.edit-link:after,
 div.views-row .views-field-edit-node a:after {
   content: "]";
 }
 
-/* line 534, ../stylesheets/ibp-custom.scss */
+/* line 536, ../stylesheets/ibp-custom.scss */
 div.panel-pane div.panel-hide-hover,
 div.panel-pane:hover div.panel-hide {
   position: static;
@@ -597,24 +597,24 @@ div.panel-pane:hover div.panel-hide {
   font-style: italic;
 }
 
-/* line 541, ../stylesheets/ibp-custom.scss */
+/* line 543, ../stylesheets/ibp-custom.scss */
 div.view div.views-admin-links {
   font-size: 12px;
 }
 
-/* line 545, ../stylesheets/ibp-custom.scss */
+/* line 547, ../stylesheets/ibp-custom.scss */
 div.panel-pane div.admin-links ul {
   margin: 0;
   padding: 0;
 }
 
-/* line 550, ../stylesheets/ibp-custom.scss */
+/* line 552, ../stylesheets/ibp-custom.scss */
 div.panel-pane div.admin-links li {
   margin: 0;
   padding: 0 0 2px 0;
 }
 
-/* line 556, ../stylesheets/ibp-custom.scss */
+/* line 558, ../stylesheets/ibp-custom.scss */
 div.panel-pane div.admin-links li a,
 div.view div.views-admin-links li a {
   margin: 0;
@@ -622,13 +622,50 @@ div.view div.views-admin-links li a {
   white-space: nowrap;
 }
 
-/* line 563, ../stylesheets/ibp-custom.scss */
+/* line 565, ../stylesheets/ibp-custom.scss */
 div.panel-pane div.admin-links li a:hover,
 div.view div.views-admin-links li a:hover {
   color: #00A3F7;
 }
 
-/* line 567, ../stylesheets/ibp-custom.scss */
+/* line 569, ../stylesheets/ibp-custom.scss */
 ul.menu li.calendar {
   width: auto;
+}
+
+/* line 573, ../stylesheets/ibp-custom.scss */
+.content-complete-percent-bar-wrapper {
+  width: auto;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
+
+/* line 578, ../stylesheets/ibp-custom.scss */
+.content-complete-percent-bar {
+  background-color: #2F85C6;
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3d92d1), color-stop(100%, #2d7fbe));
+  background-image: -webkit-linear-gradient(#3d92d1, #2d7fbe);
+  background-image: -moz-linear-gradient(#3d92d1, #2d7fbe);
+  background-image: -o-linear-gradient(#3d92d1, #2d7fbe);
+  background-image: linear-gradient(#3d92d1, #2d7fbe);
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+}
+
+/* line 585, ../stylesheets/ibp-custom.scss */
+.view-latest-my-clades .views-row {
+  margin-bottom: .5em;
+  padding-bottom: .5em;
+  border-bottom: 1px solid #ddd;
+}
+/* line 590, ../stylesheets/ibp-custom.scss */
+.view-latest-my-clades .views-row:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
 }
