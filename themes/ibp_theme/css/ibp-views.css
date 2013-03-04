@@ -176,7 +176,8 @@
 
 .view-clade-forum-summary .view-content,
 .view-clade-post-summary .view-content,
-.view-ibp-projects-summary .view-content {
+.view-ibp-projects-summary .view-content,
+.view-community-latest-comments .view-content {
 	margin: 0 0 12px;
 	border-bottom: 2px solid #cccccc;
 }
@@ -184,6 +185,7 @@
 .pane-clade-forum-summary-panel-pane-1 h2.pane-title,
 .pane-clade-post-summary-panel-pane-1 h2.pane-title,
 .pane-ibp-projects-summary-panel-pane-1 h2.pane-title,
+.pane-clade-biblio-summary-panel-pane-1 h2.pane-title,
 .pane-clade-biblio-summary-panel-pane-1 h2.pane-title {
 	padding-left: 30px;
 	background-repeat: no-repeat;
