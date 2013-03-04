@@ -90,7 +90,7 @@
 	padding: 0 10px 0 0;
 }
 
-.view-community-latest-comments .views-field-title {
+.view-community-latest-comments .views-field-subject {
 	width: 570px;
 	padding: 0 10px 0 0;
 }
@@ -186,7 +186,7 @@
 .pane-clade-post-summary-panel-pane-1 h2.pane-title,
 .pane-ibp-projects-summary-panel-pane-1 h2.pane-title,
 .pane-clade-biblio-summary-panel-pane-1 h2.pane-title,
-.pane-clade-biblio-summary-panel-pane-1 h2.pane-title {
+.pane-community-latest-comments-panel-pane-1 h2.pane-title {
 	padding-left: 30px;
 	background-repeat: no-repeat;
 	background-position: left center;
